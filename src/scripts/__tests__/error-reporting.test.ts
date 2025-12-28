@@ -4,7 +4,7 @@
 
 // Mock logger BEFORE importing error-reporting
 jest.mock('../logger', () => ({
-  logger: {
+  backgroundLogger: {
     debug: jest.fn(),
     info: jest.fn(),
     warn: jest.fn(),

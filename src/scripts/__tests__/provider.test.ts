@@ -163,7 +163,7 @@ describe('CryptoJournalProvider', () => {
   describe('request - background communication', () => {
     beforeEach(() => {
       // Setup mock response
-      (chrome.runtime.sendMessage as jest.Mock).mockImplementation((message, callback) => {
+      (chrome.runtime.sendMessage as jest.Mock).mockImplementation((_message, callback) => {
         if (callback) {
           callback({ success: true, data: ['0xtest'] });
         }
@@ -184,7 +184,7 @@ describe('CryptoJournalProvider', () => {
     });
 
     it('should send personal_sign to background', async () => {
-      (chrome.runtime.sendMessage as jest.Mock).mockImplementation((message, callback) => {
+      (chrome.runtime.sendMessage as jest.Mock).mockImplementation((_message, callback) => {
         if (callback) {
           callback({ success: true, data: '0xsignature' });
         }
@@ -209,7 +209,7 @@ describe('CryptoJournalProvider', () => {
     });
 
     it('should handle background error response', async () => {
-      (chrome.runtime.sendMessage as jest.Mock).mockImplementation((message, callback) => {
+      (chrome.runtime.sendMessage as jest.Mock).mockImplementation((_message, callback) => {
         if (callback) {
           callback({ success: false, error: 'User rejected' });
         }
@@ -221,7 +221,7 @@ describe('CryptoJournalProvider', () => {
     });
 
     it('should handle chrome runtime error', async () => {
-      (chrome.runtime.sendMessage as jest.Mock).mockImplementation((message, callback) => {
+      (chrome.runtime.sendMessage as jest.Mock).mockImplementation((_message, callback) => {
         chrome.runtime.lastError = { message: 'Extension context invalidated' };
         if (callback) {
           callback(undefined);
@@ -235,7 +235,7 @@ describe('CryptoJournalProvider', () => {
 
     it('should deduplicate concurrent identical requests', async () => {
       let callCount = 0;
-      (chrome.runtime.sendMessage as jest.Mock).mockImplementation((message, callback) => {
+      (chrome.runtime.sendMessage as jest.Mock).mockImplementation((_message, callback) => {
         callCount++;
         setTimeout(() => {
           if (callback) {

@@ -80,7 +80,6 @@ module.exports = {
     // Define environment variables for browser context
     // Priority: CLI env vars > .env file vars > defaults
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(isProduction ? 'production' : 'development'),
       'process.env.API_BASE_URL': JSON.stringify(
         process.env.API_BASE_URL ||
           envVars.API_BASE_URL ||
