@@ -32,7 +32,7 @@ const mockChrome = {
   },
 };
 
-// @ts-ignore
+// @ts-expect-error - testing invalid input
 global.chrome = mockChrome;
 
 // Mock fetch

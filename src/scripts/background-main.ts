@@ -46,12 +46,6 @@ import {
   type AuthFlowData,
 } from './auth-state-machine';
 import { backgroundLogger as logger } from './logger';
-// Import structured error types (for future migration)
-// Currently using plain Error but these provide better categorization
-import type {
-  RateLimitError as _RateLimitError,
-  WalletNotFoundError as _WalletNotFoundError,
-} from './errors';
 import { errorReporter } from './error-reporting';
 import type {
   Message,

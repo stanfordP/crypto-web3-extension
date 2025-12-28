@@ -5,7 +5,6 @@
  */
 
 import {
-  ExtensionError,
   ErrorCategory,
   NetworkError,
   NetworkOfflineError,

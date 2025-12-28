@@ -67,7 +67,7 @@ export class CryptoJournalProvider implements EthereumProvider {
       case 'net_version':
         return parseInt(this.chainId, 16).toString();
 
-      default:
+      default: {
         // Deduplicate concurrent identical requests
         const cacheKey = `${method}:${JSON.stringify(params || [])}`;
         const existing = this.inflightRequests.get(cacheKey);
@@ -84,6 +84,7 @@ export class CryptoJournalProvider implements EthereumProvider {
         } finally {
           this.inflightRequests.delete(cacheKey);
         }
+      }
     }
   }
 
@@ -139,13 +140,6 @@ export class CryptoJournalProvider implements EthereumProvider {
   ): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const requestId = `req_${++this.requestIdCounter}`;
-      let timeoutId: ReturnType<typeof setTimeout>;
-
-      // Cleanup function to prevent memory leaks
-      const cleanup = () => {
-        clearTimeout(timeoutId);
-        this.pendingRequests.delete(requestId);
-      };
 
       // Store pending request
       this.pendingRequests.set(requestId, { resolve, reject });
@@ -157,6 +151,18 @@ export class CryptoJournalProvider implements EthereumProvider {
         type: messageType,
         payload: { method, params },
         requestId,
+      };
+
+      // Set up timeout (must be const and defined before cleanup)
+      const timeoutId: ReturnType<typeof setTimeout> = setTimeout(() => {
+        this.pendingRequests.delete(requestId);
+        reject(this.createError(-32603, 'Request timeout'));
+      }, 60000);
+
+      // Cleanup function to prevent memory leaks
+      const cleanup = () => {
+        clearTimeout(timeoutId);
+        this.pendingRequests.delete(requestId);
       };
 
       // Send to background script
@@ -181,12 +187,6 @@ export class CryptoJournalProvider implements EthereumProvider {
           reject(this.createError(-32603, response.error || 'Unknown error'));
         }
       });
-
-      // Timeout after 60 seconds
-      timeoutId = setTimeout(() => {
-        cleanup(); // Clear pending request
-        reject(this.createError(-32603, 'Request timeout'));
-      }, 60000);
     });
   }
 
