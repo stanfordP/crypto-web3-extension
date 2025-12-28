@@ -221,6 +221,7 @@ class ErrorReportingService {
       return {
         isConnected: !!result.currentAddress,
         chainId: result.chainId,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         hasWallet: typeof window !== 'undefined' && !!(window as any).ethereum,
       };
     } catch {

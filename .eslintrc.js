@@ -19,7 +19,7 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    'no-console': ['warn', { allow: ['warn', 'error'] }],
+    'no-console': 'off', // Allowed: Extension requires console for debugging
   },
   ignorePatterns: ['dist/', 'node_modules/', 'webpack.config.js'],
 };
