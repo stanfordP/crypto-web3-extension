@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'self'">
+  <title>Crypto Trading Journal - Web3 Auth</title>
+  <link rel="stylesheet" href="styles/popup.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="title">Crypto Trading Journal</h1>
+      <p class="subtitle">Web3 Authentication</p>
+    </header>
+
+    <!-- Loading State -->
+    <div id="loading" class="section loading">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+
+    <!-- Not Connected State -->
+    <div id="notConnected" class="section hidden">
+      <div class="icon-large">🔐</div>
+      <h2>Connect Your Wallet</h2>
+      <p class="description">
+        Sign in with your Ethereum wallet to authenticate with Crypto Trading Journal.
+      </p>
+
+      <!-- Account Mode Selection -->
+      <div class="account-mode">
+        <label class="radio-label">
+          <input type="radio" name="accountMode" value="live" checked>
+          <span>Live Trading</span>
+        </label>
+        <label class="radio-label">
+          <input type="radio" name="accountMode" value="demo">
+          <span>Demo Mode</span>
+        </label>
+      </div>
+
+      <button id="connectButton" class="button button-primary">
+        Connect Wallet
+      </button>
+
+      <div class="info-box">
+        <p>
+          <strong>Note:</strong> You'll need MetaMask or Brave Wallet installed.
+          Your private keys never leave your wallet.
+        </p>
+      </div>
+    </div>
+
+    <!-- Connected State -->
+    <div id="connected" class="section hidden">
+      <div class="icon-large success">✓</div>
+      <h2>Connected</h2>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Address</span>
+          <span id="address" class="info-value mono"></span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Network</span>
+          <span id="network" class="info-value"></span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Mode</span>
+          <span id="accountMode" class="info-value"></span>
+        </div>
+
+        <div class="info-item">
+          <span class="info-label">Status</span>
+          <span class="status-badge status-active">Active</span>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button id="openAppButton" class="button button-primary">
+          Open Trading Journal
+        </button>
+        <button id="disconnectButton" class="button button-secondary">
+          Disconnect
+        </button>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div id="error" class="section hidden">
+      <div class="icon-large error">⚠️</div>
+      <h2>Connection Error</h2>
+      <p id="errorMessage" class="error-message"></p>
+      <button id="retryButton" class="button button-primary">
+        Try Again
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p class="footer-text">
+        Secured with SIWE (EIP-4361)
+      </p>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+{
+  "name": "crypto-web3-extension",
+  "version": "1.0.0",
+  "description": "Web3 authentication extension for Crypto Trading Journal",
+  "scripts": {
+    "build": "webpack --mode production",
+    "build:dev": "webpack --mode development",
+    "build:prod": "cross-env NODE_ENV=production webpack --mode production",
+    "dev": "webpack --mode development --watch",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "test": "playwright test",
+    "test:unit": "jest --config jest.config.js",
+    "test:coverage": "jest --config jest.config.js --coverage",
+    "generate-icons": "node scripts/generate-icons.js",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean",
+    "validate": "npm run type-check && npm run lint",
+    "version:patch": "npm version patch && node scripts/sync-manifest-version.js",
+    "version:minor": "npm version minor && node scripts/sync-manifest-version.js",
+    "version:major": "npm version major && node scripts/sync-manifest-version.js",
+    "release": "npm run validate && npm run test:unit && npm run build:prod"
+  },
+  "keywords": [
+    "web3",
+    "ethereum",
+    "siwe",
+    "browser-extension",
+    "crypto"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "viem": "^2.43.3",
+    "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/chrome": "^0.0.268",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
+    "canvas": "^3.2.0",
+    "copy-webpack-plugin": "^12.0.2",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "playwright": "^1.57.0",
+    "sharp": "^0.34.5",
+    "ts-jest": "^29.1.2",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
+  }
+}

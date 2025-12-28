@@ -1,0 +1,21 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="iconGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4af37"/>
+      <stop offset="50%" stop-color="#f4e4a6"/>
+      <stop offset="100%" stop-color="#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="32" height="32" fill="#0f172a" rx="6"/>
+  
+  <!-- C letter -->
+  <text x="2" y="24" font-family="Georgia, serif" font-size="26" font-weight="400" fill="url(#iconGold)">C</text>
+  
+  <!-- J letter -->
+  <text x="14" y="24" font-family="Georgia, serif" font-size="26" font-weight="400" fill="url(#iconGold)">J</text>
+  
+  <!-- Small eagle circle indicator inside C -->
+  <circle cx="11" cy="15" r="5" fill="none" stroke="#d4af37" stroke-width="0.8" opacity="0.6"/>
+</svg>
