@@ -21,8 +21,8 @@ export const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
  */
 const API_URLS = {
   development: 'http://localhost:3000',
-  production: 'https://api.cryptojournal.app',
-  staging: 'https://staging-api.cryptojournal.app',
+  production: 'https://cryptotradingjournal.xyz',
+  staging: 'https://staging.cryptotradingjournal.xyz',
 } as const;
 
 /**
@@ -54,8 +54,9 @@ export const API_ENDPOINTS = {
 export const ALLOWED_ORIGINS: readonly string[] = [
   'http://localhost:3000',
   'http://localhost:3001', // Test ground mock server
-  'https://cryptojournal.app', // Production domain (update when available)
-  'https://*.cryptojournal.app', // Subdomains
+  'https://cryptotradingjournal.xyz',
+  'https://www.cryptotradingjournal.xyz',
+  'https://*.cryptotradingjournal.xyz', // Subdomains
 ] as const;
 
 /**
@@ -64,8 +65,9 @@ export const ALLOWED_ORIGINS: readonly string[] = [
  */
 export const INJECTION_ORIGINS: readonly string[] = [
   'http://localhost:3000',
-  'https://cryptojournal.app',
-  'https://*.cryptojournal.app',
+  'https://cryptotradingjournal.xyz',
+  'https://www.cryptotradingjournal.xyz',
+  'https://*.cryptotradingjournal.xyz',
 ] as const;
 
 /**

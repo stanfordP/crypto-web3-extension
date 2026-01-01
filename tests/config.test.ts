@@ -62,7 +62,7 @@ describe('Config', () => {
     });
 
     it('should handle production domain', () => {
-      expect(isAllowedOrigin('https://cryptojournal.app')).toBe(true);
+      expect(isAllowedOrigin('https://cryptotradingjournal.xyz')).toBe(true);
     });
   });
 
@@ -77,7 +77,7 @@ describe('Config', () => {
     });
 
     it('should inject on production domain', () => {
-      expect(shouldInjectProvider('https://cryptojournal.app')).toBe(true);
+      expect(shouldInjectProvider('https://cryptotradingjournal.xyz')).toBe(true);
     });
   });
 

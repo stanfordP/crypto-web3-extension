@@ -51,12 +51,27 @@ chrome.runtime.onMessage.addListener((message: { type?: string; requestId?: stri
 console.log('[background] Bootstrap PING handler registered, timestamp:', Date.now());
 
 // ============================================================================
+// CRITICAL: Enable chrome.storage.session access for content scripts
+// By default, session storage is only accessible from the service worker.
+// We need to explicitly allow content scripts to access it for session token storage.
+// ============================================================================
+
+chrome.storage.session.setAccessLevel({ accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS' })
+  .then(() => {
+    console.log('[background] Session storage access level set for content scripts');
+  })
+  .catch((error) => {
+    console.error('[background] Failed to set session storage access level:', error);
+  });
+
+// ============================================================================
 // Load main module using require() - this is synchronous but runs AFTER
 // the code above. Unlike import, require() doesn't get hoisted.
 // ============================================================================
 
 try {
   console.log('[background] Loading main module...');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   require('./background-main');
   _bootstrapReady = true;
   console.log('[background] Main module loaded, bootstrap ready');

@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="styles/popup.css">
 </head>
 <body>
-  <div class="container">
+  <div class="container" role="main">
     <!-- Header -->
     <header class="header">
       <h1 class="title">Crypto Trading Journal</h1>
@@ -16,92 +16,81 @@
     </header>
 
     <!-- Loading State -->
-    <div id="loading" class="section loading">
-      <div class="spinner"></div>
+    <div id="loading" class="section loading" role="status" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
       <p>Loading...</p>
+      <span class="sr-only">Loading wallet status, please wait</span>
     </div>
 
     <!-- Not Connected State -->
-    <div id="notConnected" class="section hidden">
-      <div class="icon-large">🔐</div>
-      <h2>Connect Your Wallet</h2>
+    <div id="notConnected" class="section hidden" role="region" aria-labelledby="notConnectedTitle">
+      <div class="icon-large" aria-hidden="true">🔐</div>
+      <h2 id="notConnectedTitle">Not Connected</h2>
       <p class="description">
-        Sign in with your Ethereum wallet to authenticate with Crypto Trading Journal.
+        Connect your wallet through the Crypto Trading Journal app.
       </p>
 
-      <!-- Account Mode Selection -->
-      <div class="account-mode">
-        <label class="radio-label">
-          <input type="radio" name="accountMode" value="live" checked>
-          <span>Live Trading</span>
-        </label>
-        <label class="radio-label">
-          <input type="radio" name="accountMode" value="demo">
-          <span>Demo Mode</span>
-        </label>
-      </div>
-
-      <button id="connectButton" class="button button-primary">
-        Connect Wallet
+      <button id="connectButton" class="button button-primary" aria-label="Open Trading Journal to connect your wallet">
+        Open Trading Journal
       </button>
 
-      <div class="info-box">
+      <div class="info-box" role="note">
         <p>
-          <strong>Note:</strong> You'll need MetaMask or Brave Wallet installed.
-          Your private keys never leave your wallet.
+          <strong>Note:</strong> Authentication is handled by the main app.
+          This extension bridges your wallet securely.
         </p>
       </div>
     </div>
 
     <!-- Connected State -->
-    <div id="connected" class="section hidden">
-      <div class="icon-large success">✓</div>
-      <h2>Connected</h2>
+    <div id="connected" class="section hidden" role="region" aria-labelledby="connectedTitle">
+      <div class="icon-large success" aria-hidden="true">✓</div>
+      <h2 id="connectedTitle">Connected</h2>
 
-      <div class="info-grid">
-        <div class="info-item">
-          <span class="info-label">Address</span>
-          <span id="address" class="info-value mono"></span>
+      <div class="info-grid" role="list" aria-label="Wallet connection details">
+        <div class="info-item" role="listitem">
+          <span class="info-label" id="addressLabel">Address</span>
+          <span id="address" class="info-value mono" aria-labelledby="addressLabel"></span>
         </div>
 
-        <div class="info-item">
-          <span class="info-label">Network</span>
-          <span id="network" class="info-value"></span>
+        <div class="info-item" role="listitem">
+          <span class="info-label" id="networkLabel">Network</span>
+          <span id="network" class="info-value" aria-labelledby="networkLabel"></span>
         </div>
 
-        <div class="info-item">
-          <span class="info-label">Mode</span>
-          <span id="accountMode" class="info-value"></span>
+        <div class="info-item" role="listitem">
+          <span class="info-label" id="modeLabel">Mode</span>
+          <span id="accountMode" class="info-value" aria-labelledby="modeLabel"></span>
         </div>
 
-        <div class="info-item">
-          <span class="info-label">Status</span>
-          <span class="status-badge status-active">Active</span>
+        <div class="info-item" role="listitem">
+          <span class="info-label" id="statusLabel">Status</span>
+          <span class="status-badge status-active" aria-labelledby="statusLabel">Active</span>
         </div>
       </div>
 
-      <div class="button-group">
-        <button id="openAppButton" class="button button-primary">
+      <div class="button-group" role="group" aria-label="Wallet actions">
+        <button id="openAppButton" class="button button-primary" aria-label="Open Trading Journal application">
           Open Trading Journal
         </button>
-        <button id="disconnectButton" class="button button-secondary">
+        <button id="disconnectButton" class="button button-secondary" aria-label="Disconnect your wallet from this application">
           Disconnect
         </button>
       </div>
     </div>
 
     <!-- Error State -->
-    <div id="error" class="section hidden">
-      <div class="icon-large error">⚠️</div>
-      <h2>Connection Error</h2>
-      <p id="errorMessage" class="error-message"></p>
-      <button id="retryButton" class="button button-primary">
+    <div id="error" class="section hidden" role="alert" aria-labelledby="errorTitle">
+      <div class="icon-large error" aria-hidden="true">⚠️</div>
+      <h2 id="errorTitle">Connection Error</h2>
+      <p id="errorMessage" class="error-message" role="status"></p>
+      <button id="retryButton" class="button button-primary" aria-label="Retry wallet connection">
         Try Again
       </button>
     </div>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
       <p class="footer-text">
         Secured with SIWE (EIP-4361)
       </p>

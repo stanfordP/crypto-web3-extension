@@ -44,7 +44,9 @@ module.exports = {
     background: './src/scripts/background.ts',
     content: './src/scripts/content.ts',
     popup: './src/scripts/popup.ts',
+    auth: './src/scripts/auth.ts',
     'injected-wallet': './src/scripts/injected-wallet.ts',
+    'injected-auth': './src/scripts/injected-auth.ts',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -93,6 +95,7 @@ module.exports = {
       patterns: [
         { from: 'manifest.json', to: 'manifest.json' },
         { from: 'src/popup.html', to: 'popup.html' },
+        { from: 'src/auth.html', to: 'auth.html' },
         { from: 'src/styles', to: 'styles' },
         { from: 'src/icons', to: 'icons' },
       ],

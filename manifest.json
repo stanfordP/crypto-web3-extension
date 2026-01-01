@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Crypto Trading Journal - Web3 Auth",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Web3 wallet authentication for Crypto Trading Journal",
   "permissions": [
     "storage",
@@ -11,8 +11,9 @@
   "host_permissions": [
     "http://localhost:3000/*",
     "http://localhost:3001/*",
-    "https://cryptojournal.app/*",
-    "https://*.cryptojournal.app/*"
+    "https://cryptotradingjournal.xyz/*",
+    "https://www.cryptotradingjournal.xyz/*",
+    "https://*.cryptotradingjournal.xyz/*"
   ],
   "background": {
     "service_worker": "background.js"
@@ -21,8 +22,10 @@
     {
       "matches": [
         "http://localhost:3000/*",
-        "https://cryptojournal.app/*",
-        "https://*.cryptojournal.app/*"
+        "http://localhost:3001/*",
+        "https://cryptotradingjournal.xyz/*",
+        "https://www.cryptotradingjournal.xyz/*",
+        "https://*.cryptotradingjournal.xyz/*"
       ],
       "js": ["content.js"],
       "run_at": "document_start",
@@ -31,11 +34,13 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["injected-wallet.js"],
+      "resources": ["injected-wallet.js", "injected-auth.js", "auth.html"],
       "matches": [
         "http://localhost:3000/*",
-        "https://cryptojournal.app/*",
-        "https://*.cryptojournal.app/*"
+        "http://localhost:3001/*",
+        "https://cryptotradingjournal.xyz/*",
+        "https://www.cryptotradingjournal.xyz/*",
+        "https://*.cryptotradingjournal.xyz/*"
       ]
     }
   ],

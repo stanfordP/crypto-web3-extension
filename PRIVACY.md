@@ -2,7 +2,7 @@
 
 **Crypto Trading Journal Web3 Extension**
 
-*Last Updated: December 2024*
+*Last Updated: January 2026*
 
 ## Overview
 
@@ -102,8 +102,8 @@ We may update this privacy policy from time to time. Changes will be posted with
 
 If you have questions about this privacy policy or our data practices:
 
-- **Email:** privacy@cryptojournal.app
-- **Website:** https://cryptojournal.app/privacy
+- **Email:** privacy@cryptotradingjournal.xyz
+- **Website:** https://cryptotradingjournal.xyz
 
 ## Consent
 
@@ -124,8 +124,8 @@ By installing and using this extension, you consent to the data practices descri
 
 The extension only communicates with:
 - `http://localhost:3000` (development)
-- `https://cryptojournal.app` (production)
-- `https://*.cryptojournal.app` (subdomains)
+- `https://cryptotradingjournal.xyz` (production)
+- `https://*.cryptotradingjournal.xyz` (subdomains)
 
 ### Data Flow
 
