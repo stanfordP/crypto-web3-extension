@@ -1,6 +1,6 @@
 {
   "name": "crypto-web3-extension",
-  "version": "2.0.0",
+  "version": "2.2.1",
   "description": "Web3 authentication extension for Crypto Trading Journal",
   "engines": {
     "node": ">=20.0.0 <25.0.0"
@@ -14,8 +14,12 @@
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "test": "playwright test",
+    "test:e2e": "playwright test tests/auth-flow.test.ts",
+    "test:e2e:security": "playwright test tests/security-compat.test.ts",
+    "test:e2e:all": "playwright test tests/auth-flow.test.ts tests/security-compat.test.ts",
     "test:unit": "jest --config jest.config.js",
     "test:coverage": "jest --config jest.config.js --coverage",
+    "test:all": "npm run test:unit && npm run test:e2e:all",
     "generate-icons": "node scripts/generate-icons.js",
     "clean": "rm -rf dist",
     "prebuild": "npm run clean",
@@ -23,7 +27,9 @@
     "version:patch": "npm version patch && node scripts/sync-manifest-version.js",
     "version:minor": "npm version minor && node scripts/sync-manifest-version.js",
     "version:major": "npm version major && node scripts/sync-manifest-version.js",
-    "release": "npm run validate && npm run test:unit && npm run build:prod"
+    "release": "npm run validate && npm run test:unit && npm run build:prod",
+    "package": "node scripts/package-extension.js",
+    "release:full": "npm run release && npm run package"
   },
   "keywords": [
     "web3",

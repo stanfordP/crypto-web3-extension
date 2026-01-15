@@ -7,10 +7,12 @@ module.exports = {
   },
   roots: ['<rootDir>/src', '<rootDir>/tests'],
   testMatch: ['**/__tests__/**/*.test.ts', '**/tests/**/*.test.ts'],
-  // Exclude Playwright E2E test (run separately with: npx playwright test)
+  // Exclude Playwright E2E tests (run separately with: npm run test:e2e:all)
   testPathIgnorePatterns: [
     '/node_modules/',
     '<rootDir>/tests/extension.test.ts',
+    '<rootDir>/tests/auth-flow.test.ts',
+    '<rootDir>/tests/security-compat.test.ts',
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
@@ -23,8 +25,13 @@ module.exports = {
   ],
   coverageThreshold: {
     global: {
-      // NOTE: Coverage thresholds lowered temporarily. Goal is 50%+ for all metrics.
-      // Current coverage: Statements 24%, Branches 15%, Functions 26%, Lines 24%
+      // NOTE: Many core files (content.ts, popup.ts, auth.ts, background*.ts)
+      // have side effects when imported and require DOM mocking before import.
+      // Current achievable coverage without major refactoring: ~25%
+      // Files with good coverage: api.ts (95%), config.ts (79%), errors.ts (83%),
+      //                           logger.ts (69%), provider.ts (70%), siwe-utils.ts (79%)
+      // Files at 0%: Files with side effects that run on import
+      // Goal: Refactor side-effect files to improve testability
       branches: 10,
       functions: 20,
       lines: 20,

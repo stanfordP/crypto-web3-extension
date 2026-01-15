@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Crypto Trading Journal - Web3 Auth",
-  "version": "2.0.0",
+  "version": "2.2.1",
   "description": "Web3 wallet authentication for Crypto Trading Journal",
   "permissions": [
     "storage",

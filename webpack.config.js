@@ -41,10 +41,12 @@ module.exports = {
   mode: isProduction ? 'production' : 'development',
   devtool: isProduction ? false : 'cheap-module-source-map',
   entry: {
-    background: './src/scripts/background.ts',
-    content: './src/scripts/content.ts',
-    popup: './src/scripts/popup.ts',
-    auth: './src/scripts/auth.ts',
+    // New DI-based entry points (v2.2.0+)
+    background: './src/scripts/entry/background-entry.ts',
+    content: './src/scripts/entry/content-entry.ts',
+    popup: './src/scripts/entry/popup-entry.ts',
+    auth: './src/scripts/entry/auth-entry.ts',
+    // Legacy injected scripts (kept for compatibility)
     'injected-wallet': './src/scripts/injected-wallet.ts',
     'injected-auth': './src/scripts/injected-auth.ts',
   },
@@ -52,6 +54,9 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
     clean: true,
+    // Explicit publicPath prevents "Automatic publicPath is not supported" error
+    // Empty string works for browser extensions since scripts are loaded relatively
+    publicPath: '',
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
