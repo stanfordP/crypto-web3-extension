@@ -44,3 +44,4 @@ temp/
 # Chrome extension development
 *.crx
 *.pem
+.claude/\nnul\npackages/
