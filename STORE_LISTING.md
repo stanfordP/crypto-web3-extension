@@ -2,6 +2,10 @@
 
 Use this content when submitting to the Chrome Web Store.
 
+**Current Version:** 2.2.1  
+**Last Updated:** January 4, 2026  
+**Status:** Pending Chrome Web Store Approval
+
 ---
 
 ## Extension Name
@@ -12,6 +16,36 @@ Use this content when submitting to the Chrome Web Store.
 ## Short Description (132 characters max)
 ```
 Secure Web3 wallet authentication for Crypto Trading Journal. Sign in with Ethereum using MetaMask, Brave, or any EIP-1193 wallet.
+```
+
+---
+
+## What's New in v2.2.1
+
+```
+🛠️ STABILITY & TESTING UPDATE
+
+• Improved test coverage documentation
+• Enhanced error recovery flows
+• Updated wallet compatibility matrix
+• Added rate limiting documentation
+• Refined security recommendations
+• Code quality improvements
+```
+
+---
+
+## What's New in v2.2.0
+
+```
+🚀 MAJOR ARCHITECTURE UPDATE
+
+• Improved stability and reliability
+• Enhanced wallet detection (EIP-6963 support)
+• Better session synchronization across tabs
+• Reduced extension size
+• Improved error handling and recovery
+• Enhanced security extension compatibility (Pocket Universe, Wallet Guard, etc.)
 ```
 
 ---
@@ -147,7 +181,7 @@ This extension provides Web3 wallet authentication for the Crypto Trading Journa
 
 ## Privacy Policy URL
 ```
-https://[your-github-username].github.io/crypto-web3-extension/
+https://stanfordp.github.io/crypto-web3-extension/
 ```
 (After enabling GitHub Pages on the `docs` folder)
 

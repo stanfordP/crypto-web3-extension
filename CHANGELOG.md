@@ -5,6 +5,172 @@ All notable changes to the Crypto Trading Journal Web3 Extension will be documen
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2026-01-04 (Pending Chrome Web Store Approval)
+
+### Added
+- Comprehensive test coverage documentation with targets
+- Wallet compatibility matrix (MetaMask, Rabby, Brave, Phantom tested)
+- Security extension compatibility documentation (Pocket Universe, Wallet Guard)
+- Rate limiting documentation (token bucket algorithm)
+- Error recovery flow documentation
+- Operational considerations section (logging, updates, sessions)
+
+### Changed
+- Updated README with v2.2.1 architecture references
+- Updated Key Components table to reference entry points and controllers
+- Clarified deprecated file migration paths
+- Added coverage gap priorities (P0: AuthView, Entry points; P1: ContentController)
+
+### Documentation
+- Added coverage targets: Statements 70%+, Branches 60%+
+- Prioritized remaining work with effort estimates
+- Added security enhancement recommendations
+- Updated STORE_LISTING.md with v2.2.1 release notes
+
+### Known Issues (To Address Post-Approval)
+- AuthView.ts: 0% test coverage (P0)
+- Entry points: 0% test coverage (P0)
+- ContentController branch coverage: 30.46% (P1)
+- Coinbase Wallet: Untested (P2)
+
+---
+
+## [2.2.0] - 2026-01-03
+
+### Added
+
+#### Dependency Injection Architecture (Complete Refactoring)
+
+**Phase 1: DI Foundation**
+- **Adapter Interfaces** (`adapters/types.ts`)
+  - `IStorageAdapter` - Chrome storage abstraction (local, session, sync)
+  - `IRuntimeAdapter` - Message passing and runtime APIs
+  - `ITabsAdapter` - Tab management abstraction
+  - `IDOMAdapter` - DOM manipulation abstraction
+  - `IAlarmsAdapter` - Chrome alarms abstraction
+- **Production Adapters** (`adapters/`)
+  - `ChromeStorageAdapter` - Real chrome.storage implementation
+  - `ChromeRuntimeAdapter` - Real chrome.runtime implementation
+  - `ChromeTabsAdapter` - Real chrome.tabs implementation
+  - `ChromeAlarmsAdapter` - Real chrome.alarms implementation
+  - `BrowserDOMAdapter` - Real DOM implementation
+- **DI Container** (`core/Container.ts`)
+  - `getContainer()` - Production adapter factory
+  - `createMockStorageAdapter()` - Testing mock
+  - `createMockRuntimeAdapter()` - Testing mock
+  - `createMockDOMAdapter()` - Testing mock
+
+**Phase 2: Controller Extractions**
+- **PopupController** (`ui/popup/PopupController.ts`)
+  - Session state management
+  - Connection/disconnection flow
+  - App navigation
+  - Offline detection
+- **PopupView** (`ui/popup/PopupView.ts`)
+  - DOM manipulation only
+  - No business logic
+  - Event delegation to controller
+- **ContentController** (`ui/content/ContentController.ts`)
+  - CJ_* message routing
+  - Service worker health checks
+  - Rate limiting
+  - Session synchronization
+- **BackgroundController** (`ui/background/BackgroundController.ts`)
+  - Session management
+  - Origin validation
+  - Auth tab management
+
+**Phase 3: Auth Controller Extraction**
+- **AuthController** (`ui/auth/AuthController.ts`)
+  - Wallet detection (EIP-6963 + legacy)
+  - SIWE authentication flow
+  - Multi-step progress management
+  - Session storage
+- **AuthView** (`ui/auth/AuthView.ts`)
+  - DOM manipulation only
+  - Step progress UI
+  - Error/success displays
+
+**Phase 4: Webpack Integration**
+- **New Entry Points** (`entry/`)
+  - `background-entry.ts` → BackgroundController
+  - `content-entry.ts` → ContentController
+  - `popup-entry.ts` → PopupController + PopupView
+  - `auth-entry.ts` → AuthController + AuthView
+- **Legacy Deprecation**
+  - Old entry points (`content.ts`, `popup.ts`, `auth.ts`, `background.ts`) marked deprecated
+  - Will be removed in v3.0.0
+
+**Phase 5: Services Layer**
+- **InjectionService** (`services/InjectionService.ts`)
+  - Wallet script injection
+  - Message handler registration
+  - Retry logic with exponential backoff
+- **AuthApiClient** (`services/AuthApiClient.ts`)
+  - SIWE challenge/verify API calls
+  - Session validation
+
+#### New Test Coverage (1015 Tests Total)
+- `adapter-integration.test.ts` - 45 tests for adapter layer
+- `popup-controller.test.ts` - 48 tests for popup logic
+- `content-controller.test.ts` - 62 tests for content script
+- `background-controller.test.ts` - 51 tests for background
+- `auth-controller.test.ts` - 39 tests for auth flow
+- `injection-service.test.ts` - 35 tests for wallet injection
+- `mock-factories.test.ts` - 28 tests for test utilities
+- `message-router.test.ts` - 32 tests for message routing
+- `session-manager.test.ts` - 27 tests for session logic
+
+### Changed
+
+#### Test Statistics
+- **Total Tests**: 1015 (up from 532)
+- **Statement Coverage**: 45% (up from 23%)
+- **Branch Coverage**: 37% (up from 16%)
+- **Test Suites**: 39 (up from 21)
+
+#### Architecture
+- All business logic extracted to testable controllers
+- Pure DOM manipulation in View classes
+- Adapters enable 100% unit test coverage without browser
+- Entry points are thin shells (<100 lines)
+
+### Deprecated
+- `content.ts` → Use `entry/content-entry.ts`
+- `popup.ts` → Use `entry/popup-entry.ts`
+- `auth.ts` → Use `entry/auth-entry.ts`
+- `background.ts` → Use `entry/background-entry.ts`
+- `background-main.ts` → Logic moved to BackgroundController
+
+---
+
+## [2.1.0] - 2026-01-02
+
+### Added
+
+#### Session Synchronization Fixes
+- **API-based session verification** in `popup.ts`
+  - New `tryVerifySessionFromAPI()` function checks main app's session cookie
+  - Fallback when `chrome.storage.session` is cleared on browser restart
+- **Content script session fallback** in `content.ts`
+  - `handlePopupGetSession()` now queries `/api/auth/session` when storage is empty
+  - Syncs extension state with main app's HTTP cookie session
+
+#### New Test Coverage
+- `session-sync.test.ts` - 27 tests for session synchronization
+- `service-worker.test.ts` - 30 tests for SW lifecycle management
+- `logger-config.test.ts` - 15 tests for logging system
+- `rate-limiting.test.ts` - 21 tests for rate limiter and request tracker
+
+### Changed
+
+#### Test Statistics
+- **Total Tests**: 532 (up from ~505)
+- **Statement Coverage**: 23% (baseline for refactoring)
+- **Files at 95%+ coverage**: api.ts, errors.ts, config.ts, siwe-utils.ts
+
+---
+
 ## [1.1.0] - 2024-12-29
 
 ### Added

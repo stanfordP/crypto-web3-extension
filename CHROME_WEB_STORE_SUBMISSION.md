@@ -26,20 +26,34 @@
 - [x] Color contrast meets WCAG AA
 - [x] Reduced motion support
 
-### 🔲 Assets Required
-- [ ] Extension icon 128x128 PNG
-- [ ] Extension icon 48x48 PNG  
-- [ ] Extension icon 16x16 PNG
-- [ ] Store icon 128x128 PNG
-- [ ] Promotional tile 440x280 PNG
-- [ ] Screenshot 1280x800 (at least 1)
+### ✅ Assets Required
+- [x] Extension icon 128x128 PNG
+- [x] Extension icon 48x48 PNG  
+- [x] Extension icon 16x16 PNG
+- [x] Store icon 128x128 PNG
+- [ ] Promotional tile 440x280 PNG (optional)
+- [x] Screenshots captured (see below)
 - [ ] Optional: Promotional video (YouTube)
 
-### 🔲 Documentation Required
-- [ ] Privacy Policy URL (publicly accessible)
-- [ ] Support website/email
-- [ ] Store description (detailed)
-- [ ] Short description (132 chars max)
+### 📸 Screenshots Ready for Upload
+Located in `c:\Users\stanf\Documents\`:
+
+| # | File | Description | Store Use |
+|---|------|-------------|-----------|
+| 1 | `Main app login page.png` | Login page with "Connect Wallet" | Hero screenshot |
+| 2 | `connect wallet prompt 1.png` | Wallet selection dialog | Connection flow |
+| 3 | `connect wallet prompt 2.png` | Wallet connection approval | Connection flow |
+| 4 | `wallet prompt signature part 1.png` | SIWE message preview | Signing flow |
+| 5 | `wallet prompt signature part2.png` | Signature confirmation | Signing flow |
+| 6 | `Wallet extension connected.png` | Extension popup - connected | Final state |
+
+**Note**: Resize to 1280x800 before uploading to Chrome Web Store.
+
+### ✅ Documentation Required
+- [x] Privacy Policy URL: https://stanfordp.github.io/crypto-web3-extension/
+- [x] Support website: https://cryptotradingjournal.xyz
+- [x] Store description (detailed) - see STORE_LISTING.md
+- [x] Short description (132 chars max) - see STORE_LISTING.md
 
 ---
 
@@ -133,11 +147,18 @@ English
 - Size: 1280x800 or 640x400
 - Format: PNG or JPEG
 
-**Recommended screenshots:**
-1. Wallet connection prompt
-2. Signing authentication message
-3. Successful login state
-4. Extension popup UI
+**Your captured screenshots** (in `c:\Users\stanf\Documents\`):
+
+| Order | Screenshot | What it shows |
+|-------|------------|---------------|
+| 1 | `Main app login page.png` | The main app with "Connect Wallet" button |
+| 2 | `connect wallet prompt 1.png` | Wallet selection (Rabby/MetaMask choice) |
+| 3 | `connect wallet prompt 2.png` | Wallet requesting to connect |
+| 4 | `wallet prompt signature part 1.png` | SIWE message being signed |
+| 5 | `wallet prompt signature part2.png` | Signature confirmation |
+| 6 | `Wallet extension connected.png` | Extension popup showing ACTIVE session |
+
+**Recommended order for store**: 1 → 6 → 2 → 4 (show end result early)
 
 ### Promotional Images
 
@@ -150,11 +171,10 @@ English
 
 ## Privacy Policy
 
-Your privacy policy must be publicly accessible. Here's a template URL structure:
+Your privacy policy is hosted at:
+**https://stanfordp.github.io/crypto-web3-extension/**
 
-**Recommended**: `https://cryptotradingjournal.xyz/privacy` or `/extension-privacy`
-
-The [PRIVACY.md](./PRIVACY.md) file in this repository contains the full privacy policy content. Convert it to a hosted web page.
+The [PRIVACY.md](./PRIVACY.md) file in this repository contains the source content.
 
 ---
 
@@ -175,6 +195,16 @@ The [PRIVACY.md](./PRIVACY.md) file in this repository contains the full privacy
 
 ## Building the Submission Package
 
+### Quick Method (Recommended)
+```bash
+# Full release: validate, test, build, and package
+npm run release:full
+```
+
+This creates a ready-to-upload .zip file in the `packages/` folder.
+
+### Manual Method
+
 ### 1. Clean Build
 ```bash
 # Ensure clean state
@@ -187,13 +217,13 @@ npm run build:prod
 
 ### 2. Create ZIP Package
 ```bash
-# Package the dist folder
-cd dist
-zip -r ../crypto-web3-extension-v2.0.0.zip .
-cd ..
+# Use the package script
+npm run package
 ```
 
-**Or on Windows PowerShell:**
+The package will be created at `packages/crypto-trading-journal-web3-v{version}-{date}.zip`
+
+**Or manually on Windows PowerShell:**
 ```powershell
 Compress-Archive -Path dist\* -DestinationPath crypto-web3-extension-v2.0.0.zip
 ```

@@ -1,20 +1,83 @@
-# Claude Code Context: Crypto Web3 Extension
+# Claude Code Context: CTJ Web3 Extension
 
 ## Project Overview
 
-This is a Manifest V3 Chrome browser extension that provides custom Web3 authentication for the Crypto Trading Journal application. The extension uses an **Extension-First Auth Flow** with **Injected Script Architecture** for wallet interactions.
+This is a Manifest V3 Chrome browser extension that provides custom Web3 authentication for **CTJ (Crypto Trading Journal)**. The extension uses an **Extension-First Auth Flow** with **Injected Script Architecture** for wallet interactions.
+
+> **Note:** The main application is branded as **CTJ**. Always use \"CTJ\" in documentation and code comments.
 
 **Key Technologies:**
 - TypeScript (strict mode)
 - Webpack 5 for bundling
 - Chrome Extension APIs (Manifest V3)
-- Jest for unit testing
+- Jest for unit testing (1015 tests)
 - Playwright for E2E testing
 
 **Supported Browsers:** Chrome, Brave, Edge, Opera (all Chromium-based)
 
-**Version:** 2.0.0
-**Last Updated:** December 29, 2025
+**Version:** 2.2.1 (manifest) / 2.2.0 (package.json - sync needed)
+**Last Updated:** January 14, 2026
+**Status:** Pending Chrome Web Store approval
+
+---
+
+## 📊 Current Project Status (January 14, 2026)
+
+### ✅ What's Working
+| Component | Status | Notes |
+|-----------|--------|-------|
+| **Build System** | ✅ Working | Webpack 5 production build compiles successfully |
+| **TypeScript** | ✅ Clean | `tsc --noEmit` passes with no errors |
+| **Unit Tests** | ✅ Passing | All 1015 tests in 39 suites pass |
+| **DI Architecture** | ✅ Complete | Entry points, Controllers, Adapters all implemented |
+| **Core Logic** | ✅ Extracted | AuthStateMachine, SessionManager, SiweFlow, MessageRouter |
+| **Adapters** | ✅ Complete | Chrome Storage, Runtime, Tabs, Alarms, DOM adapters |
+| **Controllers** | ✅ Complete | Background, Content, Popup, Auth controllers |
+
+### ⚠️ Coverage Gaps Remaining
+| Component | Statements | Branches | Priority | Status |
+|-----------|------------|----------|----------|--------|
+| **AuthView.ts** | 0% | 0% | 🔴 P0 | Needs tests |
+| **Entry points** (4 files) | 0% | 0% | 🔴 P0 | Needs tests |
+| **rate-limiter.ts** | 0% | 0% | 🟡 P1 | Needs tests |
+| **sw-keepalive.ts** | 0% | 0% | 🟡 P1 | Needs tests |
+| **sw-state.ts** | 0% | 0% | 🟡 P1 | Needs tests |
+| **popup.ts** (deprecated) | 0% | 0% | 🟢 Low | Can delete |
+| **ContentController** | 54.88% | 30.46% | 🟡 P1 | Needs improvement |
+
+### 🗑️ Deprecated Files (Can Be Deleted)
+These legacy files are NOT bundled (webpack uses `entry/` files) and should be removed:
+- `src/scripts/popup.ts` → replaced by `PopupController` + `PopupView`
+- `src/scripts/auth.ts` → replaced by `AuthController` + `AuthView`
+- `src/scripts/content.ts` → replaced by `ContentController`
+- `src/scripts/background.ts` → replaced by `BackgroundController`
+- `src/scripts/background-main.ts` → merged into `BackgroundController`
+- `src/scripts/auth-state-machine.ts` → replaced by `core/auth/AuthStateMachine.ts`
+
+### 📈 Test Coverage Summary (v2.2.0)
+| Metric | Value | Target | Gap |
+|--------|-------|--------|-----|
+| Unit Tests | 1015 | - | ✅ |
+| Test Suites | 39 | - | ✅ |
+| Statement Coverage | 44.31% (1846/4166) | 70%+ | -25.69% |
+| Branch Coverage | 36.51% (536/1468) | 60%+ | -23.49% |
+| Function Coverage | 48.65% (434/892) | 70%+ | -21.35% |
+| Line Coverage | 44.79% (1808/4036) | 70%+ | -25.21% |
+
+### 🎯 Next Steps (Priority Order)
+1. **🔴 P0**: Add tests for `AuthView.ts` (0% → 80%) - ~4h effort
+2. **🔴 P0**: Add tests for entry points (4 files at 0%) - ~3h effort  
+3. **🟡 P1**: Add tests for `rate-limiter.ts` (security code) - ~2h effort
+4. **🟡 P1**: Improve `ContentController` branch coverage (30% → 60%) - ~6h effort
+5. **🟢 P2**: Delete deprecated legacy files - ~1h effort
+6. **🟢 P2**: Sync package.json version (2.2.0 → 2.2.1) - ~5min
+
+### ℹ️ Version Sync Issue
+- `manifest.json`: version "2.2.1"
+- `package.json`: version "2.2.0"
+- **Action**: Run `npm run version:patch` or manually sync
+
+---
 
 ---
 
@@ -150,7 +213,7 @@ POPUP (popup.ts / popup.html)
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Structure (v2.2.0+ DI Architecture)
 
 ```
 crypto-web3-extension/
@@ -162,27 +225,63 @@ crypto-web3-extension/
 ├── playwright.config.ts       # E2E test config
 │
 ├── src/
-│   ├── auth.html              # Auth page (legacy, kept for compatibility)
+│   ├── auth.html              # Auth page UI
 │   ├── popup.html             # Extension popup UI
 │   │
 │   ├── scripts/
-│   │   ├── content.ts         # Content script - CJ_* message handler
-│   │   ├── injected-auth.ts   # Injected script - wallet interactions
-│   │   ├── background.ts      # Service worker bootstrap
-│   │   ├── background-main.ts # Main background logic
-│   │   ├── popup.ts           # Popup UI logic
-│   │   ├── auth.ts            # Auth page logic (legacy)
 │   │   │
-│   │   ├── api.ts             # API client
+│   │   ├── entry/             # 🆕 ACTIVE ENTRY POINTS (v2.2.0+)
+│   │   │   ├── background-entry.ts  # → BackgroundController
+│   │   │   ├── content-entry.ts     # → ContentController
+│   │   │   ├── popup-entry.ts       # → PopupController + PopupView
+│   │   │   └── auth-entry.ts        # → AuthController + AuthView
+│   │   │
+│   │   ├── ui/                # 🆕 CONTROLLERS & VIEWS
+│   │   │   ├── background/
+│   │   │   │   ├── BackgroundController.ts  # Session, origin validation
+│   │   │   │   └── index.ts
+│   │   │   ├── content/
+│   │   │   │   ├── ContentController.ts     # Message routing, health checks
+│   │   │   │   └── index.ts
+│   │   │   ├── popup/
+│   │   │   │   ├── PopupController.ts       # Session state, navigation
+│   │   │   │   ├── PopupView.ts             # DOM manipulation only
+│   │   │   │   └── index.ts
+│   │   │   └── auth/
+│   │   │       ├── AuthController.ts        # Wallet detection, SIWE flow
+│   │   │       ├── AuthView.ts              # DOM manipulation only
+│   │   │       └── index.ts
+│   │   │
+│   │   ├── adapters/          # 🆕 BROWSER API ABSTRACTIONS
+│   │   │   ├── types.ts             # Interface definitions
+│   │   │   ├── ChromeStorageAdapter.ts
+│   │   │   ├── ChromeRuntimeAdapter.ts
+│   │   │   ├── ChromeTabsAdapter.ts
+│   │   │   ├── ChromeAlarmsAdapter.ts
+│   │   │   └── BrowserDOMAdapter.ts
+│   │   │
+│   │   ├── core/              # 🆕 DI CONTAINER
+│   │   │   └── Container.ts   # getContainer() + mock factories
+│   │   │
+│   │   ├── services/          # 🆕 SHARED SERVICES
+│   │   │   ├── InjectionService.ts  # Wallet script injection
+│   │   │   ├── AuthApiClient.ts     # SIWE API calls
+│   │   │   └── index.ts
+│   │   │
+│   │   ├── injected-auth.ts   # Injected script - wallet interactions
+│   │   ├── api.ts             # API client (fetch wrapper)
 │   │   ├── config.ts          # Configuration (URLs, origins)
 │   │   ├── types.ts           # TypeScript interfaces
 │   │   ├── errors.ts          # Error handling
 │   │   ├── logger.ts          # Logging utilities
 │   │   │
-│   │   ├── sw-state.ts        # Service worker state management
-│   │   ├── sw-keepalive.ts    # Keep-alive system
+│   │   ├── [DEPRECATED] content.ts       # → Use entry/content-entry.ts
+│   │   ├── [DEPRECATED] popup.ts         # → Use entry/popup-entry.ts
+│   │   ├── [DEPRECATED] auth.ts          # → Use entry/auth-entry.ts
+│   │   ├── [DEPRECATED] background.ts    # → Use entry/background-entry.ts
+│   │   ├── [DEPRECATED] background-main.ts
 │   │   │
-│   │   └── __tests__/         # Unit tests
+│   │   └── __tests__/         # Unit tests (1015 tests)
 │   │
 │   ├── styles/
 │   │   ├── auth.css           # Auth page styles
@@ -191,8 +290,78 @@ crypto-web3-extension/
 │   └── icons/                 # Extension icons
 │
 ├── dist/                      # Built extension (load this in browser)
+├── packages/                  # Release zip files
 ├── coverage/                  # Test coverage reports
 └── test-ground/               # Manual testing environment
+```
+
+---
+
+## 🏛️ Dependency Injection Architecture (v2.2.0)
+
+### Overview
+
+The extension uses dependency injection for testability and separation of concerns:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        Entry Points (Thin Shells)                   │
+│   background-entry.ts  content-entry.ts  popup-entry.ts  auth-entry │
+└───────────────────────────────┬─────────────────────────────────────┘
+                                │ Wire up dependencies
+                                ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                         Controllers (Business Logic)                │
+│  BackgroundController  ContentController  PopupController  Auth...  │
+└───────────────────────────────┬─────────────────────────────────────┘
+                                │ Use adapters
+                                ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                         Adapters (Browser API Abstractions)         │
+│  IStorageAdapter  IRuntimeAdapter  ITabsAdapter  IDOMAdapter        │
+└───────────────────────────────┬─────────────────────────────────────┘
+                                │
+          ┌─────────────────────┴─────────────────────┐
+          ▼                                           ▼
+┌──────────────────────┐                 ┌──────────────────────┐
+│   Chrome Adapters    │                 │    Mock Adapters     │
+│  (Production)        │                 │    (Testing)         │
+│  ChromeStorageAdapter│                 │  createMockStorage() │
+│  ChromeRuntimeAdapter│                 │  createMockRuntime() │
+└──────────────────────┘                 └──────────────────────┘
+```
+
+### Container Usage
+
+```typescript
+// Production: Get real Chrome adapters
+import { getContainer } from './core/Container';
+const container = getContainer();
+
+// Testing: Get mock adapters
+import { createMockStorageAdapter, createMockRuntimeAdapter } from './core/Container';
+const mockStorage = createMockStorageAdapter();
+```
+
+### Controller Pattern
+
+Controllers encapsulate business logic, Views handle DOM only:
+
+```typescript
+// PopupController - business logic
+class PopupController {
+  constructor(deps: { storage, runtime, tabs }) { ... }
+  async checkSession(): Promise<void> { ... }
+  async connect(): Promise<void> { ... }
+  async disconnect(): Promise<void> { ... }
+}
+
+// PopupView - DOM manipulation only
+class PopupView {
+  constructor(dom: IDOMAdapter) { ... }
+  showView(state: 'loading' | 'connected' | 'notConnected'): void { ... }
+  updateSessionDisplay(session: SessionData): void { ... }
+}
 ```
 
 ---
@@ -379,9 +548,78 @@ POST /api/auth/siwe/verify
 ```javascript
 "http://localhost:3000/*",
 "http://localhost:3001/*",
-"https://cryptojournal.app/*",
-"https://*.cryptojournal.app/*"
+"https://cryptotradingjournal.xyz/*",
+"https://www.cryptotradingjournal.xyz/*",
+"https://*.cryptotradingjournal.xyz/*"
 ```
+
+### Rate Limiting (Implemented)
+Token bucket algorithm prevents message spam from malicious pages:
+```typescript
+// content.ts - Token bucket rate limiter
+const rateLimiter = {
+  tokens: 20,        // Start with 20 tokens
+  maxTokens: 20,     // Max 20 tokens
+  refillRate: 5,     // Refill 5 tokens per second
+};
+```
+
+### Security Enhancements (Recommended)
+
+| Gap | Risk | Recommendation |
+|-----|------|----------------|
+| Session validation timing | Side-channel attacks | Constant-time token comparison |
+| No CSP documentation | XSS in popup/auth pages | Document Content Security Policy |
+| SIWE challenge expiration | Replay attacks | Enforce server-side nonce expiry |
+
+---
+
+## 🔌 Wallet Compatibility
+
+### Tested Wallets
+
+| Wallet | Status | Notes |
+|--------|--------|-------|
+| MetaMask | ✅ Tested | Primary development wallet |
+| Rabby | ✅ Tested | Full compatibility |
+| Brave Wallet | ✅ Tested | Built-in browser wallet |
+| Phantom | ✅ Tested | EVM mode only |
+| Coinbase Wallet | ⚠️ Untested | Needs verification |
+| WalletConnect | ❌ Not supported | Consider for future |
+| Hardware (Ledger/Trezor) | ⚠️ Via MetaMask | Test MetaMask+Ledger combo |
+
+### Security Extensions Compatibility
+
+| Extension | Status | Notes |
+|-----------|--------|-------|
+| Pocket Universe | ✅ Compatible | Intercepts signatures seamlessly |
+| Wallet Guard | ✅ Compatible | Works as expected |
+| Fire | ⚠️ Untested | May need testing |
+
+---
+
+## 📊 Operational Considerations
+
+### Error Recovery (Documented Flows)
+
+| Error | Recovery Action |
+|-------|-----------------|
+| `USER_REJECTED (4001)` | Show "Cancelled" message, allow retry |
+| `NO_WALLET (5001)` | Show wallet installation link |
+| `WALLET_CONNECTION_FAILED (5002)` | Suggest page refresh or wallet reconnect |
+| `REQUEST_TIMEOUT (5006)` | Auto-retry with exponential backoff |
+| `ALREADY_IN_PROGRESS (5007)` | Wait for existing flow to complete |
+| Service worker restart | PING/PONG health checks, auto-reconnect |
+
+### Logging Strategy
+- Development: Console logging with prefixes `[content]`, `[background]`, `[popup]`
+- Production: Error-level only via `logger.ts`
+- No PII or wallet addresses in logs
+
+### Extension Update Handling
+- Active sessions survive extension updates
+- Sessions stored in `chrome.storage.local` (persisted)
+- Extension reinstall clears sessions (expected)
 
 ---
 
@@ -521,11 +759,256 @@ Account mode (Live/Demo) is **NOT stored or managed by the extension**.
 - ✅ Rabby Wallet
 - ✅ Brave Wallet
 - ✅ Phantom (EVM mode)
+- ⚠️ Coinbase Wallet (untested)
+- ❌ WalletConnect (not supported - future consideration)
 
 ### Security Extensions
 - ✅ Pocket Universe
 - ✅ Wallet Guard
-- ✅ Fire
+- ✅ Fire (untested but expected compatible)
 
 ### Networks
 - Ethereum, Polygon, Arbitrum, Optimism, Base, BNB Chain
+
+---
+
+## 🔄 V2.2 Refactoring Architecture (COMPLETE)
+
+### Migration Status: ✅ ACTIVE
+
+The v2.2 DI architecture is **now the active production code**. Webpack entry points use the new `entry/` files:
+
+| Entry | Source | Controller |
+|-------|--------|------------|
+| `background.js` | `entry/background-entry.ts` | `BackgroundController` |
+| `content.js` | `entry/content-entry.ts` | `ContentController` |
+| `popup.js` | `entry/popup-entry.ts` | `PopupController + PopupView` |
+| `auth.js` | `entry/auth-entry.ts` | `AuthController + AuthView` |
+
+### Well-Covered Components (Good Progress)
+
+| Component | Statement % | Branch % | Notes |
+|-----------|-------------|----------|-------|
+| `ChromeAlarmsAdapter.ts` | 100% | 100% | ✅ Fully tested |
+| `ChromeTabsAdapter.ts` | 100% | 100% | ✅ Fully tested |
+| `DOMAdapter.ts` | 95.65% | 100% | ✅ Excellent |
+| `SessionManager.ts` | 91.58% | 96.49% | ✅ Excellent |
+| `ChromeRuntimeAdapter.ts` | 90.62% | 84.61% | ✅ Good |
+| `SiweFlow.ts` | 85.6% | 77.77% | ✅ Good |
+| `InjectionService.ts` | 84.84% | 57.14% | 🟡 Branches need work |
+| `Container.ts` | 84.87% | 75% | ✅ Good |
+| `MessageRouter.ts` | 83.15% | 66.66% | ✅ Good |
+| `AuthStateMachine.ts` | 82.08% | 72.54% | ✅ Good |
+| `PopupView.ts` | 82.27% | 62.79% | ✅ Good |
+| `AuthController.ts` | 77.77% | 59.09% | 🟡 Branches need work |
+| `siwe-utils.ts` | 79.74% | 54.34% | 🟡 Branches need work |
+| `StorageService.ts` | 77.96% | 94.44% | ✅ Good |
+
+### Coverage Improvement
+
+| Metric | Before (v2.1) | After (v2.2) | Target |
+|--------|---------------|--------------|--------|
+| Statement Coverage | 23% | **44%** | 70%+ |
+| Branch Coverage | 16% | **37%** | 60%+ |
+| Unit Tests | 532 | **1015** | - |
+
+### Legacy Files (NOT BUNDLED)
+
+These files remain in the codebase for reference but are **not included in builds**:
+
+| File | Status | Replacement |
+|------|--------|-------------|
+| `content.ts` | Deprecated | `ContentController.ts` |
+| `popup.ts` | Deprecated | `PopupController.ts` + `PopupView.ts` |
+| `auth.ts` | Deprecated | `AuthController.ts` + `AuthView.ts` |
+| `background.ts` | Deprecated | `BackgroundController.ts` |
+| `background-main.ts` | Deprecated | `BackgroundController.ts` |
+| `auth-state-machine.ts` | Deprecated | `core/auth/AuthStateMachine.ts` |
+
+### Target Architecture
+
+```
+src/scripts/
+├── core/                          # Pure logic (100% testable)
+│   ├── session/
+│   │   ├── SessionManager.ts      # Session state logic
+│   │   └── SessionValidator.ts    # Validation rules
+│   ├── auth/
+│   │   ├── AuthStateMachine.ts    # Pure state transitions
+│   │   ├── SiweFlow.ts            # SIWE message handling
+│   │   └── AuthEvents.ts          # Event type definitions
+│   ├── messaging/
+│   │   ├── MessageRouter.ts       # Route CJ_* messages
+│   │   ├── MessageHandlers.ts     # Handler implementations
+│   │   └── MessageTypes.ts        # Type definitions
+│   └── storage/
+│       ├── StorageService.ts      # Abstract storage operations
+│       └── StorageKeys.ts         # Key constants
+│
+├── adapters/                      # Browser API wrappers (mockable)
+│   ├── ChromeStorageAdapter.ts    # chrome.storage wrapper
+│   ├── ChromeRuntimeAdapter.ts    # chrome.runtime wrapper
+│   ├── ChromeTabsAdapter.ts       # chrome.tabs wrapper
+│   └── DOMAdapter.ts              # document/window wrapper
+│
+├── ui/                            # UI layer (thin shells)
+│   ├── popup/
+│   │   ├── PopupController.ts     # Orchestrates popup logic
+│   │   ├── PopupView.ts           # DOM manipulation only
+│   │   └── popup-entry.ts         # Entry point (side effects)
+│   └── auth/
+│       ├── AuthController.ts      # Orchestrates auth flow
+│       ├── AuthView.ts            # DOM manipulation only
+│       └── auth-entry.ts          # Entry point (side effects)
+│
+├── workers/                       # Background scripts
+│   ├── BackgroundController.ts    # Main orchestrator
+│   ├── AlarmService.ts            # Alarm management
+│   └── background-entry.ts        # Entry point (side effects)
+│
+└── content/                       # Content script
+    ├── ContentController.ts       # Message handling logic
+    ├── InjectionService.ts        # Script injection logic
+    └── content-entry.ts           # Entry point (side effects)
+```
+
+### Key Design Patterns
+
+#### 1. Dependency Injection Container
+```typescript
+// core/Container.ts
+interface Dependencies {
+  storage: StorageAdapter;
+  runtime: RuntimeAdapter;
+  tabs: TabsAdapter;
+  dom?: DOMAdapter;
+}
+
+// In tests: provide mock dependencies
+// In production: provide real Chrome adapters
+```
+
+#### 2. Pure State Machine
+```typescript
+// core/auth/AuthStateMachine.ts
+type AuthState = 'idle' | 'connecting' | 'signing' | 'verifying' | 'connected' | 'error';
+type AuthEvent = { type: 'CONNECT' } | { type: 'SIGN_REQUEST', message: string } | ...;
+
+// Pure function - no side effects
+function transition(state: AuthState, event: AuthEvent): { 
+  newState: AuthState; 
+  effects: Effect[];  // Effects to execute
+}
+```
+
+#### 3. Command Pattern for Messages
+```typescript
+// core/messaging/MessageRouter.ts
+class MessageRouter {
+  private handlers: Map<string, MessageHandler>;
+  
+  // Pure routing logic - returns handler, doesn't execute
+  route(message: PageMessage): MessageHandler | null;
+  
+  // Separate execution from routing
+  async execute(handler: MessageHandler, message: PageMessage): Promise<Response>;
+}
+```
+
+---
+
+## 📅 V2.2 Implementation Phases
+
+### Phase 0: Integration Test Baseline (Before Refactoring)
+| Task | Effort | Purpose |
+|------|--------|--------|
+| Expand Playwright E2E tests | 8h | Catch regressions during refactoring |
+| Document all current behaviors | 4h | Define acceptance criteria |
+| Set up CI coverage tracking | 2h | Monitor progress |
+
+### Phase 1: Foundation (Week 1) - Low Risk
+| Task | Effort | Impact |
+|------|--------|--------|
+| Create adapter interfaces | 4h | Enables mocking |
+| Extract `StorageService` from scattered code | 4h | +5% coverage |
+| Extract `MessageRouter` from content.ts | 6h | +8% coverage |
+| Create shared test utilities | 2h | Faster test writing |
+
+### Phase 2: Core Logic Extraction (Week 2) - Medium Risk
+| Task | Effort | Impact |
+|------|--------|--------|
+| Extract `AuthStateMachine` as pure functions | 8h | +12% coverage |
+| Extract `SessionManager` logic | 6h | +8% coverage |
+| Refactor `SiweFlow` to pure logic | 4h | +5% coverage |
+| Add tests for extracted modules | 8h | Validates extraction |
+
+### Phase 3: Controller Layer (Week 3) - Medium Risk
+| Task | Effort | Impact |
+|------|--------|--------|
+| Create `PopupController` with injected deps | 6h | +10% coverage |
+| Create `ContentController` | 6h | +15% coverage |
+| Create `BackgroundController` | 6h | +8% coverage |
+| Convert entry points to thin shells | 4h | Minimal logic in shells |
+
+### Phase 4: UI Separation (Week 4) - Higher Risk
+| Task | Effort | Impact |
+|------|--------|--------|
+| Extract `PopupView` (DOM-only) | 4h | Clean separation |
+| Extract `AuthView` (DOM-only) | 4h | Clean separation |
+| Integration tests for full flows | 8h | End-to-end verification |
+| Update documentation | 4h | Maintainability |
+
+### Implementation Status
+
+| Phase | Focus | Status |
+|-------|-------|--------|
+| Phase 0 | E2E test baseline | ✅ Complete |
+| Phase 1 | Foundation & adapters | ✅ Complete |
+| Phase 2 | Core logic extraction | ✅ Complete |
+| Phase 3 | Controller layer | ✅ Complete |
+| Phase 4 | UI separation | ⏳ Partial (AuthView at 0% coverage) |
+
+### Remaining Work (Prioritized) - Updated January 14, 2026
+
+| Priority | Task | Impact | Effort | Status |
+|----------|------|--------|--------|--------|
+| 🔴 P0 | Add tests for `AuthView.ts` (0% → 80%) | +2.5% overall coverage | 4h | 🔲 Not Started |
+| 🔴 P0 | Add tests for entry points (0% → 70%) | +2.9% overall coverage | 3h | 🔲 Not Started |
+| 🔴 P0 | Increase `ContentController` branch coverage (30% → 60%) | +3% branch coverage | 6h | 🔲 Not Started |
+| 🟡 P1 | Add rate limiting unit tests | Security code coverage | 2h | 🔲 Not Started |
+| 🟡 P1 | Add sw-keepalive.ts tests | Service worker stability | 2h | 🔲 Not Started |
+| 🟡 P1 | Sync package.json version to 2.2.1 | Version consistency | 5min | 🔲 Not Started |
+| 🟢 P2 | Delete deprecated legacy files | Reduces maintenance burden | 1h | 🔲 Not Started |
+| 🟢 P2 | Document error recovery flows | Operational readiness | 2h | 🔲 Not Started |
+| 🟢 P2 | Test Coinbase Wallet compatibility | Expand user base | 4h | 🔲 Not Started |
+
+### Files at 0% Coverage (Require Attention)
+
+| File | Lines | Type | Notes |
+|------|-------|------|-------|
+| `entry/auth-entry.ts` | 10-82 | Entry point | Wires AuthController + AuthView |
+| `entry/background-entry.ts` | 19-130 | Entry point | Wires BackgroundController |
+| `entry/content-entry.ts` | 10-68 | Entry point | Wires ContentController |
+| `entry/popup-entry.ts` | 10-66 | Entry point | Wires PopupController + PopupView |
+| `ui/auth/AuthView.ts` | 12-333 | View | DOM manipulation for auth page |
+| `rate-limiter.ts` | 15-391 | Security | Token bucket rate limiting |
+| `sw-keepalive.ts` | 18-379 | Background | Service worker keep-alive |
+| `sw-state.ts` | 36-199 | Background | Service worker state management |
+| `popup.ts` | 19-518 | **DEPRECATED** | Can delete - not bundled |
+
+### Deprecated Files (To Remove in v3.0.0)
+
+These files have `@deprecated` JSDoc headers and are kept for reference only:
+- `content.ts` → Use `entry/content-entry.ts`
+- `background.ts` → Use `entry/background-entry.ts`
+- `popup.ts` → Use `entry/popup-entry.ts`
+- `auth.ts` → Use `entry/auth-entry.ts`
+- `background-main.ts` → Merged into BackgroundController
+- `auth-state-machine.ts` → Use `core/auth/AuthStateMachine`
+
+### Architecture Principles
+
+1. **Dependency Injection** - All controllers receive adapters via constructor
+2. **Pure Logic** - Core modules (`core/`) have no side effects
+3. **Thin Entry Points** - `entry/` files only wire dependencies
+4. **Mockable Adapters** - Chrome APIs wrapped for testing

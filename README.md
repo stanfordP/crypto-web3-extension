@@ -1,10 +1,14 @@
-# Crypto Trading Journal - Web3 Extension
+# CTJ Web3 Extension
 
-A Manifest V3 Chrome browser extension providing secure Web3 wallet authentication for the Crypto Trading Journal application.
+A Manifest V3 Chrome browser extension providing secure Web3 wallet authentication for CTJ (Crypto Trading Journal).
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue.svg)](https://www.typescriptlang.org/)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-green.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Coverage](https://img.shields.io/badge/Coverage-44.31%25-yellow.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.2.1-blue.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-1015-green.svg)]()
+[![Status](https://img.shields.io/badge/Status-Pending%20Approval-orange.svg)]()
 
 ## Features
 
@@ -14,6 +18,18 @@ A Manifest V3 Chrome browser extension providing secure Web3 wallet authenticati
 - 🔒 **Security Extension Compatible** - Works with Pocket Universe, Wallet Guard
 - ⚡ **Service Worker Keep-Alive** - Handles MV3 inactivity timeout
 - 🌐 **Multi-Network** - Ethereum, Polygon, Arbitrum, Optimism, Base, BNB
+- 🔄 **Rate Limiting** - Token bucket algorithm prevents message spam
+
+## Wallet Compatibility
+
+| Wallet | Status | Notes |
+|--------|--------|-------|
+| MetaMask | ✅ Tested | Primary development wallet |
+| Rabby | ✅ Tested | Full compatibility |
+| Brave Wallet | ✅ Tested | Built-in browser wallet |
+| Phantom | ✅ Tested | EVM mode only |
+| Coinbase Wallet | ⚠️ Untested | Needs verification |
+| Hardware (Ledger/Trezor) | ⚠️ Via MetaMask | Tested via MetaMask bridge |
 
 ## Quick Start
 
@@ -23,9 +39,7 @@ A Manifest V3 Chrome browser extension providing secure Web3 wallet authenticati
 - Chrome/Brave browser
 - MetaMask, Rabby, or other Web3 wallet
 
-### Installation
-
-```bash
+### Installationbash
 # Clone the repository
 git clone https://github.com/your-org/crypto-web3-extension.git
 cd crypto-web3-extension
@@ -76,14 +90,17 @@ Main App                    Extension                     Wallet
     │◄──────────────────────────│                            │
 ```
 
-### Key Components
+### Key Components (v2.2.1 Architecture)
 
-| Component | File | Purpose |
-|-----------|------|---------|
-| Content Script | `content.ts` | Message bridge, SIWE flow orchestration |
-| Injected Script | `injected-auth.ts` | Direct wallet access (`window.ethereum`) |
-| Background | `background.ts` | Session management, keep-alive |
-| Popup | `popup.ts` | Status display, disconnect |
+| Component | Entry Point | Controller | Purpose |
+|-----------|-------------|------------|---------||
+| Content Script | `entry/content-entry.ts` | `ui/content/ContentController.ts` | Message routing, wallet script injection |
+| Injected Script | `injected-auth.ts` | - | Direct wallet access (`window.ethereum`) |
+| Background | `entry/background-entry.ts` | `ui/background/BackgroundController.ts` | Session management, keep-alive |
+| Popup | `entry/popup-entry.ts` | `ui/popup/PopupController.ts` | Status display, disconnect |
+| Auth Page | `entry/auth-entry.ts` | `ui/auth/AuthController.ts` | Wallet detection, SIWE flow |
+
+> **Note:** Legacy files (`content.ts`, `background.ts`, `popup.ts`, `auth.ts`) are deprecated and will be removed in v3.0.0.
 
 ## Development
 
@@ -163,7 +180,9 @@ window.postMessage({ type: 'CJ_DISCONNECT' }, '*')
 [
   "http://localhost:3000/*",
   "http://localhost:3001/*",
-  "https://cryptotradingjournal.xyz/*"
+  "https://cryptotradingjournal.xyz/*",
+  "https://www.cryptotradingjournal.xyz/*",
+  "https://*.cryptotradingjournal.xyz/*"
 ]
 ```
 
@@ -179,15 +198,77 @@ window.postMessage({ type: 'CJ_DISCONNECT' }, '*')
 
 ## Security Extensions
 
-The extension works seamlessly with security tools:
+The extension works seamlessly with security tools. For detailed compatibility information, see [Security Extensions Guide](docs/SECURITY_EXTENSIONS.md).
 
-| Extension | Status |
-|-----------|--------|
-| Pocket Universe | ✅ Compatible |
-| Wallet Guard | ✅ Compatible |
-| Fire | ✅ Compatible |
+| Extension | Status | Behavior |
+|-----------|--------|----------|
+| Pocket Universe | ✅ Compatible | Transaction simulation |
+| Wallet Guard | ✅ Compatible | Phishing protection |
+| Fire | ✅ Compatible | Gas estimation |
+| Blowfish | ✅ Compatible | Transaction preview |
 
 These extensions will intercept and display our SIWE signature request, showing it's a safe "sign-in" signature.
+
+## Testing
+
+### Unit Tests
+
+```bash
+# Run unit tests
+npm run test:unit
+
+# Run with coverage
+npm run test:coverage
+```
+
+### E2E Tests
+
+```bash
+# Run all E2E tests
+npm run test:e2e:all
+
+# Run auth flow tests only
+npm run test:e2e
+
+# Run security extension compatibility tests
+npm run test:e2e:security
+```
+
+### Test Coverage
+
+**Current Status:** 1015 tests passing (39 suites), 44% statement coverage
+
+| Component | Coverage | Notes |
+|-----------|----------|-------|
+| ChromeAlarmsAdapter | 100% ✅ | Fully tested |
+| ChromeTabsAdapter | 100% ✅ | Fully tested |
+| api.ts | 95% ✅ | Fully tested |
+| DOMAdapter | 96% ✅ | Fully tested |
+| SessionManager | 92% ✅ | Fully tested |
+| ChromeRuntimeAdapter | 91% ✅ | Fully tested |
+| SiweFlow | 86% ✅ | Fully tested |
+| InjectionService | 85% ✅ | Fully tested |
+| Container | 85% ✅ | DI container |
+| MessageRouter | 83% ✅ | Message routing |
+| AuthStateMachine | 82% ✅ | State machine |
+| AuthController | 78% ✅ | Auth logic |
+| PopupView | 82% ✅ | UI layer |
+| ContentController | 55% ⚠️ | Branch coverage low (30%) |
+| AuthView | 0% ❌ | **Critical: Pending tests** |
+| Entry points | 0% ❌ | **Critical: DI wiring untested** |
+
+### Test Areas
+
+| Area | Tests | Status |
+|------|-------|--------|
+| Extension Loading | 3 | ✅ |
+| Wallet Connection | 2 | ✅ |
+| SIWE Signing | 2 | ✅ |
+| Session Management | 27 | ✅ |
+| Rate Limiting | 21 | ✅ |
+| Service Worker | 30 | ✅ |
+| Full Auth Flow | 1 | ✅ |
+| Security Extension Compat | 8 | ✅ |
 
 ## Extension Scope
 
@@ -241,10 +322,16 @@ The extension is a **wallet bridge**, not a business logic layer.
 crypto-web3-extension/
 ├── src/
 │   ├── scripts/
-│   │   ├── content.ts        # Message handling, SIWE flow
+│   │   ├── entry/            # Entry points (v2.2.0+)
+│   │   │   ├── background-entry.ts
+│   │   │   ├── content-entry.ts
+│   │   │   ├── popup-entry.ts
+│   │   │   └── auth-entry.ts
+│   │   ├── ui/               # Controllers & Views
+│   │   ├── core/             # Pure business logic
+│   │   ├── adapters/         # Chrome API wrappers
+│   │   ├── services/         # Shared services
 │   │   ├── injected-auth.ts  # Wallet interactions
-│   │   ├── background.ts     # Service worker
-│   │   ├── popup.ts          # Popup UI
 │   │   └── config.ts         # Configuration
 │   ├── styles/
 │   └── icons/
@@ -264,6 +351,56 @@ crypto-web3-extension/
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
+
+## V2.2 Architecture (IMPLEMENTED)
+
+V2.2 introduced a **testable architecture** with dependency injection and separated concerns. This is now the **active production code**.
+
+### Architecture Overview
+
+```
+src/scripts/
+├── entry/          # Thin entry points (wire dependencies)
+├── core/           # Pure logic (100% testable)
+│   ├── session/    # SessionManager
+│   ├── auth/       # AuthStateMachine, SiweFlow
+│   ├── messaging/  # MessageRouter
+│   └── storage/    # StorageService
+├── adapters/       # Browser API wrappers (mockable)
+├── ui/             # Controllers + Views
+│   ├── background/ # BackgroundController
+│   ├── content/    # ContentController
+│   ├── popup/      # PopupController + PopupView
+│   └── auth/       # AuthController + AuthView
+└── services/       # Shared services (InjectionService)
+```
+
+### Implementation Status
+
+| Phase | Status | Coverage |
+|-------|--------|----------|
+| Phase 0: E2E baseline | ✅ Complete | - |
+| Phase 1: Foundation | ✅ Complete | 30% |
+| Phase 2: Core logic | ✅ Complete | 44% |
+| Phase 3: Controllers | ✅ Complete | 44% |
+| Phase 4: UI separation | ⏳ Partial | 44% (Target: 70%+) |
+
+### Coverage Gaps (P0 Priority)
+
+| Component | Coverage | Gap |
+|-----------|----------|-----|
+| AuthView.ts | 0% | 🔴 Critical - handles user interactions |
+| Entry points | 0% | 🔴 Critical - DI wiring untested |
+| ContentController branches | 30% | 🟡 High - message routing edge cases |
+
+### Key Benefits
+- **1015 unit tests** (up from 532)
+- **44.31% statement coverage** (up from 23%)
+- **Fully mockable** Chrome APIs via adapters
+- **Testable controllers** with injected dependencies
+- **Rate limiting** implemented (token bucket algorithm)
+
+See [claude.md](claude.md) for detailed architecture documentation.
 
 ## Related
 
