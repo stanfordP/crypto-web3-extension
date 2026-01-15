@@ -1,12 +1,28 @@
 /**
- * Auth Page Styles - Full-page authentication experience
- * Matches popup.css color scheme with expanded layout
+ * Auth Page Styles - Deep Oceanic Theme
+ * Matches the main Crypto Trading Journal app design
  */
 
 :root {
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
-  --primary-light: #3b82f6;
+  /* Deep Oceanic Color Palette */
+  --cj-ocean-deepest: #0a1628;
+  --cj-ocean-deep: #0d1f35;
+  --cj-ocean-mid: #132d46;
+  --cj-ocean-light: #1a3a5c;
+  --cj-ocean-surface: #1e4976;
+  
+  /* Accent Colors */
+  --cj-teal-glow: #14b8a6;
+  --cj-teal-light: #2dd4bf;
+  --cj-cyan-glow: #22d3ee;
+  --cj-blue-electric: #3b82f6;
+  --cj-gold-accent: #d4a854;
+  --cj-gold-light: #f5d78e;
+  
+  /* Legacy mappings for compatibility */
+  --primary: var(--cj-teal-glow);
+  --primary-dark: #0d9488;
+  --primary-light: var(--cj-teal-light);
   --success: #10b981;
   --success-bg: rgba(16, 185, 129, 0.1);
   --error: #ef4444;
@@ -14,21 +30,21 @@
   --warning: #f59e0b;
   --warning-bg: rgba(245, 158, 11, 0.1);
 
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #334155;
-  --bg-card: #1e293b;
+  --bg-primary: var(--cj-ocean-deepest);
+  --bg-secondary: var(--cj-ocean-deep);
+  --bg-tertiary: var(--cj-ocean-mid);
+  --bg-card: var(--cj-ocean-deep);
 
   --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  /* Improved contrast: #94a3b8 -> #a8b5c9 for WCAG AA compliance */
-  --text-muted: #a8b5c9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
 
-  --border: #334155;
-  --border-light: #475569;
+  --border: rgba(34, 211, 238, 0.15);
+  --border-light: rgba(20, 184, 166, 0.3);
+  --border-glow: rgba(20, 184, 166, 0.5);
 
   /* Focus ring color for accessibility */
-  --focus-ring: #60a5fa;
+  --focus-ring: var(--cj-teal-glow);
   --focus-ring-offset: 2px;
 
   --radius: 8px;
@@ -135,9 +151,56 @@ body {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 20% 20%, rgba(37, 99, 235, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(37, 99, 235, 0.05) 0%, transparent 70%);
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(20, 184, 166, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 30% at 50% 80%, rgba(34, 211, 238, 0.05) 0%, transparent 50%),
+    linear-gradient(180deg, var(--cj-ocean-deepest) 0%, var(--cj-ocean-deep) 50%, var(--cj-ocean-deepest) 100%);
+  animation: oceanWave 20s ease-in-out infinite;
+}
+
+/* Floating particles effect */
+.auth-gradient::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(1px 1px at 20% 30%, rgba(34, 211, 238, 0.3) 0%, transparent 50%),
+    radial-gradient(1px 1px at 40% 70%, rgba(20, 184, 166, 0.2) 0%, transparent 50%),
+    radial-gradient(1px 1px at 60% 20%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
+    radial-gradient(1px 1px at 80% 60%, rgba(34, 211, 238, 0.2) 0%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 10% 80%, rgba(212, 168, 84, 0.3) 0%, transparent 50%),
+    radial-gradient(1px 1px at 90% 40%, rgba(20, 184, 166, 0.25) 0%, transparent 50%);
+  animation: sparkle 15s linear infinite;
+}
+
+@keyframes oceanWave {
+  0%, 100% {
+    background-position: 0% 50%, 100% 50%, 50% 100%, 0% 0%;
+  }
+  25% {
+    background-position: 25% 40%, 75% 60%, 60% 90%, 0% 0%;
+  }
+  50% {
+    background-position: 50% 50%, 50% 50%, 40% 100%, 0% 0%;
+  }
+  75% {
+    background-position: 75% 60%, 25% 40%, 50% 90%, 0% 0%;
+  }
+}
+
+@keyframes sparkle {
+  0% {
+    opacity: 0.6;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 0.6;
+    transform: translateY(0);
+  }
 }
 
 /* ============================================================================
@@ -165,22 +228,68 @@ body {
 }
 
 .auth-logo {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+}
+
+/* Glow effect behind logo */
+.auth-logo::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  background: linear-gradient(135deg, var(--cj-teal-glow), var(--cj-gold-accent));
+  border-radius: 50%;
+  filter: blur(12px);
+  opacity: 0.5;
+  animation: logoGlow 3s ease-in-out infinite;
+}
+
+@keyframes logoGlow {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+.logo-image {
+  position: relative;
+  z-index: 1;
   width: 72px;
   height: 72px;
-  background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
-  border: 2px solid var(--border);
-  border-radius: var(--radius-xl);
-  margin-bottom: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-glow);
   box-shadow: var(--shadow-lg);
 }
 
+/* Fallback for text logo if image fails */
 .logo-icon {
+  position: relative;
+  z-index: 1;
+  display: none;
+  width: 72px;
+  height: 72px;
+  align-items: center;
+  justify-content: center;
   font-family: Georgia, serif;
   font-size: 28px;
   font-weight: 400;
+  background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+  border: 2px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.logo-icon span {
   background: linear-gradient(135deg, #d4af37, #f4e4a6, #c9a227);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -190,8 +299,22 @@ body {
 .auth-title {
   font-size: 28px;
   font-weight: 700;
-  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--cj-gold-light), var(--cj-teal-light), var(--cj-cyan-glow));
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 5s ease infinite;
   margin-bottom: 8px;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .auth-subtitle {
@@ -206,11 +329,12 @@ body {
 
 .auth-card {
   width: 100%;
-  background: var(--bg-card);
+  background: rgba(13, 31, 53, 0.8);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   padding: 40px;
   box-shadow: var(--shadow-xl);
+  backdrop-filter: blur(12px);
 }
 
 /* ============================================================================
@@ -429,14 +553,31 @@ body {
 }
 
 .button-primary {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--cj-teal-glow) 0%, var(--cj-blue-electric) 100%);
   color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shine effect on hover */
+.button-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.button-primary:hover::before {
+  left: 100%;
 }
 
 .button-primary:hover {
-  background: var(--primary-dark);
   transform: translateY(-1px);
-  box-shadow: var(--shadow);
+  box-shadow: 0 0 20px rgba(20, 184, 166, 0.4);
 }
 
 .button-primary:active {
@@ -446,10 +587,12 @@ body {
 .button-secondary {
   background: var(--bg-tertiary);
   color: var(--text-primary);
+  border: 1px solid var(--border);
 }
 
 .button-secondary:hover {
-  background: var(--border);
+  background: var(--cj-ocean-light);
+  border-color: var(--border-light);
 }
 
 /* Button focus styles for accessibility */

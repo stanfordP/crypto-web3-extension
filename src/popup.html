@@ -11,7 +11,10 @@
   <div class="container" role="main">
     <!-- Header -->
     <header class="header">
-      <h1 class="title">Crypto Trading Journal</h1>
+      <div class="header-logo">
+        <img src="icons/logo.png" alt="CJ Logo" class="logo-img" onerror="this.style.display='none';">
+      </div>
+      <h1 class="title">CJ Trading</h1>
       <p class="subtitle">Web3 Authentication</p>
     </header>
 
@@ -24,7 +27,9 @@
 
     <!-- Not Connected State -->
     <div id="notConnected" class="section hidden" role="region" aria-labelledby="notConnectedTitle">
-      <div class="icon-large" aria-hidden="true">🔐</div>
+      <div class="icon-logo" aria-hidden="true">
+        <img src="icons/logo.png" alt="" class="icon-logo-img">
+      </div>
       <h2 id="notConnectedTitle">Not Connected</h2>
       <p class="description">
         Connect your wallet through the Crypto Trading Journal app.
@@ -44,7 +49,10 @@
 
     <!-- Connected State -->
     <div id="connected" class="section hidden" role="region" aria-labelledby="connectedTitle">
-      <div class="icon-large success" aria-hidden="true">✓</div>
+      <div class="icon-logo success" aria-hidden="true">
+        <img src="icons/logo.png" alt="" class="icon-logo-img">
+        <span class="status-dot"></span>
+      </div>
       <h2 id="connectedTitle">Connected</h2>
 
       <div class="info-grid" role="list" aria-label="Wallet connection details">

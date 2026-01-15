@@ -1,29 +1,46 @@
 /**
- * Popup Styles - Modern, clean design matching crypto aesthetics
+ * Popup Styles - Deep Oceanic Theme
+ * Matches the main Crypto Trading Journal app design
  */
 
 :root {
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
-  --primary-light: #60a5fa;
+  /* Deep Oceanic Color Palette */
+  --cj-ocean-deepest: #0a1628;
+  --cj-ocean-deep: #0d1f35;
+  --cj-ocean-mid: #132d46;
+  --cj-ocean-light: #1a3a5c;
+  --cj-ocean-surface: #1e4976;
+  
+  /* Accent Colors */
+  --cj-teal-glow: #14b8a6;
+  --cj-teal-light: #2dd4bf;
+  --cj-cyan-glow: #22d3ee;
+  --cj-blue-electric: #3b82f6;
+  --cj-gold-accent: #d4a854;
+  --cj-gold-light: #f5d78e;
+  
+  /* Legacy mappings for compatibility */
+  --primary: var(--cj-teal-glow);
+  --primary-dark: #0d9488;
+  --primary-light: var(--cj-teal-light);
   --success: #10b981;
   --error: #ef4444;
   --warning: #f59e0b;
 
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-tertiary: #334155;
+  --bg-primary: var(--cj-ocean-deepest);
+  --bg-secondary: var(--cj-ocean-deep);
+  --bg-tertiary: var(--cj-ocean-mid);
 
   --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  /* Improved contrast: #94a3b8 -> #a8b5c9 for WCAG AA compliance */
-  --text-muted: #a8b5c9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
 
-  --border: #334155;
-  --border-light: #475569;
+  --border: rgba(34, 211, 238, 0.15);
+  --border-light: rgba(20, 184, 166, 0.3);
+  --border-glow: rgba(20, 184, 166, 0.5);
   
   /* Focus ring color for accessibility */
-  --focus-ring: #60a5fa;
+  --focus-ring: var(--cj-teal-glow);
   --focus-ring-offset: 2px;
 
   --radius: 8px;
@@ -101,6 +118,32 @@ body {
   background: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+
+/* Animated gradient background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(20, 184, 166, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(59, 130, 246, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 30% at 50% 80%, rgba(34, 211, 238, 0.03) 0%, transparent 50%);
+  z-index: -1;
+  animation: popupWave 20s ease-in-out infinite;
+}
+
+@keyframes popupWave {
+  0%, 100% {
+    background-position: 0% 50%, 100% 50%, 50% 100%;
+  }
+  50% {
+    background-position: 50% 50%, 50% 50%, 40% 100%;
+  }
 }
 
 .container {
@@ -227,19 +270,36 @@ h2 {
   border: none;
   border-radius: var(--radius);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   font-family: inherit;
+  position: relative;
+  overflow: hidden;
 }
 
 .button-primary {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--cj-teal-glow) 0%, var(--cj-blue-electric) 100%);
   color: white;
 }
 
+/* Shine effect on hover */
+.button-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.button-primary:hover::before {
+  left: 100%;
+}
+
 .button-primary:hover {
-  background: var(--primary-dark);
   transform: translateY(-1px);
-  box-shadow: var(--shadow);
+  box-shadow: 0 0 20px rgba(20, 184, 166, 0.4);
 }
 
 .button-primary:active {
@@ -249,10 +309,12 @@ h2 {
 .button-secondary {
   background: var(--bg-tertiary);
   color: var(--text-primary);
+  border: 1px solid var(--border);
 }
 
 .button-secondary:hover {
-  background: var(--border-light);
+  background: var(--cj-ocean-light);
+  border-color: var(--border-light);
 }
 
 /* Button focus styles for accessibility */
@@ -395,6 +457,90 @@ h2 {
 .info-box strong {
   color: var(--text-primary);
   font-weight: 600;
+}
+
+/* ============================================================================
+   Header Logo
+   ============================================================================ */
+
+.header-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.logo-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--border-light);
+  box-shadow: 0 0 12px rgba(20, 184, 166, 0.3);
+}
+
+/* ============================================================================
+   Icon Logo (replaces emoji icons)
+   ============================================================================ */
+
+.icon-logo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 8px;
+}
+
+.icon-logo::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  background: linear-gradient(135deg, var(--cj-teal-glow), var(--cj-gold-accent));
+  border-radius: 50%;
+  filter: blur(10px);
+  opacity: 0.4;
+  animation: iconGlow 3s ease-in-out infinite;
+}
+
+@keyframes iconGlow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.6; }
+}
+
+.icon-logo-img {
+  position: relative;
+  z-index: 1;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid var(--border-light);
+  object-fit: cover;
+}
+
+.icon-logo.success::before {
+  background: linear-gradient(135deg, var(--success), var(--cj-teal-glow));
+}
+
+.icon-logo .status-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  z-index: 2;
+  width: 14px;
+  height: 14px;
+  background: var(--success);
+  border: 2px solid var(--bg-primary);
+  border-radius: 50%;
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
 }
 
 /* ============================================================================
