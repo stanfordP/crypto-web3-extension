@@ -11,7 +11,7 @@
 
 import { ExtensionError, ErrorCategory, normalizeError } from './errors';
 import { backgroundLogger as logger } from './logger';
-import { FEATURES, CONFIG } from './config';
+import { FEATURES, CONFIG, ERROR_REPORTING_CONFIG } from './config';
 
 // ============================================================================
 // Types
@@ -42,6 +42,8 @@ export interface ErrorReport {
     chainId?: string;
     hasWallet: boolean;
   };
+  /** Security extension detected */
+  securityExtension?: string;
 }
 
 interface ErrorReportingConfig {
@@ -64,12 +66,12 @@ interface ErrorReportingConfig {
 // ============================================================================
 
 const DEFAULT_CONFIG: ErrorReportingConfig = {
-  batchSize: 10,
-  batchDelayMs: 5000,
-  maxQueueSize: 100,
-  endpoint: undefined, // Set via FEATURES.ERROR_REPORTING_ENDPOINT
-  includeStackTrace: true,
-  sanitizeUrls: true,
+  batchSize: ERROR_REPORTING_CONFIG.BATCH_SIZE,
+  batchDelayMs: ERROR_REPORTING_CONFIG.BATCH_DELAY_MS,
+  maxQueueSize: ERROR_REPORTING_CONFIG.MAX_QUEUE_SIZE,
+  endpoint: FEATURES.ERROR_REPORTING_ENDPOINT,
+  includeStackTrace: ERROR_REPORTING_CONFIG.INCLUDE_STACK_TRACE,
+  sanitizeUrls: ERROR_REPORTING_CONFIG.SANITIZE_URLS,
 };
 
 // ============================================================================

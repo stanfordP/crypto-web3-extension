@@ -1,4 +1,9 @@
 /**
+ * @deprecated This file is kept for reference only. The active entry point is:
+ * ./entry/background-entry.ts → BackgroundController
+ * 
+ * This file will be removed in v3.0.0
+ * 
  * Background Service Worker Entry Point
  * 
  * CRITICAL: This file registers essential handlers FIRST before loading

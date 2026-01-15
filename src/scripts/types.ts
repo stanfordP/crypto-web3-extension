@@ -91,6 +91,8 @@ export enum PageMessageType {
   CJ_STORE_SESSION = 'CJ_STORE_SESSION',
   /** Clear session (alternative to CJ_DISCONNECT) */
   CJ_CLEAR_SESSION = 'CJ_CLEAR_SESSION',
+  /** Update account mode (demo/live) in extension storage */
+  CJ_SET_ACCOUNT_MODE = 'CJ_SET_ACCOUNT_MODE',
 
   // ============================================================================
   // Extension -> Main App (v1.1 Legacy)
@@ -112,6 +114,8 @@ export enum PageMessageType {
   CJ_SESSION_STORED = 'CJ_SESSION_STORED',
   /** Error response with code and message */
   CJ_ERROR = 'CJ_ERROR',
+  /** Account mode update confirmation */
+  CJ_ACCOUNT_MODE_SET = 'CJ_ACCOUNT_MODE_SET',
 }
 
 /**
@@ -277,6 +281,7 @@ export enum ErrorCode {
   SESSION_STORAGE_FAILED = 5005,
   REQUEST_TIMEOUT = 5006,
   ALREADY_IN_PROGRESS = 5007,
+  RATE_LIMITED = 5008,
 }
 
 // ============================================================================

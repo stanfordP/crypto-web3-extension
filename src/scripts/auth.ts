@@ -1,4 +1,9 @@
 /**
+ * @deprecated This file is kept for reference only. The active entry point is:
+ * ./entry/auth-entry.ts → AuthController + AuthView
+ * 
+ * This file will be removed in v3.0.0
+ * 
  * Auth Page Script - Full-page authentication experience
  *
  * This script runs in the auth.html page (extension tab context).

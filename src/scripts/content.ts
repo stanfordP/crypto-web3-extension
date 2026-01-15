@@ -1,4 +1,9 @@
 /**
+ * @deprecated This file is kept for reference only. The active entry point is:
+ * ./entry/content-entry.ts → ContentController
+ * 
+ * This file will be removed in v3.0.0
+ * 
  * Content Script - Bridge for Extension-First architecture
  *
  * Responsibilities:
@@ -85,6 +90,15 @@ function cleanupStaleRequests(): void {
 function isRequestInFlight(type: string): boolean {
   cleanupStaleRequests();
   return inFlightRequests.has(type);
+}
+
+/**
+ * Get the in-flight promise for a request type (if any)
+ */
+function getInFlightPromise(type: string): Promise<void> | null {
+  cleanupStaleRequests();
+  const tracked = inFlightRequests.get(type);
+  return tracked?.promise || null;
 }
 
 /**
@@ -257,7 +271,10 @@ function sendWalletMessage<T>(type: string, payload?: Record<string, unknown>): 
 /** Track service worker health status */
 let isServiceWorkerHealthy = true;
 let lastHealthCheck = 0;
-const HEALTH_CHECK_INTERVAL = 5000; // 5 seconds
+let healthCheckFailCount = 0;
+const HEALTH_CHECK_INTERVAL = 10000; // 10 seconds (increased to reduce spam)
+const MAX_HEALTH_LOG_FREQUENCY = 60000; // Only log health issues every 60 seconds
+let lastHealthLogTime = 0;
 
 /**
  * Check if the service worker is responsive
@@ -265,7 +282,12 @@ const HEALTH_CHECK_INTERVAL = 5000; // 5 seconds
 async function checkServiceWorkerHealth(): Promise<boolean> {
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
-      logger.warn('Service worker health check timed out');
+      // Only log if we haven't logged recently (prevents console spam)
+      const now = Date.now();
+      if (now - lastHealthLogTime > MAX_HEALTH_LOG_FREQUENCY) {
+        logger.warn('Service worker health check timed out');
+        lastHealthLogTime = now;
+      }
       resolve(false);
     }, 2000);
 
@@ -308,17 +330,30 @@ async function ensureServiceWorkerHealthy(): Promise<boolean> {
   lastHealthCheck = now;
 
   if (!isServiceWorkerHealthy) {
-    // Try to wake up the service worker
-    logger.info('Service worker appears inactive, attempting wake-up');
+    healthCheckFailCount++;
+    
+    // Only log and attempt wake-up every few failures to reduce spam
+    const shouldAttemptWakeUp = healthCheckFailCount <= 3 || healthCheckFailCount % 10 === 0;
+    
+    if (shouldAttemptWakeUp) {
+      const now = Date.now();
+      if (now - lastHealthLogTime > MAX_HEALTH_LOG_FREQUENCY) {
+        logger.info('Service worker appears inactive, attempting wake-up');
+        lastHealthLogTime = now;
+      }
 
-    for (let i = 0; i < 3; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 300 * (i + 1)));
-      isServiceWorkerHealthy = await checkServiceWorkerHealth();
-      if (isServiceWorkerHealthy) {
-        logger.info('Service worker woke up successfully');
-        break;
+      for (let i = 0; i < 3; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 300 * (i + 1)));
+        isServiceWorkerHealthy = await checkServiceWorkerHealth();
+        if (isServiceWorkerHealthy) {
+          healthCheckFailCount = 0; // Reset on recovery
+          logger.info('Service worker woke up successfully');
+          break;
+        }
       }
     }
+  } else {
+    healthCheckFailCount = 0; // Reset on healthy check
   }
 
   return isServiceWorkerHealthy;
@@ -409,15 +444,12 @@ function setupPageMessageHandler(): void {
       // v2.0 Handlers (App-Driven SIWE)
       // ============================================================================
       case PageMessageType.CJ_WALLET_CONNECT: {
-        // Deduplication for wallet connect
-        if (isRequestInFlight(PageMessageType.CJ_WALLET_CONNECT)) {
-          logger.warn('Wallet connect already in progress');
-          sendError(
-            ErrorCode.ALREADY_IN_PROGRESS,
-            'Wallet connection already in progress',
-            PageMessageType.CJ_WALLET_CONNECT,
-            data.requestId
-          );
+        // Deduplication for wallet connect - wait for existing request instead of failing
+        const existingConnectPromise = getInFlightPromise(PageMessageType.CJ_WALLET_CONNECT);
+        if (existingConnectPromise) {
+          logger.debug('Wallet connect already in progress, waiting for existing request');
+          await existingConnectPromise;
+          // The existing request already sent a response, so we're done
           return;
         }
         const connectPromise = handleWalletConnectV2(data.requestId);
@@ -427,15 +459,12 @@ function setupPageMessageHandler(): void {
       }
 
       case PageMessageType.CJ_WALLET_SIGN: {
-        // Deduplication for wallet sign
-        if (isRequestInFlight(PageMessageType.CJ_WALLET_SIGN)) {
-          logger.warn('Wallet sign already in progress');
-          sendError(
-            ErrorCode.ALREADY_IN_PROGRESS,
-            'Signing already in progress',
-            PageMessageType.CJ_WALLET_SIGN,
-            data.requestId
-          );
+        // Deduplication for wallet sign - wait for existing request instead of failing
+        const existingSignPromise = getInFlightPromise(PageMessageType.CJ_WALLET_SIGN);
+        if (existingSignPromise) {
+          logger.debug('Wallet sign already in progress, waiting for existing request');
+          await existingSignPromise;
+          // The existing request already sent a response, so we're done
           return;
         }
         if (!data.message || !data.address) {
@@ -645,6 +674,9 @@ async function handleGetSession(): Promise<void> {
       StorageKeys.CONNECTED_ADDRESS,
       StorageKeys.CHAIN_ID,
       StorageKeys.ACCOUNT_MODE,
+      // Token may be persisted here to survive extension reload/update.
+      // It is NEVER returned to the page.
+      StorageKeys.SESSION_TOKEN,
     ]);
 
     // Get sensitive data from session storage
@@ -652,7 +684,9 @@ async function handleGetSession(): Promise<void> {
       StorageKeys.SESSION_TOKEN,
     ]);
 
-    const hasSession = !!(localResult[StorageKeys.CONNECTED_ADDRESS] && sessionResult[StorageKeys.SESSION_TOKEN]);
+    const token = (sessionResult[StorageKeys.SESSION_TOKEN] as string | undefined) ||
+      (localResult[StorageKeys.SESSION_TOKEN] as string | undefined);
+    const hasSession = !!(localResult[StorageKeys.CONNECTED_ADDRESS] && token);
 
     const session: PageSession | null = hasSession
       ? {
@@ -739,13 +773,16 @@ async function notifySessionChangeFromStorage(): Promise<void> {
       StorageKeys.CONNECTED_ADDRESS,
       StorageKeys.CHAIN_ID,
       StorageKeys.ACCOUNT_MODE,
+      StorageKeys.SESSION_TOKEN,
     ]);
     
     const sessionResult = await chrome.storage.session.get([
       StorageKeys.SESSION_TOKEN,
     ]);
 
-    const hasSession = !!(localResult[StorageKeys.CONNECTED_ADDRESS] && sessionResult[StorageKeys.SESSION_TOKEN]);
+    const token = (sessionResult[StorageKeys.SESSION_TOKEN] as string | undefined) ||
+      (localResult[StorageKeys.SESSION_TOKEN] as string | undefined);
+    const hasSession = !!(localResult[StorageKeys.CONNECTED_ADDRESS] && token);
 
     const session: PageSession | null = hasSession
       ? {
@@ -936,6 +973,9 @@ async function handleStoreSession(
 
     // Store non-sensitive data in local storage (persistent)
     await chrome.storage.local.set({
+      // NOTE: We also persist the session token in local storage so it survives
+      // extension reloads/updates. The token is still never exposed to the page.
+      [StorageKeys.SESSION_TOKEN]: session.sessionToken,
       [StorageKeys.CONNECTED_ADDRESS]: session.address,
       [StorageKeys.CHAIN_ID]: session.chainId,
       [StorageKeys.LAST_CONNECTED]: Date.now(),
@@ -946,7 +986,7 @@ async function handleStoreSession(
       [StorageKeys.SESSION_TOKEN]: session.sessionToken,
     });
 
-    logger.info('v2.0: Session stored successfully (token in session storage)');
+    logger.info('v2.0: Session stored successfully (token persisted)');
 
     // Send success response (explicit origin for security)
     window.postMessage({
@@ -981,6 +1021,7 @@ async function handleClearSession(requestId?: string): Promise<void> {
 
     // Clear session from both storage areas
     await chrome.storage.local.remove([
+      StorageKeys.SESSION_TOKEN,
       StorageKeys.CONNECTED_ADDRESS,
       StorageKeys.CHAIN_ID,
       StorageKeys.ACCOUNT_MODE,
@@ -1032,10 +1073,11 @@ function setupStorageListener(): void {
     const localSessionChanged = areaName === 'local' && (
       changes[StorageKeys.CONNECTED_ADDRESS] ||
       changes[StorageKeys.CHAIN_ID] ||
-      changes[StorageKeys.ACCOUNT_MODE]
+      changes[StorageKeys.ACCOUNT_MODE] ||
+      changes[StorageKeys.SESSION_TOKEN]
     );
     
-    const tokenChanged = areaName === 'session' && 
+    const tokenChanged = areaName === 'session' &&
       changes[StorageKeys.SESSION_TOKEN];
 
     if (localSessionChanged || tokenChanged) {
@@ -1045,13 +1087,16 @@ function setupStorageListener(): void {
           StorageKeys.CONNECTED_ADDRESS,
           StorageKeys.CHAIN_ID,
           StorageKeys.ACCOUNT_MODE,
+          StorageKeys.SESSION_TOKEN,
         ]);
         
         const sessionResult = await chrome.storage.session.get([
           StorageKeys.SESSION_TOKEN,
         ]);
 
-        const hasSession = !!(localResult[StorageKeys.CONNECTED_ADDRESS] && sessionResult[StorageKeys.SESSION_TOKEN]);
+        const token = (sessionResult[StorageKeys.SESSION_TOKEN] as string | undefined) ||
+          (localResult[StorageKeys.SESSION_TOKEN] as string | undefined);
+        const hasSession = !!(localResult[StorageKeys.CONNECTED_ADDRESS] && token);
 
         const session: PageSession | null = hasSession
           ? {
@@ -1079,20 +1124,33 @@ function setupStorageListener(): void {
 
 /**
  * Set up periodic health check to monitor service worker status
+ * Uses exponential backoff on repeated failures to reduce console spam
  */
 function setupPeriodicHealthCheck(): void {
-  const PERIODIC_CHECK_INTERVAL = 30000; // 30 seconds
+  const PERIODIC_CHECK_INTERVAL = 60000; // 60 seconds (increased to reduce overhead)
+  let consecutiveFailures = 0;
+  const MAX_CONSECUTIVE_FAILURES_TO_LOG = 3;
 
   const performPeriodicCheck = async () => {
+    // Skip if tab is not visible
     if (document.visibilityState !== 'visible') return;
 
     const wasHealthy = isServiceWorkerHealthy;
     await ensureServiceWorkerHealthy();
 
     if (wasHealthy && !isServiceWorkerHealthy) {
-      logger.warn('Service worker became unresponsive');
+      consecutiveFailures++;
+      // Only log first few failures to prevent console spam
+      if (consecutiveFailures <= MAX_CONSECUTIVE_FAILURES_TO_LOG) {
+        logger.warn('Service worker became unresponsive', { 
+          failureCount: consecutiveFailures 
+        });
+      }
     } else if (!wasHealthy && isServiceWorkerHealthy) {
-      logger.info('Service worker recovered');
+      if (consecutiveFailures > 0) {
+        logger.info('Service worker recovered');
+      }
+      consecutiveFailures = 0;
     }
   };
 
@@ -1105,6 +1163,124 @@ function setupPeriodicHealthCheck(): void {
   });
 
   logger.debug('Periodic health check initialized');
+}
+
+// ============================================================================
+// Popup Message Handler (for popup-to-content communication)
+// ============================================================================
+
+/**
+ * Handle messages from the extension popup
+ * This allows the popup to sync session state from the active tab
+ */
+function setupPopupMessageHandler(): void {
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (message.type === 'POPUP_GET_SESSION') {
+      // Get session from storage and return to popup
+      handlePopupGetSession()
+        .then(sendResponse)
+        .catch((error) => {
+          logger.error('Failed to handle POPUP_GET_SESSION', { error: String(error) });
+          sendResponse({ success: false, error: error.message });
+        });
+      return true; // Keep channel open for async response
+    }
+    return false;
+  });
+  
+  logger.debug('Popup message handler initialized');
+}
+
+/**
+ * Get session for popup synchronization
+ * Returns full session including token (popup is trusted context)
+ * 
+ * Fallback: If no session in storage, check the main app's session API
+ * (content script can access cookies in same-origin context)
+ */
+async function handlePopupGetSession(): Promise<{ success: boolean; session?: { address: string; chainId: string; sessionToken?: string } }> {
+  try {
+    // Get data from both storage areas
+    const localResult = await chrome.storage.local.get([
+      StorageKeys.CONNECTED_ADDRESS,
+      StorageKeys.CHAIN_ID,
+      StorageKeys.SESSION_TOKEN,
+    ]);
+
+    const sessionResult = await chrome.storage.session.get([
+      StorageKeys.SESSION_TOKEN,
+    ]);
+
+    const address = localResult[StorageKeys.CONNECTED_ADDRESS] as string | undefined;
+    const chainId = localResult[StorageKeys.CHAIN_ID] as string | undefined;
+    const sessionToken = (sessionResult[StorageKeys.SESSION_TOKEN] as string | undefined) ||
+      (localResult[StorageKeys.SESSION_TOKEN] as string | undefined);
+
+    // If we have a valid session in storage, return it
+    if (address && sessionToken) {
+      return {
+        success: true,
+        session: {
+          address,
+          chainId: chainId || '0x1',
+          sessionToken,
+        }
+      };
+    }
+    
+    // Fallback: Check main app's session API (uses HTTP cookies)
+    // This catches cases where extension storage was cleared but app has valid session
+    try {
+      logger.debug('No session in storage, checking app API...');
+      const apiResponse = await fetch(`${API_BASE_URL}${API_ENDPOINTS.SESSION_VALIDATE}`, {
+        method: 'GET',
+        credentials: 'include', // Include cookies
+        headers: { 'Accept': 'application/json' },
+      });
+      
+      if (apiResponse.ok) {
+        const apiData = await apiResponse.json();
+        if (apiData.authenticated && apiData.address) {
+          logger.info('Session recovered from app API', { address: apiData.address.slice(0, 10) + '...' });
+          
+          // Store recovered session in local storage for future popup checks
+          await chrome.storage.local.set({
+            [StorageKeys.CONNECTED_ADDRESS]: apiData.address,
+            [StorageKeys.CHAIN_ID]: apiData.chainId || '0x1',
+          });
+          
+          return {
+            success: true,
+            session: {
+              address: apiData.address,
+              chainId: apiData.chainId || '0x1',
+              // Note: No sessionToken available from API - app uses cookies
+            }
+          };
+        }
+      }
+    } catch (apiError) {
+      logger.debug('App API session check failed', { error: String(apiError) });
+    }
+
+    // Legacy fallback: Return partial session if we have address but no token
+    if (address) {
+      logger.debug('Partial session found (no token)', { address });
+      return {
+        success: true,
+        session: {
+          address,
+          chainId: chainId || '0x1',
+          sessionToken,
+        }
+      };
+    }
+
+    return { success: false };
+  } catch (error) {
+    logger.error('handlePopupGetSession failed', { error: String(error) });
+    return { success: false };
+  }
 }
 
 // ============================================================================
@@ -1132,10 +1308,13 @@ async function initialize(): Promise<void> {
   // 2. Set up storage listener for session changes
   setupStorageListener();
 
-  // 3. Set up periodic health check
+  // 3. Set up popup message handler for popup-to-content communication
+  setupPopupMessageHandler();
+
+  // 4. Set up periodic health check
   setupPeriodicHealthCheck();
 
-  // 4. Perform initial health check (async, non-blocking)
+  // 5. Perform initial health check (async, non-blocking)
   ensureServiceWorkerHealthy().then((healthy) => {
     if (healthy) {
       logger.info('Content script initialized, service worker healthy');

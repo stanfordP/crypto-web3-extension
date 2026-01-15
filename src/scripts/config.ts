@@ -163,8 +163,33 @@ export const FEATURES = {
   EIP6963_ANNOUNCEMENT: true,
   /** Enable error reporting to backend */
   ERROR_REPORTING: IS_PRODUCTION,
-  /** Error reporting endpoint (uses API_BASE_URL/api/errors/report) */
-  ERROR_REPORTING_ENDPOINT: undefined as string | undefined,
+  /** Error reporting endpoint - uses main app API */
+  ERROR_REPORTING_ENDPOINT: IS_PRODUCTION
+    ? `${API_URLS.production}/api/extension/errors`
+    : undefined,
+  /** Enable rate limiting */
+  RATE_LIMITING: true,
+  /** Enable security extension compatibility mode */
+  SECURITY_EXTENSION_COMPAT: true,
+} as const;
+
+// ============================================================================
+// Error Reporting Configuration
+// ============================================================================
+
+export const ERROR_REPORTING_CONFIG = {
+  /** Maximum errors to batch before sending */
+  BATCH_SIZE: 10,
+  /** Milliseconds to wait before sending a batch */
+  BATCH_DELAY_MS: 5000,
+  /** Maximum errors to keep in offline queue */
+  MAX_QUEUE_SIZE: 100,
+  /** Include stack traces in reports */
+  INCLUDE_STACK_TRACE: IS_PRODUCTION,
+  /** Sanitize URLs (remove query params) */
+  SANITIZE_URLS: true,
+  /** Max errors per minute (rate limiting) */
+  MAX_ERRORS_PER_MINUTE: 100,
 } as const;
 
 // ============================================================================
@@ -182,4 +207,5 @@ export const CONFIG = {
   TIMEOUTS,
   DEFAULTS,
   FEATURES,
+  ERROR_REPORTING: ERROR_REPORTING_CONFIG,
 } as const;
