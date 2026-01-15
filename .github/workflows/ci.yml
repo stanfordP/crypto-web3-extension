@@ -6,12 +6,47 @@ on:
   pull_request:
     branches: [main, master, develop]
 
+# Cancel in-progress runs on same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   NODE_VERSION: '20'
 
 jobs:
+  # ============================================================
+  # PATH DETECTION - Skip jobs if only docs changed
+  # ============================================================
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      src: ${{ steps.filter.outputs.src }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect changed paths
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            src:
+              - 'src/**'
+              - 'tests/**'
+              - 'scripts/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'tsconfig.json'
+              - 'webpack.config.js'
+              - 'manifest.json'
+              - 'jest.config.js'
+
   lint-and-typecheck:
     name: Lint & Type Check
+    needs: changes
+    if: needs.changes.outputs.src == 'true' || github.event_name == 'push'
     runs-on: ubuntu-latest
 
     steps:
@@ -197,3 +232,21 @@ jobs:
           echo ""
           echo "Total dist size:"
           du -sh dist/
+  # ============================================================
+  # SUMMARY GATE - For branch protection rules
+  # ============================================================
+  ci-complete:
+    name: CI Complete
+    needs: [lint-and-typecheck, build, test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check job results
+        run: |
+          if [[ "${{ needs.lint-and-typecheck.result }}" == "failure" ]] || \
+             [[ "${{ needs.build.result }}" == "failure" ]] || \
+             [[ "${{ needs.test.result }}" == "failure" ]]; then
+            echo "CI failed"
+            exit 1
+          fi
+          echo "CI passed"
