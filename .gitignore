@@ -44,4 +44,8 @@ temp/
 # Chrome extension development
 *.crx
 *.pem
-.claude/\nnul\npackages/
+
+# Local settings
+.claude/
+nul
+packages/
