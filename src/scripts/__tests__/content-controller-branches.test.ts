@@ -41,7 +41,6 @@ describe('ContentController - Branch Coverage', () => {
   };
   let postMessageSpy: jest.SpyInstance;
   let addEventListenerSpy: jest.SpyInstance;
-  let getOriginSpy: jest.SpyInstance;
   let getVisibilityStateSpy: jest.SpyInstance;
   let sendMessageSpy: jest.SpyInstance;
   // Storage change listeners need to be captured
@@ -57,7 +56,7 @@ describe('ContentController - Branch Coverage', () => {
     postMessageSpy = jest.spyOn(dom, 'postMessage');
     addEventListenerSpy = jest.spyOn(dom, 'addEventListener');
     jest.spyOn(dom, 'removeEventListener');
-    getOriginSpy = jest.spyOn(dom, 'getOrigin').mockReturnValue('http://localhost:3000');
+    jest.spyOn(dom, 'getOrigin').mockReturnValue('http://localhost:3000');
     getVisibilityStateSpy = jest.spyOn(dom, 'getVisibilityState').mockReturnValue('visible');
 
     // Spy on runtime sendMessage
