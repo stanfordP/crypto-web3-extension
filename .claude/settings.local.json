@@ -10,7 +10,9 @@
       "Bash(npm run test:unit:*)",
       "Bash(npm run lint)",
       "Bash(npm run test:coverage:*)",
-      "Bash(npm run release:*)"
+      "Bash(npm run release:*)",
+      "Bash(claude doctor)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

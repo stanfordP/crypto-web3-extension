@@ -5,6 +5,7 @@
  * Routes CJ_* messages to appropriate handlers without side effects.
  * 
  * @module core/messaging/MessageRouter
+ * @version 2.1.0
  */
 
 import { PageMessageType, ErrorCode } from '../../types';
@@ -14,6 +15,64 @@ import type {
   MessageHandler,
   ErrorMessage,
 } from './MessageTypes';
+import {
+  PROTOCOL_VERSION,
+  MIN_PROTOCOL_VERSION,
+  isVersionSupported,
+  isTimestampValid,
+  MESSAGE_MAX_AGE_MS,
+} from './MessageTypes';
+
+/**
+ * Message log entry for debugging
+ */
+export interface MessageLogEntry {
+  timestamp: number;
+  type: string;
+  requestId?: string;
+  origin: string;
+  direction: 'inbound' | 'outbound';
+  success: boolean;
+  errorCode?: ErrorCode;
+  processingTimeMs?: number;
+  version?: string;
+}
+
+/**
+ * Message logger interface
+ */
+export interface MessageLogger {
+  log(entry: MessageLogEntry): void;
+  getRecentLogs(count?: number): MessageLogEntry[];
+  clear(): void;
+}
+
+/**
+ * In-memory message logger with circular buffer
+ */
+export class InMemoryMessageLogger implements MessageLogger {
+  private logs: MessageLogEntry[] = [];
+  private maxLogs: number;
+
+  constructor(maxLogs: number = 100) {
+    this.maxLogs = maxLogs;
+  }
+
+  log(entry: MessageLogEntry): void {
+    this.logs.push(entry);
+    if (this.logs.length > this.maxLogs) {
+      this.logs.shift();
+    }
+  }
+
+  getRecentLogs(count: number = 50): MessageLogEntry[] {
+    return this.logs.slice(-count);
+  }
+
+  clear(): void {
+    this.logs = [];
+  }
+}
 
 /**
  * Rate limiter configuration
@@ -172,6 +231,14 @@ export interface MessageRouterConfig {
   rateLimiterConfig?: RateLimiterConfig;
   /** Request timeout for deduplication */
   requestTimeout?: number;
+  /** Enable protocol version validation */
+  validateVersion?: boolean;
+  /** Enable timestamp validation */
+  validateTimestamp?: boolean;
+  /** Maximum message age in milliseconds */
+  maxMessageAge?: number;
+  /** Optional message logger for debugging */
+  logger?: MessageLogger;
 }
 
 const DEFAULT_RATE_LIMITER_CONFIG: RateLimiterConfig = {
@@ -183,16 +250,19 @@ const DEFAULT_RATE_LIMITER_CONFIG: RateLimiterConfig = {
  * MessageRouter - Routes CJ_* messages to handlers
  * 
  * This is a pure routing layer that:
- * 1. Validates message structure
- * 2. Checks rate limits
- * 3. Handles request deduplication
- * 4. Routes to appropriate handler
+ * 1. Validates message structure and protocol version
+ * 2. Validates message timestamps for replay protection
+ * 3. Checks rate limits
+ * 4. Handles request deduplication
+ * 5. Routes to appropriate handler
+ * 6. Logs messages for debugging
  */
 export class MessageRouter {
   private handlers = new Map<string, HandlerRegistration>();
   private rateLimiterState: RateLimiterState;
   private deduplicationState: DeduplicationState;
   private config: MessageRouterConfig;
+  private logger?: MessageLogger;
 
   constructor(config: MessageRouterConfig) {
     this.config = config;
@@ -200,6 +270,7 @@ export class MessageRouter {
       config.rateLimiterConfig || DEFAULT_RATE_LIMITER_CONFIG
     );
     this.deduplicationState = createDeduplicationState(config.requestTimeout);
+    this.logger = config.logger;
   }
 
   /**
@@ -229,6 +300,8 @@ export class MessageRouter {
    * Returns true if message was handled, false otherwise
    */
   async route(message: unknown, origin: string): Promise<boolean> {
+    const startTime = Date.now();
+    
     // Validate message structure
     if (!this.isValidMessage(message)) {
       return false;
@@ -243,12 +316,38 @@ export class MessageRouter {
 
     // Validate origin
     if (!this.config.isAllowedOrigin(origin)) {
+      this.logMessage(msg, origin, false, undefined, startTime);
       return false;
+    }
+
+    // Validate protocol version (if enabled)
+    if (this.config.validateVersion && !isVersionSupported(msg.version)) {
+      this.sendError(
+        ErrorCode.INVALID_REQUEST,
+        `Unsupported protocol version: ${msg.version}. Minimum required: ${MIN_PROTOCOL_VERSION}`,
+        msg.type,
+        msg.requestId
+      );
+      this.logMessage(msg, origin, false, ErrorCode.INVALID_REQUEST, startTime);
+      return true;
+    }
+
+    // Validate timestamp (if enabled)
+    if (this.config.validateTimestamp && !isTimestampValid(msg.timestamp, this.config.maxMessageAge || MESSAGE_MAX_AGE_MS)) {
+      this.sendError(
+        ErrorCode.REQUEST_TIMEOUT,
+        'Message timestamp expired or invalid',
+        msg.type,
+        msg.requestId
+      );
+      this.logMessage(msg, origin, false, ErrorCode.REQUEST_TIMEOUT, startTime);
+      return true;
     }
 
     // Find handler
     const registration = this.handlers.get(msg.type);
     if (!registration) {
+      this.logMessage(msg, origin, false, undefined, startTime);
       return false;
     }
 
@@ -267,6 +366,7 @@ export class MessageRouter {
           msg.type,
           msg.requestId
         );
+        this.logMessage(msg, origin, false, ErrorCode.REQUEST_TIMEOUT, startTime);
         return true; // Message was handled (with error)
       }
     }
@@ -281,6 +381,7 @@ export class MessageRouter {
           msg.type,
           msg.requestId
         );
+        this.logMessage(msg, origin, false, ErrorCode.INVALID_REQUEST, startTime);
         return true; // Message was handled (with error)
       }
     }
@@ -288,6 +389,7 @@ export class MessageRouter {
     // Execute handler
     try {
       await registration.handler(msg);
+      this.logMessage(msg, origin, true, undefined, startTime);
       return true;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -297,6 +399,7 @@ export class MessageRouter {
         msg.type,
         msg.requestId
       );
+      this.logMessage(msg, origin, false, ErrorCode.WALLET_CONNECTION_FAILED, startTime);
       return true; // Message was handled (with error)
     }
   }
@@ -419,6 +522,31 @@ export class MessageRouter {
   }
 
   /**
+   * Log a message for debugging
+   */
+  private logMessage(
+    message: BaseMessage,
+    origin: string,
+    success: boolean,
+    errorCode?: ErrorCode,
+    startTime?: number
+  ): void {
+    if (!this.logger) return;
+
+    this.logger.log({
+      timestamp: Date.now(),
+      type: message.type,
+      requestId: message.requestId,
+      origin,
+      direction: 'inbound',
+      success,
+      errorCode,
+      processingTimeMs: startTime ? Date.now() - startTime : undefined,
+      version: message.version,
+    });
+  }
+
+  /**
    * Get current rate limiter state (for testing)
    */
   getRateLimiterState(): RateLimiterState {
@@ -433,5 +561,19 @@ export class MessageRouter {
       inFlightCount: this.deduplicationState.inFlightRequests.size,
       types: Array.from(this.deduplicationState.inFlightRequests.keys()),
     };
+  }
+
+  /**
+   * Get the message logger (for testing/debugging)
+   */
+  getLogger(): MessageLogger | undefined {
+    return this.logger;
+  }
+
+  /**
+   * Get current protocol version
+   */
+  static getProtocolVersion(): string {
+    return PROTOCOL_VERSION;
   }
 }

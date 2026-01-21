@@ -4,9 +4,33 @@
  * Type definitions for all messages in the extension's communication protocol.
  * 
  * @module core/messaging/MessageTypes
+ * @version 2.1.0
  */
 
 import { ErrorCode, PageMessageType } from '../../types';
+
+// ============================================================================
+// Protocol Version
+// ============================================================================
+
+/**
+ * Current protocol version
+ * Format: major.minor.patch
+ * - Major: Breaking changes
+ * - Minor: New features, backward compatible
+ * - Patch: Bug fixes
+ */
+export const PROTOCOL_VERSION = '2.1.0';
+
+/**
+ * Minimum supported protocol version for backward compatibility
+ */
+export const MIN_PROTOCOL_VERSION = '2.0.0';
+
+/**
+ * Maximum age for messages with timestamps (30 seconds)
+ */
+export const MESSAGE_MAX_AGE_MS = 30_000;
 
 // ============================================================================
 // Base Message Types
@@ -14,10 +38,59 @@ import { ErrorCode, PageMessageType } from '../../types';
 
 /**
  * Base message structure
+ * 
+ * @property type - Message type (CJ_* prefix)
+ * @property requestId - Optional unique request identifier for response correlation
+ * @property version - Protocol version (e.g., "2.1.0")
+ * @property timestamp - Unix timestamp in milliseconds when message was created
  */
 export interface BaseMessage {
   type: string;
   requestId?: string;
+  /** Protocol version (e.g., "2.1.0") */
+  version?: string;
+  /** Unix timestamp in milliseconds */
+  timestamp?: number;
+}
+
+/**
+ * Generate a unique request ID
+ */
+export function generateRequestId(): string {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
+/**
+ * Create a message with standard fields populated
+ */
+export function createMessage<T extends BaseMessage>(message: Omit<T, 'version' | 'timestamp' | 'requestId'> & { requestId?: string }): T {
+  return {
+    ...message,
+    version: PROTOCOL_VERSION,
+    timestamp: Date.now(),
+    requestId: message.requestId || generateRequestId(),
+  } as T;
+}
+
+/**
+ * Check if a protocol version is supported
+ */
+export function isVersionSupported(version?: string): boolean {
+  if (!version) return true; // Allow legacy messages without version
+  const [major, minor] = version.split('.').map(Number);
+  const [minMajor, minMinor] = MIN_PROTOCOL_VERSION.split('.').map(Number);
+  if (major < minMajor) return false;
+  if (major === minMajor && minor < minMinor) return false;
+  return true;
+}
+
+/**
+ * Check if a message timestamp is within acceptable age
+ */
+export function isTimestampValid(timestamp?: number, maxAgeMs: number = MESSAGE_MAX_AGE_MS): boolean {
+  if (!timestamp) return true; // Allow legacy messages without timestamp
+  const age = Date.now() - timestamp;
+  return age >= 0 && age <= maxAgeMs;
 }
 
 /**
