@@ -72,12 +72,16 @@ Contact: support@cryptotradingjournal.xyz
 ### Step 2: Import Test Wallet (~30 sec)
 
 1. Open MetaMask
-2. Click account icon → "Import Account" → "Import using seed phrase"
-3. Enter this test seed:
+2. If MetaMask is fresh/new: During setup, choose "Import wallet" and use the seed phrase below
+3. If MetaMask already has an account: Click the account icon → "Add account or hardware wallet" → "Import account" 
+   - Note: For seed phrase import in existing MetaMask, you may need to use Settings → Security & Privacy → "Reveal Secret Recovery Phrase" flow, or simply add a new account for testing
+4. Enter this test seed:
    ```
    abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
    ```
-4. Set any password (this is a test wallet with no real funds)
+5. Set any password (this is a test wallet with no real funds)
+
+**Tip:** The easiest method is to use a fresh MetaMask installation and import using the seed phrase during initial setup.
 
 ### Step 3: Install & Verify Extension (~30 sec)
 
