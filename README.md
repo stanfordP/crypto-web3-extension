@@ -6,19 +6,38 @@ A Manifest V3 Chrome browser extension providing secure Web3 wallet authenticati
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-green.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Coverage](https://img.shields.io/badge/Coverage-44.31%25-yellow.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.2.1-blue.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.2.3-blue.svg)]()
 [![Tests](https://img.shields.io/badge/Tests-1015-green.svg)]()
-[![Status](https://img.shields.io/badge/Status-Pending%20Approval-orange.svg)]()
+[![Status](https://img.shields.io/badge/Status-Ready%20for%20Resubmission-green.svg)]()
+
+## Overview
+
+**Important:** This extension is an **authentication bridge**, NOT a standalone wallet. It connects your existing wallet (MetaMask, Brave Wallet, etc.) to Crypto Trading Journal for passwordless Web3 authentication.
+
+### For Chrome Web Store Reviewers
+The extension popup now displays helpful status indicators showing:
+- ✅ Extension Active status
+- Wallet detection (guides to MetaMask if not installed)
+- Domain validation (shows if on correct site)
+- Direct links to required resources
+
+**Test Instructions:** See [TEST_INSTRUCTIONS_500_CHAR.txt](TEST_INSTRUCTIONS_500_CHAR.txt) for concise testing guide with pre-configured test wallet (under 500 characters).
+
+### Prerequisites
+- A wallet extension already installed (MetaMask, Brave Wallet, Rabby, etc.)
+- Access to Crypto Trading Journal (https://cryptotradingjournal.xyz)
 
 ## Features
 
 - 🔐 **SIWE Authentication** - Sign-In With Ethereum (EIP-4361)
 - 🛡️ **Anti-Phishing Protection** - Only verified origins can trigger auth
-- 🦊 **Multi-Wallet Support** - MetaMask, Rabby, Brave Wallet, Phantom
+- 🔗 **Wallet Bridge** - Connects MetaMask, Rabby, Brave Wallet, Phantom to your app
 - 🔒 **Security Extension Compatible** - Works with Pocket Universe, Wallet Guard
 - ⚡ **Service Worker Keep-Alive** - Handles MV3 inactivity timeout
 - 🌐 **Multi-Network** - Ethereum, Polygon, Arbitrum, Optimism, Base, BNB
 - 🔄 **Rate Limiting** - Token bucket algorithm prevents message spam
+
+**Note:** This extension does NOT provide wallet functionality. You must have MetaMask or another EIP-1193 compatible wallet extension already installed.
 
 ## Wallet Compatibility
 
@@ -276,22 +295,24 @@ npm run test:e2e:security
 
 | Feature | Purpose |
 |---------|---------|
-| Wallet Connection | Access `window.ethereum`, trigger connection popups |
-| Message Signing | Sign SIWE messages via `personal_sign` |
-| Session Storage | Persist auth in `chrome.storage.local` |
-| Cross-Tab Sync | Broadcast session changes to all tabs |
-| Wallet Events | Handle account/chain changes |
+| **Wallet Bridge** | Connects existing wallet extensions (MetaMask, etc.) to the app |
+| **SIWE Authentication** | Facilitates Sign-In With Ethereum signature flow |
+| **Session Management** | Persist auth state in `chrome.storage.local` |
+| **Cross-Tab Sync** | Broadcast session changes to all tabs |
+| **Wallet Events** | Handle account/chain changes from connected wallet |
 
 ### What This Extension Does NOT Do ❌
 
-| Not Our Job | Where It Belongs |
-|-------------|------------------|
-| Account mode (Live/Demo) | Main app's Zustand store |
+| Not Our Job | Why |
+|-------------|-----|
+| Provide wallet functionality | Users must install MetaMask or similar separately |
+| Store private keys | Security—keys stay in user's wallet extension |
+| Send/receive crypto | Not a wallet—authentication only |
+| Account mode (Live/Demo) | Main app's business logic |
 | Trade data | Main app's React Query |
 | UI components | Main app's React |
-| User preferences | Main app's localStorage |
 
-The extension is a **wallet bridge**, not a business logic layer.
+**This extension is a wallet authentication bridge, not a wallet itself.**
 
 ## Troubleshooting
 

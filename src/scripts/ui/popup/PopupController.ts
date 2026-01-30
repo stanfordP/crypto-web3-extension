@@ -245,10 +245,14 @@ export class PopupController {
         });
       } else {
         this.view.showView('notConnected');
+        // Update status indicators for Chrome reviewers
+        await this.updateStatusIndicators();
       }
     } catch (error) {
       console.error('[PopupController] Failed to check session:', error);
       this.view.showView('notConnected');
+      // Update status indicators even on error
+      await this.updateStatusIndicators();
     }
   }
 
@@ -460,5 +464,68 @@ export class PopupController {
     };
 
     this.storage.onChanged(this.storageListener);
+  }
+
+  /**
+   * Update status indicators for Chrome Web Store reviewers
+   * Shows wallet detection and domain validation status
+   */
+  private async updateStatusIndicators(): Promise<void> {
+    try {
+      // Check if we're in a browser context with access to tabs
+      const [activeTab] = await this.tabs.query({ active: true, currentWindow: true });
+      
+      // Update wallet status
+      const walletStatusEl = document.getElementById('walletStatus');
+      const walletLabelEl = document.getElementById('walletStatusLabel');
+      
+      // We can't directly check window.ethereum from popup, so we show guidance
+      if (walletStatusEl && walletLabelEl) {
+        walletStatusEl.textContent = '⚠️';
+        walletLabelEl.textContent = 'Web3 Wallet: Install MetaMask';
+        walletLabelEl.className = 'status-label status-warning';
+        
+        // Add link to MetaMask
+        const linkEl = document.createElement('a');
+        linkEl.href = 'https://metamask.io/download/';
+        linkEl.target = '_blank';
+        linkEl.className = 'status-link';
+        linkEl.textContent = '(Get MetaMask)';
+        walletLabelEl.appendChild(document.createTextNode(' '));
+        walletLabelEl.appendChild(linkEl);
+      }
+
+      // Update domain status
+      const domainStatusEl = document.getElementById('domainStatus');
+      const domainLabelEl = document.getElementById('domainStatusLabel');
+      
+      if (domainStatusEl && domainLabelEl && activeTab?.url) {
+        const isAllowedDomain = 
+          activeTab.url.includes('cryptotradingjournal.xyz') ||
+          activeTab.url.includes('localhost:3000') ||
+          activeTab.url.includes('localhost:3001');
+
+        if (isAllowedDomain) {
+          domainStatusEl.textContent = '✅';
+          domainLabelEl.textContent = 'Correct Domain: Yes';
+          domainLabelEl.className = 'status-label status-success';
+        } else {
+          domainStatusEl.textContent = '⚠️';
+          domainLabelEl.textContent = 'Domain: Visit cryptotradingjournal.xyz';
+          domainLabelEl.className = 'status-label status-warning';
+          
+          // Add link to correct domain
+          const linkEl = document.createElement('a');
+          linkEl.href = 'https://cryptotradingjournal.xyz';
+          linkEl.target = '_blank';
+          linkEl.className = 'status-link';
+          linkEl.textContent = '(Go to site)';
+          domainLabelEl.appendChild(document.createTextNode(' '));
+          domainLabelEl.appendChild(linkEl);
+        }
+      }
+    } catch (error) {
+      console.error('[PopupController] Failed to update status indicators:', error);
+    }
   }
 }

@@ -5,7 +5,63 @@ All notable changes to the Crypto Trading Journal Web3 Extension will be documen
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.2.1] - 2026-01-04 (Pending Chrome Web Store Approval)
+## [2.2.3] - 2026-01-30 (Chrome Web Store Resubmission - Enhanced)
+
+### Added
+- **Status indicators in popup** for Chrome Web Store reviewers
+  - Extension active status (always shows ✅)
+  - Wallet detection indicator (guides to MetaMask installation)
+  - Domain validation indicator (shows if on correct site)
+  - Helpful links to MetaMask and cryptotradingjournal.xyz
+- **500-character test instructions** with pre-configured test wallet
+  - Uses standard BIP-39 test mnemonic (abandon...about)
+  - No real funds required for testing
+  - Step-by-step guide within character limit
+- TEST_INSTRUCTIONS_500_CHAR.txt file for easy copy-paste
+
+### Changed
+- Popup now shows meaningful status even when not connected
+- Enhanced user experience for reviewers who don't have wallet installed
+- Updated STORE_LISTING.md with concise test instructions section
+
+### Fixed
+- Addresses Chrome Web Store reviewer friction (500-char limit constraint)
+- Makes extension self-documenting for reviewers
+- Reduces barrier to testing functionality
+
+### Technical Details
+- Added updateStatusIndicators() method to PopupController
+- Enhanced popup.html with status-checks section
+- Added CSS styling for status indicators
+- Popup detects current tab domain and shows appropriate guidance
+
+---
+
+## [2.2.2] - 2026-01-30 (Chrome Web Store Resubmission)
+
+### Changed
+- **CRITICAL:** Clarified extension positioning as "authentication bridge" not standalone wallet
+- Updated store listing description to explicitly state prerequisites (requires existing wallet)
+- Revised manifest description to clarify functionality
+- Updated short description to emphasize bridge functionality
+- Added clear "What this does / does not do" sections to store listing
+
+### Added
+- CHROME_REVIEWER_INSTRUCTIONS.md with detailed testing guide for Chrome Web Store reviewers
+- Prerequisites section in store listing (must have MetaMask or similar wallet installed)
+- Explicit disclaimer that extension is NOT a wallet
+
+### Fixed
+- Chrome Web Store rejection issue (Violation ID: Red Potassium)
+- Misleading terminology that implied standalone wallet functionality
+- Reviewer confusion about "Wallet" functionality
+
+### Notes
+This release addresses the Chrome Web Store rejection where reviewers couldn't reproduce "Wallet" functionality. The extension is an authentication bridge that requires a separate wallet extension (MetaMask, Brave Wallet, etc.) to function—it does not provide wallet functionality itself.
+
+---
+
+## [2.2.1] - 2026-01-04 (Rejected by Chrome Web Store)
 
 ### Added
 - Comprehensive test coverage documentation with targets

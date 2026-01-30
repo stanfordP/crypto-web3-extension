@@ -2,9 +2,9 @@
 
 Use this content when submitting to the Chrome Web Store.
 
-**Current Version:** 2.2.1  
-**Last Updated:** January 4, 2026  
-**Status:** Pending Chrome Web Store Approval
+**Current Version:** 2.2.2  
+**Last Updated:** January 30, 2026  
+**Status:** Resubmission after rejection (Violation ID: Red Potassium)
 
 ---
 
@@ -15,7 +15,21 @@ Use this content when submitting to the Chrome Web Store.
 
 ## Short Description (132 characters max)
 ```
-Secure Web3 wallet authentication for Crypto Trading Journal. Sign in with Ethereum using MetaMask, Brave, or any EIP-1193 wallet.
+Web3 authentication bridge for Crypto Trading Journal. Connects your existing MetaMask/Brave wallet for passwordless sign-in (SIWE).
+```
+
+---
+
+## What's New in v2.2.2
+
+```
+🔧 CHROME WEB STORE RESUBMISSION
+
+• Clarified extension positioning: authentication bridge, NOT a wallet
+• Added explicit prerequisites section (requires MetaMask or similar)
+• Updated descriptions to prevent reviewer confusion
+• Added comprehensive testing guide for Chrome reviewers
+• Emphasized that extension bridges existing wallets, doesn't provide wallet functionality
 ```
 
 ---
@@ -53,20 +67,38 @@ Secure Web3 wallet authentication for Crypto Trading Journal. Sign in with Ether
 ## Detailed Description (For Store Listing)
 
 ```
-🔐 SECURE WEB3 AUTHENTICATION FOR CRYPTO TRADERS
+🔐 WEB3 AUTHENTICATION BRIDGE (NOT A WALLET)
 
-Connect your cryptocurrency wallet to Crypto Trading Journal with industry-standard Sign-In With Ethereum (SIWE) authentication. No passwords needed—your wallet is your login.
+⚠️ IMPORTANT: This extension is NOT a cryptocurrency wallet. It connects your EXISTING wallet (MetaMask, Brave Wallet, etc.) to Crypto Trading Journal for secure authentication.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-✨ KEY FEATURES
+📋 PREREQUISITES
 
-• One-Click Authentication - Sign in instantly with your existing crypto wallet
-• SIWE Standard (EIP-4361) - Industry-standard secure authentication protocol
-• Multi-Wallet Support - Works with MetaMask, Brave Wallet, Coinbase Wallet, and any EIP-1193 compatible wallet
-• Multi-Chain Ready - Supports Ethereum, Polygon, Arbitrum, Optimism, and Base networks
-• Session Persistence - Stay logged in securely for 24 hours
-• Zero Private Key Access - We never see, store, or transmit your private keys
+Before installing, you must have:
+• MetaMask, Brave Wallet, or another EIP-1193 compatible wallet extension already installed
+• An account on Crypto Trading Journal (https://cryptotradingjournal.xyz)
+
+This extension enables passwordless Web3 authentication using the Sign-In With Ethereum (SIWE) standard.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✨ WHAT THIS EXTENSION DOES
+
+• Bridges your existing wallet to Crypto Trading Journal
+• Enables passwordless authentication via SIWE (EIP-4361)
+• Manages secure session state across browser tabs
+• Works only with cryptotradingjournal.xyz domain
+• Supports multiple blockchain networks (Ethereum, Polygon, Arbitrum, etc.)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ WHAT THIS EXTENSION DOES NOT DO
+
+• Does NOT store, send, or receive cryptocurrency
+• Does NOT manage private keys or seed phrases
+• Does NOT provide wallet functionality
+• Does NOT work standalone - requires Crypto Trading Journal website
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -92,22 +124,26 @@ Track your trades, analyze performance, and improve your trading—all secured w
 
 🔧 HOW IT WORKS
 
-1. Install this extension
-2. Visit cryptotradingjournal.xyz
-3. Click "Connect Wallet"
-4. Sign the authentication message in your wallet
-5. You're logged in—no password required!
+1. Install MetaMask or another wallet extension (if not already installed)
+2. Install this authentication bridge extension
+3. Visit cryptotradingjournal.xyz and click "Connect Wallet"
+4. Approve connection in your wallet
+5. Sign the authentication message (SIWE)
+6. You're authenticated—no password required!
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💡 SUPPORTED WALLETS
+💡 COMPATIBLE WITH THESE WALLETS
 
-• MetaMask
+This extension detects and works with:
+• MetaMask (Recommended)
 • Brave Wallet
 • Coinbase Wallet
+• Rabby
 • Rainbow
-• Trust Wallet
-• Any EIP-1193 compatible browser wallet
+• Any EIP-1193 compatible browser wallet extension
+
+Note: You must install one of these wallet extensions separately first.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -171,10 +207,41 @@ Keywords: crypto, trading, journal, web3, wallet, ethereum, SIWE, authentication
 
 ---
 
+## Test Instructions for Chrome Web Store Reviewers (500 Character Limit)
+
+**Use this exact text when submitting to Chrome Web Store:**
+
+```
+REQUIRES MetaMask extension.
+
+TEST WALLET (no real funds):
+abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
+
+STEPS:
+1. In MetaMask: Import wallet using seed above
+2. Visit https://cryptotradingjournal.xyz
+3. Click "Connect Wallet" on site
+4. Approve in MetaMask popup
+5. Success = wallet address shown in extension popup
+
+Extension ONLY works on cryptotradingjournal.xyz domain.
+Contact: support@cryptotradingjournal.xyz
+```
+
+**Character count:** 466 characters ✅
+
+**Notes for submission:**
+- This uses the standard BIP-39 test mnemonic (no real funds at risk)
+- Reviewers can import in 30 seconds vs. creating new wallet
+- Extension popup will show status indicators even before connection
+- Click extension icon to see: Extension Active, Wallet Detection, Domain Check
+
+---
+
 ## Single Purpose Description (For Chrome Web Store Review)
 
 ```
-This extension provides Web3 wallet authentication for the Crypto Trading Journal web application. It allows users to sign in using their Ethereum wallet (Sign-In With Ethereum / SIWE protocol) instead of traditional username/password authentication. The extension detects the user's existing browser wallet (like MetaMask), facilitates the cryptographic signature process, and maintains the authenticated session.
+This extension is an authentication bridge (NOT a wallet) for the Crypto Trading Journal web application. It connects users' existing wallet extensions (MetaMask, Brave Wallet, etc.) to enable passwordless authentication via Sign-In With Ethereum (SIWE/EIP-4361). The extension detects installed wallet extensions, facilitates the SIWE signature flow, and maintains the authenticated session. It does not provide wallet functionality—users must have a separate wallet extension already installed.
 ```
 
 ---

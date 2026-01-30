@@ -639,3 +639,67 @@ h2 {
   transform: none;
   box-shadow: none;
 }
+
+/* ============================================================================
+   Status Checks - Chrome Web Store Reviewer Aid
+   ============================================================================ */
+
+.status-checks {
+  width: 100%;
+  padding: 16px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: var(--radius);
+  margin: 16px 0;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.status-item:not(:last-child) {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.status-indicator {
+  font-size: 18px;
+  line-height: 1;
+  min-width: 20px;
+  text-align: center;
+}
+
+.status-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.status-label.status-success {
+  color: var(--success);
+  font-weight: 500;
+}
+
+.status-label.status-warning {
+  color: var(--warning);
+  font-weight: 500;
+}
+
+.status-label.status-error {
+  color: var(--error);
+  font-weight: 500;
+}
+
+.status-link {
+  color: var(--cj-teal-glow);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.status-link:hover {
+  color: var(--cj-teal-light);
+  text-decoration: underline;
+}

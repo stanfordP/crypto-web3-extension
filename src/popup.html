@@ -35,6 +35,22 @@
         Connect your wallet through the Crypto Trading Journal app.
       </p>
 
+      <!-- Status Indicators for Reviewers -->
+      <div class="status-checks" role="status" aria-live="polite">
+        <div class="status-item">
+          <span id="extensionStatus" class="status-indicator">✅</span>
+          <span class="status-label">Extension Active</span>
+        </div>
+        <div class="status-item">
+          <span id="walletStatus" class="status-indicator">⏳</span>
+          <span class="status-label" id="walletStatusLabel">Checking wallet...</span>
+        </div>
+        <div class="status-item">
+          <span id="domainStatus" class="status-indicator">⏳</span>
+          <span class="status-label" id="domainStatusLabel">Checking domain...</span>
+        </div>
+      </div>
+
       <button id="connectButton" class="button button-primary" aria-label="Open Trading Journal to connect your wallet">
         Open Trading Journal
       </button>
