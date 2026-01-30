@@ -6,13 +6,22 @@ A Manifest V3 Chrome browser extension providing secure Web3 wallet authenticati
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-green.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Coverage](https://img.shields.io/badge/Coverage-44.31%25-yellow.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.2.2-blue.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.2.3-blue.svg)]()
 [![Tests](https://img.shields.io/badge/Tests-1015-green.svg)]()
-[![Status](https://img.shields.io/badge/Status-Resubmission-orange.svg)]()
+[![Status](https://img.shields.io/badge/Status-Ready%20for%20Resubmission-green.svg)]()
 
 ## Overview
 
 **Important:** This extension is an **authentication bridge**, NOT a standalone wallet. It connects your existing wallet (MetaMask, Brave Wallet, etc.) to Crypto Trading Journal for passwordless Web3 authentication.
+
+### For Chrome Web Store Reviewers
+The extension popup now displays helpful status indicators showing:
+- ✅ Extension Active status
+- Wallet detection (guides to MetaMask if not installed)
+- Domain validation (shows if on correct site)
+- Direct links to required resources
+
+**Test Instructions:** See [TEST_INSTRUCTIONS_500_CHAR.txt](TEST_INSTRUCTIONS_500_CHAR.txt) for concise testing guide with pre-configured test wallet (under 500 characters).
 
 ### Prerequisites
 - A wallet extension already installed (MetaMask, Brave Wallet, Rabby, etc.)
