@@ -5,7 +5,31 @@ All notable changes to the Crypto Trading Journal Web3 Extension will be documen
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.2.1] - 2026-01-04 (Pending Chrome Web Store Approval)
+## [2.2.2] - 2026-01-30 (Chrome Web Store Resubmission)
+
+### Changed
+- **CRITICAL:** Clarified extension positioning as "authentication bridge" not standalone wallet
+- Updated store listing description to explicitly state prerequisites (requires existing wallet)
+- Revised manifest description to clarify functionality
+- Updated short description to emphasize bridge functionality
+- Added clear "What this does / does not do" sections to store listing
+
+### Added
+- CHROME_REVIEWER_INSTRUCTIONS.md with detailed testing guide for Chrome Web Store reviewers
+- Prerequisites section in store listing (must have MetaMask or similar wallet installed)
+- Explicit disclaimer that extension is NOT a wallet
+
+### Fixed
+- Chrome Web Store rejection issue (Violation ID: Red Potassium)
+- Misleading terminology that implied standalone wallet functionality
+- Reviewer confusion about "Wallet" functionality
+
+### Notes
+This release addresses the Chrome Web Store rejection where reviewers couldn't reproduce "Wallet" functionality. The extension is an authentication bridge that requires a separate wallet extension (MetaMask, Brave Wallet, etc.) to function—it does not provide wallet functionality itself.
+
+---
+
+## [2.2.1] - 2026-01-04 (Rejected by Chrome Web Store)
 
 ### Added
 - Comprehensive test coverage documentation with targets
