@@ -575,6 +575,28 @@ h2 {
   font-weight: 500;
 }
 
+.footer-links {
+  font-size: 10px;
+  margin-top: 8px;
+  color: var(--text-muted);
+}
+
+.footer-link {
+  color: var(--cj-teal-glow);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: var(--cj-teal-light);
+  text-decoration: underline;
+}
+
+.footer-separator {
+  margin: 0 6px;
+  color: var(--text-muted);
+}
+
 /* ============================================================================
    Scrollbar
    ============================================================================ */

@@ -251,6 +251,9 @@ Contact: support@cryptotradingjournal.xyz
 - Extension popup will show status indicators even before connection
 - Click extension icon to see: Extension Active, Wallet Detection, Domain Check
 
+**Detailed Testing Guide for Reviewers:**
+- https://stanfordp.github.io/crypto-web3-extension/reviewer.html
+
 ---
 
 ## Single Purpose Description (For Chrome Web Store Review)
@@ -266,6 +269,14 @@ This extension is an authentication bridge (NOT a wallet) for the Crypto Trading
 https://stanfordp.github.io/crypto-web3-extension/
 ```
 (After enabling GitHub Pages on the `docs` folder)
+
+---
+
+## Reviewer Testing Guide URL
+```
+https://stanfordp.github.io/crypto-web3-extension/reviewer.html
+```
+(Detailed step-by-step testing instructions with time estimates)
 
 ---
 
