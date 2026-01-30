@@ -207,6 +207,37 @@ Keywords: crypto, trading, journal, web3, wallet, ethereum, SIWE, authentication
 
 ---
 
+## Test Instructions for Chrome Web Store Reviewers (500 Character Limit)
+
+**Use this exact text when submitting to Chrome Web Store:**
+
+```
+REQUIRES MetaMask extension.
+
+TEST WALLET (no real funds):
+abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
+
+STEPS:
+1. In MetaMask: Import wallet using seed above
+2. Visit https://cryptotradingjournal.xyz
+3. Click "Connect Wallet" on site
+4. Approve in MetaMask popup
+5. Success = wallet address shown in extension popup
+
+Extension ONLY works on cryptotradingjournal.xyz domain.
+Contact: support@cryptotradingjournal.xyz
+```
+
+**Character count:** 466 characters ✅
+
+**Notes for submission:**
+- This uses the standard BIP-39 test mnemonic (no real funds at risk)
+- Reviewers can import in 30 seconds vs. creating new wallet
+- Extension popup will show status indicators even before connection
+- Click extension icon to see: Extension Active, Wallet Detection, Domain Check
+
+---
+
 ## Single Purpose Description (For Chrome Web Store Review)
 
 ```

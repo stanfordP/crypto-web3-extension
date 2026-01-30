@@ -5,6 +5,38 @@ All notable changes to the Crypto Trading Journal Web3 Extension will be documen
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.3] - 2026-01-30 (Chrome Web Store Resubmission - Enhanced)
+
+### Added
+- **Status indicators in popup** for Chrome Web Store reviewers
+  - Extension active status (always shows ✅)
+  - Wallet detection indicator (guides to MetaMask installation)
+  - Domain validation indicator (shows if on correct site)
+  - Helpful links to MetaMask and cryptotradingjournal.xyz
+- **500-character test instructions** with pre-configured test wallet
+  - Uses standard BIP-39 test mnemonic (abandon...about)
+  - No real funds required for testing
+  - Step-by-step guide within character limit
+- TEST_INSTRUCTIONS_500_CHAR.txt file for easy copy-paste
+
+### Changed
+- Popup now shows meaningful status even when not connected
+- Enhanced user experience for reviewers who don't have wallet installed
+- Updated STORE_LISTING.md with concise test instructions section
+
+### Fixed
+- Addresses Chrome Web Store reviewer friction (500-char limit constraint)
+- Makes extension self-documenting for reviewers
+- Reduces barrier to testing functionality
+
+### Technical Details
+- Added updateStatusIndicators() method to PopupController
+- Enhanced popup.html with status-checks section
+- Added CSS styling for status indicators
+- Popup detects current tab domain and shows appropriate guidance
+
+---
+
 ## [2.2.2] - 2026-01-30 (Chrome Web Store Resubmission)
 
 ### Changed
