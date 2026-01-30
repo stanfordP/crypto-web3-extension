@@ -452,7 +452,9 @@ export class ContentController {
       _sender: unknown, 
       sendResponse: (response?: unknown) => void
     ): boolean => {
-      if ((message as Record<string, unknown>)?.type === 'POPUP_GET_SESSION') {
+      const msgType = (message as Record<string, unknown>)?.type;
+      
+      if (msgType === 'POPUP_GET_SESSION') {
         this.handlePopupGetSession()
           .then(sendResponse)
           .catch((error) => {
@@ -461,6 +463,18 @@ export class ContentController {
           });
         return true; // Keep channel open for async response
       }
+      
+      // Handle wallet availability check from popup
+      if (msgType === 'POPUP_CHECK_WALLET') {
+        this.handlePopupCheckWallet()
+          .then(sendResponse)
+          .catch((error) => {
+            this.logger.error('Failed to handle POPUP_CHECK_WALLET', { error: String(error) });
+            sendResponse({ success: false, walletAvailable: false, error: String(error) });
+          });
+        return true; // Keep channel open for async response
+      }
+      
       return false;
     };
 
@@ -1082,6 +1096,49 @@ export class ContentController {
     } catch (error) {
       this.logger.error('handlePopupGetSession failed', { error: String(error) });
       return { success: false };
+    }
+  }
+
+  /**
+   * Handle POPUP_CHECK_WALLET from popup
+   * Checks if a Web3 wallet provider (e.g., MetaMask) is available on the page
+   */
+  async handlePopupCheckWallet(): Promise<{
+    success: boolean;
+    walletAvailable: boolean;
+    walletName?: string;
+    error?: string;
+  }> {
+    try {
+      this.logger.debug('Checking wallet availability for popup...');
+      
+      // Use InjectionService to check wallet through injected script
+      const result = await this.injectionService.checkWallet();
+      
+      if (result) {
+        this.logger.debug('Wallet check result', { 
+          available: result.available,
+          walletName: result.walletName 
+        });
+        return {
+          success: true,
+          walletAvailable: result.available,
+          walletName: result.walletName ?? undefined,
+        };
+      }
+      
+      // Fallback: wallet check failed or timed out
+      return {
+        success: true,
+        walletAvailable: false,
+      };
+    } catch (error) {
+      this.logger.error('handlePopupCheckWallet failed', { error: String(error) });
+      return { 
+        success: false, 
+        walletAvailable: false, 
+        error: String(error) 
+      };
     }
   }
 

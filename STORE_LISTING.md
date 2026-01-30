@@ -2,7 +2,7 @@
 
 Use this content when submitting to the Chrome Web Store.
 
-**Current Version:** 2.2.2  
+**Current Version:** 2.2.4  
 **Last Updated:** January 30, 2026  
 **Status:** Resubmission after rejection (Violation ID: Red Potassium)
 
@@ -20,7 +20,22 @@ Web3 authentication bridge for Crypto Trading Journal. Connects your existing Me
 
 ---
 
-## What's New in v2.2.2
+## What's New in v2.2.4
+
+```
+🔧 CHROME WEB STORE REVIEWER IMPROVEMENTS
+
+• Enhanced popup status indicators for clearer extension functionality demonstration
+• Added real-time wallet detection when on supported domains
+• Improved guidance for reviewers: shows MetaMask requirement and domain checks
+• Clearer messaging: "This is NOT a wallet" prominently displayed
+• Status panel shows: Extension Active ✅, Wallet Detected, Domain Status
+• Better user guidance with direct links to MetaMask and supported site
+```
+
+---
+
+## What's New in v2.2.3
 
 ```
 🔧 CHROME WEB STORE RESUBMISSION
