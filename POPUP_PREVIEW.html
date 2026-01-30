@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Popup Preview - Status Indicators</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+      margin: 0;
+    }
+    .preview-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .description {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .popup-preview {
+      background: #0a1628;
+      color: #f1f5f9;
+      width: 360px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      margin: 0 auto;
+    }
+    .popup-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #14b8a6;
+    }
+    .status-section {
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    }
+    .status-item:last-child {
+      border-bottom: none;
+    }
+    .status-icon {
+      font-size: 18px;
+      min-width: 20px;
+    }
+    .status-text {
+      font-size: 13px;
+      color: #94a3b8;
+      flex: 1;
+    }
+    .status-success { color: #10b981; font-weight: 500; }
+    .status-warning { color: #f59e0b; font-weight: 500; }
+    .status-link {
+      color: #14b8a6;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .status-link:hover {
+      text-decoration: underline;
+    }
+    .button {
+      width: 100%;
+      background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    .note {
+      font-size: 11px;
+      color: #64748b;
+      text-align: center;
+      margin-top: 12px;
+    }
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 30px;
+    }
+    .comparison-box {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .comparison-box h3 {
+      margin-top: 0;
+      font-size: 16px;
+    }
+    .comparison-box.before h3 { color: #ef4444; }
+    .comparison-box.after h3 { color: #10b981; }
+    ul {
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+    li {
+      margin: 8px 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-container">
+    <h1>🎯 Chrome Web Store Reviewer Experience - v2.2.3</h1>
+    
+    <div class="description">
+      <p><strong>What reviewers see when they click the extension icon:</strong></p>
+      <p>The popup now displays helpful status indicators that guide reviewers through prerequisites and prove the extension is functional.</p>
+    </div>
+
+    <div class="popup-preview">
+      <div class="popup-title">Not Connected</div>
+      
+      <p style="font-size: 13px; color: #94a3b8; margin-bottom: 16px;">
+        Connect your wallet through the Crypto Trading Journal app.
+      </p>
+
+      <div class="status-section">
+        <div class="status-item">
+          <span class="status-icon">✅</span>
+          <span class="status-text status-success">Extension Active</span>
+        </div>
+        <div class="status-item">
+          <span class="status-icon">⚠️</span>
+          <span class="status-text status-warning">
+            Web3 Wallet: Install MetaMask 
+            <a href="#" class="status-link">(Get MetaMask)</a>
+          </span>
+        </div>
+        <div class="status-item">
+          <span class="status-icon">⚠️</span>
+          <span class="status-text status-warning">
+            Domain: Visit cryptotradingjournal.xyz 
+            <a href="#" class="status-link">(Go to site)</a>
+          </span>
+        </div>
+      </div>
+
+      <button class="button">Open Trading Journal</button>
+
+      <div class="note">
+        <strong>Note:</strong> Authentication is handled by the main app.<br>
+        This extension bridges your wallet securely.
+      </div>
+    </div>
+
+    <div class="comparison">
+      <div class="comparison-box before">
+        <h3>❌ Before v2.2.3</h3>
+        <ul>
+          <li>Popup showed only "Not Connected"</li>
+          <li>No indication extension was working</li>
+          <li>Reviewers had to:
+            <ul>
+              <li>Download MetaMask</li>
+              <li>Create new wallet</li>
+              <li>Secure seed phrase</li>
+              <li>Navigate to specific site</li>
+            </ul>
+          </li>
+          <li>High friction = Rejection</li>
+          <li>Test instructions exceeded 500 chars</li>
+        </ul>
+      </div>
+
+      <div class="comparison-box after">
+        <h3>✅ After v2.2.3</h3>
+        <ul>
+          <li>Popup shows extension IS working</li>
+          <li>Clear status indicators guide reviewers</li>
+          <li>Clickable links to prerequisites</li>
+          <li>Pre-configured test wallet (no setup)</li>
+          <li>Test instructions: 466 chars ✅</li>
+          <li>Import wallet in 30 seconds</li>
+          <li>Self-documenting UI</li>
+          <li>Low friction = Approval</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="description" style="margin-top: 30px; background: #e0f2fe; border-left: 4px solid #0ea5e9;">
+      <h3 style="margin-top: 0; color: #0c4a6e;">📝 Test Instructions (466/500 chars)</h3>
+      <pre style="background: #f8fafc; padding: 12px; border-radius: 4px; overflow-x: auto; font-size: 12px; line-height: 1.6;">REQUIRES MetaMask extension.
+
+TEST WALLET (no real funds):
+abandon abandon abandon abandon abandon abandon 
+abandon abandon abandon abandon abandon about
+
+STEPS:
+1. In MetaMask: Import wallet using seed above
+2. Visit https://cryptotradingjournal.xyz
+3. Click "Connect Wallet" on site
+4. Approve in MetaMask popup
+5. Success = wallet address shown in extension popup
+
+Extension ONLY works on cryptotradingjournal.xyz domain.
+Contact: support@cryptotradingjournal.xyz</pre>
+    </div>
+
+    <div class="description" style="margin-top: 20px; background: #dcfce7; border-left: 4px solid #10b981;">
+      <h3 style="margin-top: 0; color: #065f46;">✅ Why This Solves the Problem</h3>
+      <ul style="margin: 10px 0;">
+        <li><strong>Self-Documenting:</strong> Extension shows it's working + what's needed</li>
+        <li><strong>Low Friction:</strong> Pre-configured test wallet (no manual setup)</li>
+        <li><strong>Clear Guidance:</strong> Direct links to MetaMask and site</li>
+        <li><strong>Under Limit:</strong> 466 characters (34 chars to spare)</li>
+        <li><strong>Proves Functionality:</strong> Status indicators demonstrate code exists</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
