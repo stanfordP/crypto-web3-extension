@@ -467,6 +467,39 @@ export class PopupController {
   }
 
   /**
+   * Securely check if a URL is on an allowed domain
+   * Uses hostname validation to prevent URL manipulation attacks
+   */
+  private isAllowedDomain(url: string | undefined): boolean {
+    if (!url) return false;
+    
+    try {
+      const urlObj = new URL(url);
+      const hostname = urlObj.hostname.toLowerCase();
+      
+      // Check for exact hostname matches or subdomains
+      const allowedHosts = [
+        'cryptotradingjournal.xyz',
+        'www.cryptotradingjournal.xyz',
+        'localhost',
+      ];
+      
+      // Check for localhost with allowed ports
+      if (hostname === 'localhost') {
+        const port = urlObj.port;
+        return port === '3000' || port === '3001';
+      }
+      
+      // Check for exact match or subdomain of cryptotradingjournal.xyz
+      return allowedHosts.includes(hostname) || 
+             hostname.endsWith('.cryptotradingjournal.xyz');
+    } catch {
+      // Invalid URL
+      return false;
+    }
+  }
+
+  /**
    * Update status indicators for Chrome Web Store reviewers
    * Shows wallet detection and domain validation status
    */
@@ -475,12 +508,8 @@ export class PopupController {
       // Check if we're in a browser context with access to tabs
       const [activeTab] = await this.tabs.query({ active: true, currentWindow: true });
       
-      // Check if on allowed domain first
-      const isAllowedDomain = activeTab?.url && (
-        activeTab.url.includes('cryptotradingjournal.xyz') ||
-        activeTab.url.includes('localhost:3000') ||
-        activeTab.url.includes('localhost:3001')
-      );
+      // Check if on allowed domain using secure hostname validation
+      const isAllowedDomain = this.isAllowedDomain(activeTab?.url);
       
       // Update wallet status
       const walletStatusEl = document.getElementById('walletStatus');
@@ -506,7 +535,7 @@ export class PopupController {
             } else {
               // Wallet not found on supported domain
               walletStatusEl.textContent = '❌';
-              walletLabelEl.textContent = 'Web3 Wallet: Not Detected ';
+              walletLabelEl.textContent = 'Web3 Wallet: Not Detected';
               walletLabelEl.className = 'status-label status-error';
               
               // Add link to MetaMask
@@ -514,19 +543,19 @@ export class PopupController {
               linkEl.href = 'https://metamask.io/download/';
               linkEl.target = '_blank';
               linkEl.className = 'status-link';
-              linkEl.textContent = '(Install MetaMask)';
+              linkEl.textContent = ' (Install MetaMask)';
               walletLabelEl.appendChild(linkEl);
             }
           } catch {
             // Content script not responding - show guidance
             walletStatusEl.textContent = '⚠️';
-            walletLabelEl.textContent = 'Wallet: Checking requires page refresh ';
+            walletLabelEl.textContent = 'Wallet: Checking requires page refresh';
             walletLabelEl.className = 'status-label status-warning';
           }
         } else {
           // Not on allowed domain - show guidance
           walletStatusEl.textContent = '⏳';
-          walletLabelEl.textContent = 'Web3 Wallet: Requires MetaMask ';
+          walletLabelEl.textContent = 'Web3 Wallet: Requires MetaMask';
           walletLabelEl.className = 'status-label status-warning';
           
           // Add link to MetaMask
@@ -534,7 +563,7 @@ export class PopupController {
           linkEl.href = 'https://metamask.io/download/';
           linkEl.target = '_blank';
           linkEl.className = 'status-link';
-          linkEl.textContent = '(Get MetaMask)';
+          linkEl.textContent = ' (Get MetaMask)';
           walletLabelEl.appendChild(linkEl);
         }
       }
@@ -553,7 +582,7 @@ export class PopupController {
           domainLabelEl.className = 'status-label status-success';
         } else {
           domainStatusEl.textContent = '⚠️';
-          domainLabelEl.textContent = 'Domain: Visit CTJ site ';
+          domainLabelEl.textContent = 'Domain: Visit supported site';
           domainLabelEl.className = 'status-label status-warning';
           
           // Add link to correct domain
@@ -561,7 +590,7 @@ export class PopupController {
           linkEl.href = 'https://cryptotradingjournal.xyz';
           linkEl.target = '_blank';
           linkEl.className = 'status-link';
-          linkEl.textContent = '(Go to cryptotradingjournal.xyz)';
+          linkEl.textContent = ' (Go to cryptotradingjournal.xyz)';
           domainLabelEl.appendChild(linkEl);
         }
       }
