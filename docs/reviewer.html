@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrome Web Store Reviewer Guide - Crypto Trading Journal Web3 Extension</title>
+    <meta name="description" content="Quick testing guide for Chrome Web Store reviewers testing the Crypto Trading Journal Web3 Extension">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a2e;
+            --bg-card: #16162a;
+            --text-primary: #e4e4e7;
+            --text-secondary: #a1a1aa;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --border: #27272a;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --info: #3b82f6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            padding: 2rem 1rem;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .time-estimate {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-weight: 600;
+            color: var(--success);
+        }
+        
+        .time-estimate svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        h2 {
+            color: var(--accent-hover);
+            font-size: 1.5rem;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h3 {
+            color: var(--text-primary);
+            font-size: 1.15rem;
+            margin: 1.5rem 0 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .quick-facts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .fact-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+        
+        .fact-card .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .fact-card .label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .fact-card .value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .steps-container {
+            margin: 2rem 0;
+        }
+        
+        .step {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+        }
+        
+        .step-number {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .step-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .step-time {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.8rem;
+            color: var(--success);
+            background: rgba(34, 197, 94, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .code-block {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            color: var(--text-secondary);
+        }
+        
+        .highlight-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .highlight-box.success {
+            border-left: 4px solid var(--success);
+        }
+        
+        .highlight-box.warning {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .highlight-box.info {
+            border-left: 4px solid var(--info);
+        }
+        
+        .highlight-box.error {
+            border-left: 4px solid var(--error);
+        }
+        
+        .highlight-box h4 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+            color: var(--text-secondary);
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        a:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            text-decoration: none;
+        }
+        
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .buttons-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        
+        .flow-diagram {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .flow-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .flow-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        .flow-item .icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .flow-item .label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+        
+        .success-criteria {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .criteria-card {
+            background: var(--bg-card);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .criteria-card .check {
+            color: var(--success);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            body {
+                padding: 1rem 0.75rem;
+            }
+            
+            .step {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .step-time {
+                position: static;
+                display: inline-block;
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <span class="badge">For Chrome Web Store Reviewers</span>
+            <h1>Quick Testing Guide</h1>
+            <p class="subtitle">Crypto Trading Journal - Web3 Auth Extension (v2.2.4)</p>
+            <div class="time-estimate">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>Estimated Testing Time: 3-5 minutes</span>
+            </div>
+        </header>
+
+        <main>
+            <!-- Quick Facts -->
+            <section>
+                <h2>⚡ Quick Facts</h2>
+                <div class="quick-facts">
+                    <div class="fact-card">
+                        <div class="icon">🔌</div>
+                        <div class="label">Type</div>
+                        <div class="value">Auth Bridge</div>
+                    </div>
+                    <div class="fact-card">
+                        <div class="icon">🦊</div>
+                        <div class="label">Requires</div>
+                        <div class="value">MetaMask</div>
+                    </div>
+                    <div class="fact-card">
+                        <div class="icon">🌐</div>
+                        <div class="label">Works On</div>
+                        <div class="value">cryptotradingjournal.xyz</div>
+                    </div>
+                    <div class="fact-card">
+                        <div class="icon">❌</div>
+                        <div class="label">NOT a</div>
+                        <div class="value">Wallet</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Important Notice -->
+            <section>
+                <div class="highlight-box warning">
+                    <h4>⚠️ Important: This is NOT a Cryptocurrency Wallet</h4>
+                    <p style="margin-bottom: 0;">This extension is an <strong>authentication bridge</strong> that connects existing wallet extensions (like MetaMask) to the Crypto Trading Journal web application. It does NOT store funds, private keys, or seed phrases.</p>
+                </div>
+            </section>
+
+            <!-- How It Works -->
+            <section>
+                <h2>🔄 How It Works</h2>
+                <div class="flow-diagram">
+                    <div class="flow-steps">
+                        <div class="flow-item">
+                            <div class="icon">🦊</div>
+                            <div class="label">MetaMask<br>(Existing Wallet)</div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-item">
+                            <div class="icon">🔌</div>
+                            <div class="label">This Extension<br>(Auth Bridge)</div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-item">
+                            <div class="icon">📊</div>
+                            <div class="label">Trading Journal<br>(Web App)</div>
+                        </div>
+                    </div>
+                </div>
+                <p>The extension facilitates Sign-In With Ethereum (SIWE) authentication. Users sign a message with their existing wallet, proving ownership without passwords.</p>
+            </section>
+
+            <!-- Testing Steps -->
+            <section>
+                <h2>📋 Testing Steps</h2>
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Install MetaMask (if not installed)</div>
+                            <div class="step-description">
+                                <p>Download from <a href="https://metamask.io/download/" target="_blank">metamask.io/download</a></p>
+                                <p><strong>Skip this if MetaMask is already installed.</strong></p>
+                            </div>
+                        </div>
+                        <span class="step-time">~1 min</span>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Import Test Wallet</div>
+                            <div class="step-description">
+                                <p>In MetaMask, during initial setup choose "Import wallet" (or if MetaMask is already set up, you can use the existing account). Use this test seed phrase:</p>
+                                <div class="code-block">abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about</div>
+                                <p><em>This is a standard BIP-39 test mnemonic with no real funds. Easiest: use a fresh MetaMask installation.</em></p>
+                            </div>
+                        </div>
+                        <span class="step-time">~30 sec</span>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Install This Extension</div>
+                            <div class="step-description">
+                                <p>Load the extension. Click the extension icon to see status indicators:</p>
+                                <ul>
+                                    <li>✅ Extension Active - proves extension is working</li>
+                                    <li>Status shows MetaMask detection</li>
+                                    <li>Status shows if you're on the correct domain</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <span class="step-time">~30 sec</span>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <div class="step-title">Visit the Web App</div>
+                            <div class="step-description">
+                                <p>Go to <a href="https://cryptotradingjournal.xyz" target="_blank">https://cryptotradingjournal.xyz</a></p>
+                                <p>Click "Connect Wallet" on the login page.</p>
+                            </div>
+                        </div>
+                        <span class="step-time">~30 sec</span>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <div class="step-title">Approve & Sign</div>
+                            <div class="step-description">
+                                <p>1. MetaMask popup appears - approve the connection</p>
+                                <p>2. Sign the SIWE authentication message</p>
+                                <p>3. You'll be redirected to the dashboard</p>
+                            </div>
+                        </div>
+                        <span class="step-time">~30 sec</span>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-number">6</div>
+                        <div class="step-content">
+                            <div class="step-title">Verify Success</div>
+                            <div class="step-description">
+                                <p>Click the extension icon again. You should see:</p>
+                                <ul>
+                                    <li>"Connected" status</li>
+                                    <li>Your wallet address displayed</li>
+                                    <li>"Active" status indicator</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <span class="step-time">~15 sec</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Success Criteria -->
+            <section>
+                <h2>✅ Success Criteria</h2>
+                <div class="success-criteria">
+                    <div class="criteria-card">
+                        <div class="check">✓</div>
+                        <strong>Extension popup shows status indicators</strong>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Proves code is functional even before connecting</p>
+                    </div>
+                    <div class="criteria-card">
+                        <div class="check">✓</div>
+                        <strong>Wallet address appears in popup after auth</strong>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Shows successful SIWE authentication</p>
+                    </div>
+                    <div class="criteria-card">
+                        <div class="check">✓</div>
+                        <strong>Disconnect button clears session</strong>
+                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Returns to "Not Connected" state</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- What to Expect on the Main Website -->
+            <section>
+                <h2>🌐 What to Expect on cryptotradingjournal.xyz</h2>
+                <div class="highlight-box success">
+                    <h4>When you visit the main website, you should see:</h4>
+                    <ol>
+                        <li><strong>Landing/Login Page</strong> - A clear "Connect Wallet" button</li>
+                        <li><strong>MetaMask Popup</strong> - After clicking connect, MetaMask asks to approve connection</li>
+                        <li><strong>SIWE Signature</strong> - A message to sign that includes the domain and your address</li>
+                        <li><strong>Dashboard</strong> - After signing, you're logged in and see your dashboard</li>
+                    </ol>
+                </div>
+                <p style="margin-top: 1rem;"><strong>The "Connect Wallet" button should work without requiring you to create an account first.</strong> The wallet connection IS the authentication method.</p>
+            </section>
+
+            <!-- If Website is Unavailable -->
+            <section>
+                <div class="highlight-box info">
+                    <h4>ℹ️ If cryptotradingjournal.xyz is Unavailable</h4>
+                    <p>If the external website is temporarily unavailable, you can still verify the extension's functionality:</p>
+                    <ol>
+                        <li><strong>Click extension icon</strong> - Status indicators prove extension loads correctly</li>
+                        <li><strong>Check "Extension Active"</strong> - Should always show ✅</li>
+                        <li><strong>Domain check</strong> - Shows ⚠️ with helpful guidance</li>
+                        <li><strong>Review the code</strong> - Extension uses standard SIWE (EIP-4361) protocol</li>
+                    </ol>
+                    <p><strong>Note:</strong> The extension cannot demonstrate full auth flow without the backend, but the client-side code can be verified through status indicators.</p>
+                    <p style="margin-bottom: 0;"><strong>Please contact us</strong> at support@cryptotradingjournal.xyz if you encounter any issues accessing the website during review.</p>
+                </div>
+            </section>
+
+            <!-- What This Extension Does NOT Do -->
+            <section>
+                <h2>❌ What This Extension Does NOT Do</h2>
+                <div class="highlight-box error">
+                    <ul style="margin: 0;">
+                        <li><strong>NOT a wallet</strong> - Cannot store, send, or receive cryptocurrency</li>
+                        <li><strong>NOT standalone</strong> - Requires both MetaMask AND the web app to function</li>
+                        <li><strong>NOT for key management</strong> - Never accesses or stores private keys</li>
+                        <li><strong>NOT for transactions</strong> - Only facilitates authentication signatures</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Contact -->
+            <section>
+                <h2>📞 Contact & Support</h2>
+                <p>If you have questions or encounter issues during testing:</p>
+                <div class="buttons-row">
+                    <a href="mailto:support@cryptotradingjournal.xyz" class="btn btn-primary">Email Support</a>
+                    <a href="https://cryptotradingjournal.xyz" target="_blank" class="btn btn-secondary">Visit Website</a>
+                    <a href="https://github.com/stanfordP/crypto-web3-extension" target="_blank" class="btn btn-secondary">GitHub Repository</a>
+                </div>
+            </section>
+
+            <!-- Additional Resources -->
+            <section>
+                <h2>📚 Additional Resources</h2>
+                <ul>
+                    <li><a href="https://stanfordp.github.io/crypto-web3-extension/">Privacy Policy</a></li>
+                    <li><a href="https://login.xyz/" target="_blank">Learn about Sign-In With Ethereum (SIWE)</a></li>
+                    <li><a href="https://eips.ethereum.org/EIPS/eip-4361" target="_blank">EIP-4361 Specification</a></li>
+                </ul>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Crypto Trading Journal. All rights reserved.</p>
+            <p><a href="https://cryptotradingjournal.xyz">Back to Crypto Trading Journal</a></p>
+        </footer>
+    </div>
+</body>
+</html>

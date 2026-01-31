@@ -467,6 +467,39 @@ export class PopupController {
   }
 
   /**
+   * Securely check if a URL is on an allowed domain
+   * Uses hostname validation to prevent URL manipulation attacks
+   */
+  private isAllowedDomain(url: string | undefined): boolean {
+    if (!url) return false;
+    
+    try {
+      const urlObj = new URL(url);
+      const hostname = urlObj.hostname.toLowerCase();
+      
+      // Check for exact hostname matches or subdomains
+      const allowedHosts = [
+        'cryptotradingjournal.xyz',
+        'www.cryptotradingjournal.xyz',
+        'localhost',
+      ];
+      
+      // Check for localhost with allowed ports
+      if (hostname === 'localhost') {
+        const port = urlObj.port;
+        return port === '3000' || port === '3001';
+      }
+      
+      // Check for exact match or subdomain of cryptotradingjournal.xyz
+      return allowedHosts.includes(hostname) || 
+             hostname.endsWith('.cryptotradingjournal.xyz');
+    } catch {
+      // Invalid URL
+      return false;
+    }
+  }
+
+  /**
    * Update status indicators for Chrome Web Store reviewers
    * Shows wallet detection and domain validation status
    */
@@ -475,43 +508,81 @@ export class PopupController {
       // Check if we're in a browser context with access to tabs
       const [activeTab] = await this.tabs.query({ active: true, currentWindow: true });
       
+      // Check if on allowed domain using secure hostname validation
+      const isAllowedDomain = this.isAllowedDomain(activeTab?.url);
+      
       // Update wallet status
       const walletStatusEl = document.getElementById('walletStatus');
       const walletLabelEl = document.getElementById('walletStatusLabel');
       
-      // We can't directly check window.ethereum from popup, so we show guidance
       if (walletStatusEl && walletLabelEl) {
-        walletStatusEl.textContent = '⚠️';
-        walletLabelEl.textContent = 'Web3 Wallet: Install MetaMask';
-        walletLabelEl.className = 'status-label status-warning';
+        // Clear any existing content
+        walletLabelEl.textContent = '';
         
-        // Add link to MetaMask
-        const linkEl = document.createElement('a');
-        linkEl.href = 'https://metamask.io/download/';
-        linkEl.target = '_blank';
-        linkEl.className = 'status-link';
-        linkEl.textContent = '(Get MetaMask)';
-        walletLabelEl.appendChild(document.createTextNode(' '));
-        walletLabelEl.appendChild(linkEl);
+        // If on allowed domain, try to check wallet through content script
+        if (isAllowedDomain && activeTab?.id) {
+          try {
+            const response = await this.tabs.sendMessage<
+              { type: string },
+              { success: boolean; walletAvailable: boolean; walletName?: string }
+            >(activeTab.id, { type: 'POPUP_CHECK_WALLET' });
+            
+            if (response?.success && response.walletAvailable) {
+              walletStatusEl.textContent = '✅';
+              const walletName = response.walletName || 'Web3 Wallet';
+              walletLabelEl.textContent = `${walletName}: Detected`;
+              walletLabelEl.className = 'status-label status-success';
+            } else {
+              // Wallet not found on supported domain
+              walletStatusEl.textContent = '❌';
+              walletLabelEl.textContent = 'Web3 Wallet: Not Detected';
+              walletLabelEl.className = 'status-label status-error';
+              
+              // Add link to MetaMask
+              const linkEl = document.createElement('a');
+              linkEl.href = 'https://metamask.io/download/';
+              linkEl.target = '_blank';
+              linkEl.className = 'status-link';
+              linkEl.textContent = ' (Install MetaMask)';
+              walletLabelEl.appendChild(linkEl);
+            }
+          } catch {
+            // Content script not responding - show guidance
+            walletStatusEl.textContent = '⚠️';
+            walletLabelEl.textContent = 'Wallet: Checking requires page refresh';
+            walletLabelEl.className = 'status-label status-warning';
+          }
+        } else {
+          // Not on allowed domain - show guidance
+          walletStatusEl.textContent = '⏳';
+          walletLabelEl.textContent = 'Web3 Wallet: Requires MetaMask';
+          walletLabelEl.className = 'status-label status-warning';
+          
+          // Add link to MetaMask
+          const linkEl = document.createElement('a');
+          linkEl.href = 'https://metamask.io/download/';
+          linkEl.target = '_blank';
+          linkEl.className = 'status-link';
+          linkEl.textContent = ' (Get MetaMask)';
+          walletLabelEl.appendChild(linkEl);
+        }
       }
 
       // Update domain status
       const domainStatusEl = document.getElementById('domainStatus');
       const domainLabelEl = document.getElementById('domainStatusLabel');
       
-      if (domainStatusEl && domainLabelEl && activeTab?.url) {
-        const isAllowedDomain = 
-          activeTab.url.includes('cryptotradingjournal.xyz') ||
-          activeTab.url.includes('localhost:3000') ||
-          activeTab.url.includes('localhost:3001');
-
+      if (domainStatusEl && domainLabelEl) {
+        // Clear any existing content
+        domainLabelEl.textContent = '';
+        
         if (isAllowedDomain) {
           domainStatusEl.textContent = '✅';
-          domainLabelEl.textContent = 'Correct Domain: Yes';
+          domainLabelEl.textContent = 'Supported Domain: Yes';
           domainLabelEl.className = 'status-label status-success';
         } else {
           domainStatusEl.textContent = '⚠️';
-          domainLabelEl.textContent = 'Domain: Visit cryptotradingjournal.xyz';
+          domainLabelEl.textContent = 'Domain: Visit supported site';
           domainLabelEl.className = 'status-label status-warning';
           
           // Add link to correct domain
@@ -519,8 +590,7 @@ export class PopupController {
           linkEl.href = 'https://cryptotradingjournal.xyz';
           linkEl.target = '_blank';
           linkEl.className = 'status-link';
-          linkEl.textContent = '(Go to site)';
-          domainLabelEl.appendChild(document.createTextNode(' '));
+          linkEl.textContent = ' (Go to cryptotradingjournal.xyz)';
           domainLabelEl.appendChild(linkEl);
         }
       }
