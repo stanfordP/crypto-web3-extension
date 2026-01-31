@@ -1,9 +1,9 @@
 # Chrome Web Store Resubmission Checklist
 
 **Extension:** Crypto Trading Journal - Web3 Auth  
-**Version:** 2.2.3  
-**Date:** January 30, 2026  
-**Status:** ✅ Ready for Resubmission
+**Version:** 2.2.4  
+**Date:** January 31, 2026  
+**Status:** ⏳ Pending Resubmission — Additional Items Required
 
 ---
 
@@ -18,6 +18,100 @@
 - High reviewer friction (needed to install wallet + create account)
 - No visual proof that extension was functional
 - Terminology implied standalone wallet functionality
+- Reviewers test on fresh Chrome profiles with NO other extensions
+
+---
+
+## Comprehensive Resubmission Requirements
+
+### 🔴 P0 — Approval Blockers (MUST FIX)
+
+| # | Item | Status | Action Required |
+|---|------|--------|-----------------|
+| 1 | **Main site availability** | ⬜ Verify | Confirm cryptotradingjournal.xyz is accessible 24/7, no CAPTCHA, < 3s response |
+| 2 | **Exact test URL** | ⬜ Update | Change "Visit site" to "Visit https://cryptotradingjournal.xyz/login" |
+| 3 | **MetaMask in line 1** | ⬜ Update | First line MUST be "REQUIRES MetaMask extension already installed." |
+| 4 | **Version consistency** | ✅ Done | manifest.json (2.2.4) = package.json (2.2.4) |
+| 5 | **Permissions rationale** | ⬜ Add | Fill in CWS "Privacy practices" with justifications for `storage`, `activeTab`, `alarms` |
+| 6 | **Privacy disclosure match** | ⬜ Cross-check | Ensure CWS data handling fields match PRIVACY.md exactly |
+
+### 🟡 P1 — Reviewer Ease (SHOULD FIX)
+
+| # | Item | Status | Action Required |
+|---|------|--------|-----------------|
+| 7 | **Updated screenshots** | ⬜ Capture | New screenshots showing current popup UI with status indicators |
+| 8 | **Domain scope clarity** | ⬜ Review | Either narrow `https://*.cryptotradingjournal.xyz/*` or justify wildcard |
+| 9 | **Support fields in CWS** | ⬜ Verify | Confirm Support URL + email are filled in CWS form (not just in docs) |
+| 10 | **Single test path** | ⬜ Document | One "golden path" URL and flow (no alternatives confusing reviewers) |
+
+### 🟢 P2 — Quality Polish (NICE TO HAVE)
+
+| # | Item | Status | Action Required |
+|---|------|--------|-----------------|
+| 11 | **A11y on status indicators** | ⬜ Add | ARIA labels on popup status icons for automated accessibility checks |
+| 12 | **Promotional tiles** | ⬜ Optional | Create 440x280 and 1400x560 images for potential featuring |
+| 13 | **Uninstall feedback URL** | ⬜ Add | `chrome.runtime.setUninstallURL()` for user feedback |
+| 14 | **Remove deprecated files** | ⬜ Clean | Delete legacy `src/scripts/*.ts` files not in `entry/` |
+
+---
+
+## Alarms Permission Justification (Copy for CWS)
+
+```
+The "alarms" permission is required for Service Worker keep-alive functionality. 
+
+Chrome Manifest V3 service workers automatically terminate after 30 seconds of 
+inactivity. The SIWE (Sign-In With Ethereum) authentication flow can take longer 
+than 30 seconds if the user reads the signature message carefully before signing. 
+
+Without keep-alive, the service worker would terminate mid-authentication, breaking 
+the flow and requiring the user to restart. The alarm fires every 25 seconds during 
+active authentication to prevent this timeout.
+
+This permission does NOT schedule any user-visible notifications or background tasks 
+outside of active authentication flows.
+```
+
+---
+
+## Updated Test Instructions (v2.2.4)
+
+**Character count:** 484/500 ✅
+
+```
+REQUIRES MetaMask extension installed.
+
+TEST WALLET (no real funds):
+abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
+
+STEPS:
+1. In MetaMask: Import wallet using seed above
+2. Visit https://cryptotradingjournal.xyz/login
+3. Click "Connect Wallet" button
+4. Approve in MetaMask popup
+5. Sign message
+6. Success = wallet address in extension popup
+
+Bridges existing wallets for auth.
+Contact: support@cryptotradingjournal.xyz
+```
+
+---
+
+## Main App Verification Checklist
+
+Before resubmission, verify cryptotradingjournal.xyz meets these requirements:
+
+| Requirement | Check Method | Status |
+|-------------|--------------|--------|
+| Site loads in < 3 seconds | PageSpeed Insights | ⬜ |
+| No CAPTCHA on landing page | Fresh browser test | ⬜ |
+| "Connect Wallet" visible without login | Visual inspection | ⬜ |
+| HTTPS certificate valid | SSL Labs | ⬜ |
+| Test wallet works (no balance requirement) | Full flow test | ⬜ |
+| No geographic restrictions | VPN test | ⬜ |
+| SIWE endpoints functional | API test | ⬜ |
+| Extension detection works | Console test | ⬜ |
 
 ---
 

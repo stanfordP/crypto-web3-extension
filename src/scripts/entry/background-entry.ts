@@ -78,6 +78,12 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       reason: details.reason,
       previousVersion: details.previousVersion,
     });
+    
+    // Set uninstall feedback URL for user data transparency
+    // This URL allows users to provide feedback and request data deletion
+    chrome.runtime.setUninstallURL(
+      'https://stanfordp.github.io/crypto-web3-extension/uninstall.html'
+    );
   } catch (error) {
     logger.error('Installed handler failed', { error: String(error) });
     void errorReporter.report(error, { source: 'installed-handler' });

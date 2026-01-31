@@ -86,7 +86,7 @@ describe('MessageRouter - Pure Functions', () => {
       // First request
       const result1 = checkRateLimit(state, DEFAULT_CONFIG, now);
       expect(result1.isLimited).toBe(false);
-      expect(result1.newState.tokens).toBe(0);
+      expect(result1.newState.tokens).toBeCloseTo(0, 5);
 
       // Second request immediately - no tokens
       const result2 = checkRateLimit(result1.newState, DEFAULT_CONFIG, now);

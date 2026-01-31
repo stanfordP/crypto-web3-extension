@@ -4,46 +4,85 @@
 
 This is a Manifest V3 Chrome browser extension that provides custom Web3 authentication for **CTJ (Crypto Trading Journal)**. The extension uses an **Extension-First Auth Flow** with **Injected Script Architecture** for wallet interactions.
 
-> **Note:** The main application is branded as **CTJ**. Always use \"CTJ\" in documentation and code comments.
+> **Note:** The main application is branded as **CTJ**. Always use "CTJ" in documentation and code comments.
+
+> **CRITICAL POSITIONING:** This extension is an **AUTHENTICATION BRIDGE**, NOT a cryptocurrency wallet. It connects existing wallets (MetaMask, Brave Wallet) to CTJ for passwordless SIWE authentication. Never describe it as a "wallet" in store listings or code comments.
 
 **Key Technologies:**
 - TypeScript (strict mode)
 - Webpack 5 for bundling
 - Chrome Extension APIs (Manifest V3)
-- Jest for unit testing (1015 tests)
+- Jest for unit testing (1,240 tests)
 - Playwright for E2E testing
 
 **Supported Browsers:** Chrome, Brave, Edge, Opera (all Chromium-based)
 
-**Version:** 2.2.1 (manifest) / 2.2.0 (package.json - sync needed)
-**Last Updated:** January 14, 2026
-**Status:** Pending Chrome Web Store approval
+**Version:** 2.2.4 (manifest & package.json synced)
+**Last Updated:** January 31, 2026
+**Status:** Rejected by Chrome Web Store (Violation ID: Red Potassium) — Resubmission pending
 
 ---
 
-## 📊 Current Project Status (January 14, 2026)
+## 📊 Current Project Status (January 31, 2026)
+
+### 🔴 Chrome Web Store Rejection Analysis
+
+**Violation ID:** Red Potassium  
+**Rejection Date:** January 6, 2026  
+**Root Cause:** Reviewers couldn't reproduce "Wallet" functionality — they expected a standalone wallet like MetaMask.
+
+**Key Learnings:**
+1. Reviewers test on fresh Chrome profiles with NO other extensions
+2. The word "Wallet" in description implies balance/send features
+3. 500-character test instruction limit prevents full explanation
+4. Without MetaMask installed, extension appears "broken"
 
 ### ✅ What's Working
 | Component | Status | Notes |
 |-----------|--------|-------|
 | **Build System** | ✅ Working | Webpack 5 production build compiles successfully |
 | **TypeScript** | ✅ Clean | `tsc --noEmit` passes with no errors |
-| **Unit Tests** | ✅ Passing | All 1015 tests in 39 suites pass |
+| **Unit Tests** | ✅ 1,240 passing | All tests in 44 suites pass |
 | **DI Architecture** | ✅ Complete | Entry points, Controllers, Adapters all implemented |
 | **Core Logic** | ✅ Extracted | AuthStateMachine, SessionManager, SiweFlow, MessageRouter |
 | **Adapters** | ✅ Complete | Chrome Storage, Runtime, Tabs, Alarms, DOM adapters |
 | **Controllers** | ✅ Complete | Background, Content, Popup, Auth controllers |
+| **Reviewer UX** | ✅ Added | Status indicators, MetaMask links, domain checks |
 
-### ⚠️ Coverage Gaps Remaining
-| Component | Statements | Branches | Priority | Status |
-|-----------|------------|----------|----------|--------|
-| **AuthView.ts** | 0% | 0% | 🔴 P0 | Needs tests |
-| **Entry points** (4 files) | 0% | 0% | 🔴 P0 | Needs tests |
-| **rate-limiter.ts** | 0% | 0% | 🟡 P1 | Needs tests |
-| **sw-keepalive.ts** | 0% | 0% | 🟡 P1 | Needs tests |
-| **sw-state.ts** | 0% | 0% | 🟡 P1 | Needs tests |
-| **popup.ts** (deprecated) | 0% | 0% | 🟢 Low | Can delete |
-| **ContentController** | 54.88% | 30.46% | 🟡 P1 | Needs improvement |
+### 📈 Test Coverage Summary (v2.2.4)
+| Metric | Value | Target | Gap |
+|--------|-------|--------|-----|
+| Unit Tests | 1,240 | - | ✅ |
+| Test Suites | 44 | - | ✅ |
+| Statement Coverage | ~45% | 70%+ | -25% |
+| Branch Coverage | ~37% | 60%+ | -23% |
+| Function Coverage | ~49% | 70%+ | -21% |
+
+### 🎯 Chrome Web Store Resubmission Checklist
+
+#### P0 — Approval Blockers (MUST FIX)
+| Item | Status | Owner |
+|------|--------|-------|
+| Main site (cryptotradingjournal.xyz) accessible 24/7 | ⬜ Verify | Main App |
+| Exact test URL in instructions (not "visit site") | ⬜ Update | Extension |
+| Version consistency (manifest/package/listing/ZIP) | ✅ Done | Extension |
+| Permissions rationale in CWS fields (esp. `alarms`) | ⬜ Add | Submission |
+| MetaMask requirement in FIRST LINE of test instructions | ⬜ Update | Submission |
+
+#### P1 — Reviewer Ease
+| Item | Status | Owner |
+|------|--------|-------|
+| Screenshots show current popup UI + disclaimers | ⬜ Update | Submission |
+| Domain scope narrowed or explicitly justified | ⬜ Review | Extension |
+| Support URL + email in CWS form fields | ⬜ Verify | Submission |
+| Privacy disclosure matches privacy policy | ⬜ Cross-check | Submission |
+
+#### P2 — Quality & Polish
+| Item | Status | Owner |
+|------|--------|-------|
+| A11y checks on status indicators (ARIA labels) | ⬜ Add | Extension |
+| Remove deprecated legacy files | ⬜ Clean | Extension |
+| Promotional tiles (440x280, 1400x560) | ⬜ Optional | Assets |
 
 ### 🗑️ Deprecated Files (Can Be Deleted)
 These legacy files are NOT bundled (webpack uses `entry/` files) and should be removed:
@@ -54,30 +93,74 @@ These legacy files are NOT bundled (webpack uses `entry/` files) and should be r
 - `src/scripts/background-main.ts` → merged into `BackgroundController`
 - `src/scripts/auth-state-machine.ts` → replaced by `core/auth/AuthStateMachine.ts`
 
-### 📈 Test Coverage Summary (v2.2.0)
-| Metric | Value | Target | Gap |
-|--------|-------|--------|-----|
-| Unit Tests | 1015 | - | ✅ |
-| Test Suites | 39 | - | ✅ |
-| Statement Coverage | 44.31% (1846/4166) | 70%+ | -25.69% |
-| Branch Coverage | 36.51% (536/1468) | 60%+ | -23.49% |
-| Function Coverage | 48.65% (434/892) | 70%+ | -21.35% |
-| Line Coverage | 44.79% (1808/4036) | 70%+ | -25.21% |
-
-### 🎯 Next Steps (Priority Order)
-1. **🔴 P0**: Add tests for `AuthView.ts` (0% → 80%) - ~4h effort
-2. **🔴 P0**: Add tests for entry points (4 files at 0%) - ~3h effort  
-3. **🟡 P1**: Add tests for `rate-limiter.ts` (security code) - ~2h effort
-4. **🟡 P1**: Improve `ContentController` branch coverage (30% → 60%) - ~6h effort
-5. **🟢 P2**: Delete deprecated legacy files - ~1h effort
-6. **🟢 P2**: Sync package.json version (2.2.0 → 2.2.1) - ~5min
-
-### ℹ️ Version Sync Issue
-- `manifest.json`: version "2.2.1"
-- `package.json`: version "2.2.0"
-- **Action**: Run `npm run version:patch` or manually sync
-
 ---
+
+## 🏪 Chrome Web Store Compliance Guide
+
+### Terminology Rules (CRITICAL)
+
+| ❌ NEVER Use | ✅ Use Instead | Reason |
+|--------------|----------------|--------|
+| "Wallet" (as noun) | "Authentication Bridge" | Reviewers expect balance/send features |
+| "Web3 Wallet" | "Web3 Auth" or "Wallet Bridge" | Implies standalone wallet |
+| "Connect your wallet" (in descriptions) | "Connect your existing MetaMask" | Be explicit about dependency |
+| "Wallet functionality" | "Authentication functionality" | Avoid ambiguity |
+
+### Permission Justifications (for CWS Submission)
+
+| Permission | Required Justification |
+|------------|------------------------|
+| `storage` | "Stores encrypted session tokens locally for cross-tab authentication persistence. No cloud sync." |
+| `activeTab` | "Detects when user is on cryptotradingjournal.xyz to enable authentication flow." |
+| `alarms` | "Maintains Service Worker keep-alive during SIWE signing. MV3 service workers timeout after 30 seconds; signing can take longer if user reads the message." |
+| `host_permissions` | "Content script only runs on cryptotradingjournal.xyz to inject wallet bridge code." |
+
+### Test Instructions Template (Under 500 chars)
+
+**MUST include on line 1:** "REQUIRES MetaMask extension."
+
+```
+REQUIRES MetaMask extension.
+
+TEST WALLET (no real funds):
+abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
+
+STEPS:
+1. Install MetaMask, import wallet using seed above
+2. Visit https://cryptotradingjournal.xyz/login
+3. Click "Connect Wallet" button
+4. Approve connection in MetaMask popup
+5. Sign the message in MetaMask
+6. Success = wallet address shown in extension popup
+
+Contact: support@cryptotradingjournal.xyz
+```
+
+### Main App Availability Requirements
+
+The extension **CANNOT be approved** if cryptotradingjournal.xyz is unavailable:
+
+| Requirement | Priority | Check |
+|-------------|----------|-------|
+| Site accessible 24/7 during review | 🔴 Critical | Uptime monitoring |
+| Response time < 3 seconds | 🔴 Critical | Performance check |
+| No CAPTCHA/bot protection blocking | 🔴 Critical | Test with fresh IP |
+| No geographic restrictions | 🟡 High | VPN test |
+| "Connect Wallet" visible without login | 🔴 Critical | Landing page check |
+| HTTPS certificate valid | 🔴 Critical | SSL check |
+| Test wallet accepted (no balance req) | 🔴 Critical | Flow test |
+
+### CWS Privacy Practices Alignment
+
+Ensure these match between the Privacy Policy (PRIVACY.md) and CWS "Privacy practices" tab:
+
+| Data Type | Policy Says | CWS Field |
+|-----------|-------------|-----------|
+| Wallet address | Stored locally + server | ✅ Check "Authentication info" |
+| Chain ID | Stored locally | ✅ Check "Authentication info" |
+| Session tokens | Stored locally, 24h expiry | ✅ Check "Authentication info" |
+| Browsing history | NOT collected | ❌ Leave unchecked |
+| Personal info | NOT collected | ❌ Leave unchecked |
 
 ---
 

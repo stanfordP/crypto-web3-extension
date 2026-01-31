@@ -1,8 +1,9 @@
 # Main App Requirements for Chrome Web Store Approval
 
 **Document:** Requirements for cryptotradingjournal.xyz to support Chrome Web Store extension review  
-**Version:** 1.0  
-**Date:** January 30, 2026  
+**Version:** 1.1  
+**Date:** January 31, 2026  
+**Status:** Updated with comprehensive resubmission requirements
 
 ---
 

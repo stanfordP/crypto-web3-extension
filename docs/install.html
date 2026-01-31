@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install CTJ Web3 Extension - Crypto Trading Journal</title>
+    <meta name="description" content="Install the Crypto Trading Journal Web3 authentication extension for Chrome and Brave browsers.">
+    <link rel="icon" type="image/png" href="https://stanfordp.github.io/crypto-web3-extension/icon48.png">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a24;
+            --border: #2a2a3a;
+            --border-glow: #3b82f6;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .notice-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .notice-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .notice-content h3 {
+            color: var(--warning);
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .notice-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .download-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .download-section h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .download-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent), #6366f1);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--border-glow);
+            background: var(--bg-card);
+        }
+
+        .version-info {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        .steps-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .step {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1.25rem;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), #6366f1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .step-content code {
+            background: var(--bg-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 0.9rem;
+            color: var(--accent);
+        }
+
+        .step-image {
+            margin-top: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            max-width: 100%;
+        }
+
+        .browser-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .browser-tab {
+            padding: 0.5rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .browser-tab:hover, .browser-tab.active {
+            border-color: var(--border-glow);
+            background: var(--bg-card);
+        }
+
+        .browser-tab.active {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .browser-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .requirements {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .requirements h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .requirements ul {
+            list-style: none;
+        }
+
+        .requirements li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+        }
+
+        .requirements li::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .requirements a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .requirements a:hover {
+            text-decoration: underline;
+        }
+
+        .troubleshooting {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .troubleshooting h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+        }
+
+        .faq-item summary {
+            cursor: pointer;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-weight: 500;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-item summary::after {
+            content: "+";
+            font-size: 1.25rem;
+            color: var(--text-muted);
+        }
+
+        .faq-item[open] summary::after {
+            content: "−";
+        }
+
+        .faq-item[open] summary {
+            border-radius: 8px 8px 0 0;
+            border-bottom: none;
+        }
+
+        .faq-answer {
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            color: var(--text-secondary);
+        }
+
+        footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            color: var(--accent);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.5rem 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .step {
+                flex-direction: column;
+            }
+
+            .download-section {
+                padding: 1.5rem;
+            }
+
+            .btn-primary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="https://raw.githubusercontent.com/stanfordP/crypto-web3-extension/main/src/icons/icon128.png" 
+                 alt="CTJ Extension" 
+                 class="logo"
+                 onerror="this.style.display='none'">
+            <h1>CTJ Web3 Auth Extension</h1>
+            <p class="subtitle">Secure wallet authentication for Crypto Trading Journal</p>
+        </header>
+
+        <div class="notice-box">
+            <span class="notice-icon">⚠️</span>
+            <div class="notice-content">
+                <h3>Manual Installation Required</h3>
+                <p>This extension is pending Chrome Web Store approval. Follow the steps below to install it manually in developer mode.</p>
+            </div>
+        </div>
+
+        <div class="requirements">
+            <h3>📋 Prerequisites</h3>
+            <ul>
+                <li>Chrome, Brave, or Edge browser</li>
+                <li><a href="https://metamask.io/download/" target="_blank">MetaMask</a> or compatible Web3 wallet installed</li>
+                <li>5 minutes to complete setup</li>
+            </ul>
+        </div>
+
+        <div class="download-section">
+            <h2>📦 Step 1: Download Extension</h2>
+            <p>Download the latest version of the extension package</p>
+            <a href="https://stanfordp.github.io/crypto-web3-extension/crypto-web3-extension.zip" 
+               class="btn-primary"
+               id="downloadBtn"
+               download="crypto-web3-extension.zip">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                Download Extension (ZIP)
+            </a>
+            <a href="https://github.com/stanfordP/crypto-web3-extension" 
+               class="btn-secondary"
+               target="_blank">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                </svg>
+                View Source Code
+            </a>
+            <p class="version-info">Current version: 2.2.4</p>
+        </div>
+
+        <section class="steps-section">
+            <h2>🔧 Installation Steps</h2>
+
+            <div class="browser-tabs">
+                <button class="browser-tab active" onclick="selectBrowser('chrome')">
+                    <svg class="browser-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-3.952 6.848a12.014 12.014 0 0 0 9.243-5.418l-6.741-8.521z"/>
+                    </svg>
+                    Chrome
+                </button>
+                <button class="browser-tab" onclick="selectBrowser('brave')">
+                    <svg class="browser-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0L1.5 4.5v7.5c0 6.627 4.5 11.25 10.5 12 6-0.75 10.5-5.373 10.5-12V4.5L12 0zm0 2.25l8.25 3.375v6.375c0 5.25-3.75 9-8.25 9.75-4.5-0.75-8.25-4.5-8.25-9.75V5.625L12 2.25z"/>
+                    </svg>
+                    Brave
+                </button>
+                <button class="browser-tab" onclick="selectBrowser('edge')">
+                    <svg class="browser-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M21.86 17.86q.14 0 .25.12.1.13.1.25t-.11.33l-.32.46-.43.53-.44.5q-.21.25-.38.42l-.22.23q-.58.53-1.34 1.04-.76.51-1.6.91-.86.4-1.74.64t-1.67.24q-.9 0-1.69-.28-.8-.28-1.48-.78-.68-.5-1.22-1.17-.53-.66-.89-1.42-.36-.76-.57-1.6-.2-.83-.2-1.67 0-1 .32-1.96.33-.97.87-1.8.14.95.55 1.77.41.81 1.02 1.49.6.68 1.38 1.21.78.54 1.64.9.86.36 1.77.56.92.2 1.8.2 1.26 0 2.33-.38 1.08-.38 1.82-1.06.14 0 .27.07.12.06.18.18zm-15.5-1.27q0 1.1.27 2.15.27 1.06.78 2.03.51.96 1.24 1.77.74.82 1.66 1.4-1.47-.2-2.8-.74-1.33-.55-2.48-1.37-1.15-.81-2.08-1.85-.92-1.04-1.58-2.24T.21 15.1Q0 13.88 0 12.65q0-1.24.2-2.4.2-1.14.57-2.18.37-1.05.9-1.97.52-.93 1.18-1.7.66-.78 1.43-1.4.78-.6 1.64-1.02.85-.42 1.76-.64.9-.22 1.82-.22 1.2 0 2.26.37 1.06.36 1.91 1.02.85.65 1.47 1.56.63.92.97 1.99.35 1.07.35 2.24 0 .58-.07 1.16-.07.59-.23 1.13-.15.55-.4 1.04-.24.5-.57.91-.34.42-.77.74-.44.31-.96.5-.51.2-1.08.2-.73 0-1.25-.37-.51-.37-.51-1.08 0-.17.04-.32.03-.16.1-.32.06-.15.13-.3l.14-.3q.22-.44.37-.79.16-.36.24-.69.09-.32.1-.66.02-.33-.04-.72-.05-.4-.19-.85-.14-.44-.38-.87-.25-.44-.6-.82-.35-.38-.8-.65-.46-.27-1.02-.38-.57-.12-1.25-.02-.67.1-1.47.49-.79.39-1.71 1.18-.6.51-1.1 1.07-.51.56-.9 1.18-.4.62-.67 1.3-.28.67-.42 1.39-.15.72-.15 1.47z"/>
+                    </svg>
+                    Edge
+                </button>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Extract the ZIP file</h3>
+                    <p>Unzip the downloaded file to a permanent location on your computer (e.g., <code>Documents/crypto-web3-extension</code>). Don't delete this folder — the browser needs it.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Open Extensions Page</h3>
+                    <p id="extensionsUrl">
+                        Open Chrome and navigate to <code>chrome://extensions</code> in your address bar.
+                    </p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Enable Developer Mode</h3>
+                    <p>Toggle the <strong>"Developer mode"</strong> switch in the top-right corner of the extensions page.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h3>Load the Extension</h3>
+                    <p>Click <strong>"Load unpacked"</strong> button that appears, then select the extracted folder (the one containing <code>manifest.json</code>).</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                    <h3>Pin the Extension</h3>
+                    <p>Click the puzzle piece icon (🧩) in your toolbar, find "CTJ Web3 Auth", and click the pin icon to keep it visible.</p>
+                </div>
+            </div>
+
+            <div class="step" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05)); border-color: rgba(34, 197, 94, 0.3);">
+                <div class="step-number" style="background: linear-gradient(135deg, #22c55e, #16a34a);">✓</div>
+                <div class="step-content">
+                    <h3>You're All Set!</h3>
+                    <p>Visit <a href="https://cryptotradingjournal.xyz" target="_blank" style="color: var(--accent);">cryptotradingjournal.xyz</a> and click "Connect Wallet" to authenticate with your Web3 wallet.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="troubleshooting">
+            <h2>❓ Troubleshooting</h2>
+
+            <details class="faq-item">
+                <summary>"Wallet not detected" error</summary>
+                <div class="faq-answer">
+                    <p>Make sure MetaMask (or another Web3 wallet) is installed and unlocked. The extension requires a wallet to sign authentication messages.</p>
+                    <p style="margin-top: 0.5rem;"><a href="https://metamask.io/download/" target="_blank">Download MetaMask →</a></p>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>"Load unpacked" button not visible</summary>
+                <div class="faq-answer">
+                    <p>Make sure "Developer mode" is enabled. Look for the toggle in the top-right corner of the extensions page.</p>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>Extension disappears after browser restart</summary>
+                <div class="faq-answer">
+                    <p>Don't delete the extracted folder! The browser loads the extension from that location. If you moved or deleted it, extract the ZIP again and reload.</p>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>"Cannot redefine property: ethereum" error</summary>
+                <div class="faq-answer">
+                    <p>This is a known conflict between wallet extensions (e.g., Phantom and MetaMask). It doesn't affect functionality — you can safely ignore this console message.</p>
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>How do I update the extension?</summary>
+                <div class="faq-answer">
+                    <p>Download the latest version, extract it to the same folder (overwrite existing files), then go to extensions page and click the refresh icon on the extension card.</p>
+                </div>
+            </details>
+        </section>
+
+        <footer>
+            <div class="footer-links">
+                <a href="https://cryptotradingjournal.xyz" target="_blank">Main App</a>
+                <a href="https://github.com/stanfordP/crypto-web3-extension" target="_blank">GitHub</a>
+                <a href="https://stanfordp.github.io/crypto-web3-extension/" target="_blank">Privacy Policy</a>
+                <a href="mailto:support@cryptotradingjournal.xyz">Support</a>
+            </div>
+            <p>© 2026 Crypto Trading Journal. MIT License.</p>
+        </footer>
+    </div>
+
+    <script>
+        function selectBrowser(browser) {
+            // Update active tab
+            document.querySelectorAll('.browser-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.closest('.browser-tab').classList.add('active');
+
+            // Update extensions URL
+            const urlMap = {
+                chrome: 'chrome://extensions',
+                brave: 'brave://extensions',
+                edge: 'edge://extensions'
+            };
+            
+            const urlElement = document.getElementById('extensionsUrl');
+            urlElement.innerHTML = `Open ${browser.charAt(0).toUpperCase() + browser.slice(1)} and navigate to <code>${urlMap[browser]}</code> in your address bar.`;
+        }
+
+        // Track download clicks (optional analytics)
+        document.getElementById('downloadBtn')?.addEventListener('click', () => {
+            console.log('[Install] Download initiated - v2.2.4');
+        });
+    </script>
+</body>
+</html>

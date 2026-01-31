@@ -36,17 +36,17 @@
       </p>
 
       <!-- Status Indicators for Reviewers -->
-      <div class="status-checks" role="status" aria-live="polite">
-        <div class="status-item">
-          <span id="extensionStatus" class="status-indicator">✅</span>
-          <span class="status-label">Extension Active</span>
+      <div class="status-checks" role="group" aria-label="Extension status checks">
+        <div class="status-item" role="status">
+          <span id="extensionStatus" class="status-indicator" aria-label="Extension is active">✅</span>
+          <span class="status-label" id="extensionStatusLabel">Extension Active</span>
         </div>
-        <div class="status-item">
-          <span id="walletStatus" class="status-indicator">⏳</span>
+        <div class="status-item" role="status">
+          <span id="walletStatus" class="status-indicator" aria-label="Wallet detection status">⏳</span>
           <span class="status-label" id="walletStatusLabel">Checking wallet...</span>
         </div>
-        <div class="status-item">
-          <span id="domainStatus" class="status-indicator">⏳</span>
+        <div class="status-item" role="status">
+          <span id="domainStatus" class="status-indicator" aria-label="Domain validation status">⏳</span>
           <span class="status-label" id="domainStatusLabel">Checking domain...</span>
         </div>
       </div>
