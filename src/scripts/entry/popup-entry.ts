@@ -19,7 +19,7 @@ import { PopupView } from '../ui/popup/PopupView';
 // ============================================================================
 
 const CONFIG = {
-  defaultAppUrl: 'http://localhost:3000',
+  defaultAppUrl: 'https://cryptotradingjournal.xyz',
   apiSessionEndpoint: '/api/auth/session',
 };
 

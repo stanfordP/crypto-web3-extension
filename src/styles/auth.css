@@ -36,10 +36,10 @@
   --bg-card: var(--cj-ocean-deep);
 
   --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-secondary: #a1b5c8;  /* Accessibility: 6.1:1 → 7.2:1 (WCAG AAA) */
+  --text-muted: #78909c;      /* Accessibility: 3.8:1 → 4.7:1 (WCAG AA) */
 
-  --border: rgba(34, 211, 238, 0.15);
+  --border: rgba(34, 211, 238, 0.20);  /* Accessibility: 15% → 20% opacity for visibility */
   --border-light: rgba(20, 184, 166, 0.3);
   --border-glow: rgba(20, 184, 166, 0.5);
 

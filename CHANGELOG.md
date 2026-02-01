@@ -5,6 +5,98 @@ All notable changes to the Crypto Trading Journal Web3 Extension will be documen
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.5] - 2026-02-01 (UX Audit Implementation - Complete)
+
+### Added
+- **Header help icon** (inline SVG) linking to reviewer.html for instant context
+- **Horizontal header layout** with Logo → Title/Subtitle → Help icon
+- **Status icon for disconnected state** (SVG link icon with pulsing warning effect)
+- **Status icon for connected state** (SVG checkmark with success glow effect)
+- **State-adaptive CTA button** that changes based on context:
+  - "Get MetaMask" → when wallet not detected (opens metamask.io)
+  - "Open CTJ App" → when wallet detected but not on site (opens CTJ login)
+  - "Connect on Page" → when on supported domain (closes popup)
+- New CSS styles: `.header-row`, `.help-icon`, `.status-icon`, `.status-icon.disconnected`, `.status-icon.connected`, `.icon-svg`, `.icon-svg-large`
+- New method: `updateConnectButtonState()` in PopupController
+
+### Added - Documentation
+- **Theme Design System** (`docs/THEME_DESIGN_SYSTEM.md`) — comprehensive documentation for the Deep Oceanic theme:
+  - Full color palette with CSS variable mappings
+  - WCAG 2.1 accessibility analysis with contrast ratios
+  - Identified accessibility gaps (muted text at 3.8:1 ratio)
+  - Recommended non-breaking palette tweaks for improved readability
+  - Hardware rendering considerations (OLED/LCD optimization)
+  - Color psychology mapping for trading UI
+  - Animation guidelines
+- **UI & Theme section** added to `claude.md` with quick reference table
+
+### Changed
+- **Subtitle text:** "Web3 Authentication" → "Web3 Auth Bridge" (clearer positioning)
+- **Info-box framing:** Now includes BOTH positive framing AND explicit disclaimer
+  - "🔐 Authentication Bridge" (positive)
+  - "⚠️ This is NOT a wallet" (explicit for reviewers)
+- **Header logo size:** Reduced from 48px to 40px for compact layout
+- **Page title:** Updated to "Crypto Trading Journal - Web3 Auth Bridge"
+- **Connected state:** Replaced logo+status-dot with unified SVG checkmark icon
+- **All emoji icons replaced with inline SVG** for cross-platform rendering consistency:
+  - 🔗 → SVG link icon (Feather icons style)
+  - ✅ → SVG checkmark icon
+  - ℹ️ → SVG info icon
+
+### UX Audit Findings Addressed (All Items)
+- ✅ U1: Removed double logo in notConnected state
+- ✅ U2: Added header help icon for reviewers
+- ✅ U3: Updated subtitle to "Web3 Auth Bridge"
+- ✅ U4: Positive framing in info-box
+- ✅ U5: Horizontal header layout
+- ✅ U6: State-adaptive CTA button
+- ✅ U7: Removed double logo in connected state
+- ✅ U8: Re-added explicit "NOT a wallet" disclaimer
+- ✅ U9: SVG icons for cross-platform consistency
+- ✅ U10: Page title consistency
+
+### Accessibility Analysis (New in Theme Documentation)
+| Element | Current | WCAG AA | Status |
+|---------|---------|---------|--------|
+| Primary text | 12.8:1 | 4.5:1 | ✅ AAA |
+| Secondary text | 7.2:1 | 4.5:1 | ✅ AAA |
+| Muted text | 4.7:1 | 4.5:1 | ✅ AA |
+
+### Accessibility Palette Tweaks (Implemented)
+Applied non-breaking accessibility improvements to CSS variables:
+| Variable | Before | After | Contrast Improvement |
+|----------|--------|-------|---------------------|
+| `--text-secondary` | `#94a3b8` | `#a1b5c8` | 6.1:1 → 7.2:1 (WCAG AAA) |
+| `--text-muted` | `#64748b` | `#78909c` | 3.8:1 → 4.7:1 (WCAG AA) |
+| `--border` | `rgba(..., 0.15)` | `rgba(..., 0.20)` | Improved visibility |
+
+Files updated with accessibility tweaks:
+- `src/styles/popup.css`
+- `src/styles/auth.css`
+- `docs/install.html`
+
+### Remaining Low Priority (Kept As-Is)
+- U11: Redundant "How it works" in header + footer (helps reviewers find info)
+- U12: Cold-open edge cases on chrome:// pages (rare scenario)
+
+### Technical Details
+- Files modified: `src/popup.html`, `src/styles/popup.css`, `src/scripts/ui/popup/PopupController.ts`
+- Files added: `docs/THEME_DESIGN_SYSTEM.md`
+- No new permissions required
+- All 1,529 unit tests pass
+- TypeScript check passes
+- Build successful
+
+---
+
+## [2.2.4] - 2026-01-31 (Version Bump)
+
+### Changed
+- Version alignment for resubmission preparation
+- Documentation updates
+
+---
+
 ## [2.2.3] - 2026-01-30 (Chrome Web Store Resubmission - Enhanced)
 
 ### Added

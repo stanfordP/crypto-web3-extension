@@ -66,7 +66,7 @@ export interface PopupControllerConfig {
 }
 
 const DEFAULT_CONFIG: PopupControllerConfig = {
-  defaultAppUrl: 'http://localhost:3000',
+  defaultAppUrl: 'https://cryptotradingjournal.xyz',
   apiSessionEndpoint: '/api/auth/session',
 };
 
@@ -96,6 +96,9 @@ export class PopupController {
   ) => void) | null = null;
   private retryCount: number = 0;
   private retryTimeoutId: ReturnType<typeof setTimeout> | null = null;
+  private storageDebounceId: ReturnType<typeof setTimeout> | null = null;
+  private isCheckingSession: boolean = false;
+  private ctaButtonState: 'get-metamask' | 'open-ctj' | 'connect-on-page' = 'open-ctj'; // Default to safest state
 
   constructor(
     private storage: IStorageAdapter,
@@ -147,6 +150,10 @@ export class PopupController {
     if (this.retryTimeoutId) {
       clearTimeout(this.retryTimeoutId);
       this.retryTimeoutId = null;
+    }
+    if (this.storageDebounceId) {
+      clearTimeout(this.storageDebounceId);
+      this.storageDebounceId = null;
     }
   }
 
@@ -202,7 +209,17 @@ export class PopupController {
    * Handle connect button click
    */
   private async handleConnect(): Promise<void> {
-    await this.openMainApp();
+    // Handle state-adaptive CTA behavior
+    if (this.ctaButtonState === 'get-metamask') {
+      // Open MetaMask download page
+      window.open('https://metamask.io/download/', '_blank');
+    } else if (this.ctaButtonState === 'open-ctj') {
+      // Open CTJ app
+      await this.openMainApp();
+    } else {
+      // On supported page - close popup so user can use the page button
+      window.close();
+    }
   }
 
   /**
@@ -233,8 +250,17 @@ export class PopupController {
 
   /**
    * Check session state from storage and API
+   * Protected against re-entry to prevent refresh loops
    */
   async checkSession(): Promise<void> {
+    // Prevent re-entry - if already checking, skip
+    if (this.isCheckingSession) {
+      console.log('[PopupController] checkSession already in progress, skipping');
+      return;
+    }
+    
+    this.isCheckingSession = true;
+    
     try {
       this.view.showView('loading');
 
@@ -340,6 +366,9 @@ export class PopupController {
       this.view.showView('notConnected');
       // Update status indicators even on error
       await this.updateStatusIndicators();
+    } finally {
+      // Always reset re-entry guard
+      this.isCheckingSession = false;
     }
   }
 
@@ -421,6 +450,20 @@ export class PopupController {
 
       if (!response.ok) {
         console.log('[PopupController] API session check returned:', response.status);
+        
+        // Don't retry on client errors (4xx) - these won't resolve themselves
+        // Only retry on server errors (5xx) which may be temporary
+        if (response.status >= 500) {
+          console.log('[PopupController] Server error, scheduling retry');
+          this.scheduleRetry();
+        } else if (response.status === 404) {
+          // 404 = API endpoint doesn't exist yet, don't retry
+          console.log('[PopupController] API endpoint not found (404), not retrying');
+        } else if (response.status === 401 || response.status === 403) {
+          // Auth errors - user not logged in, don't retry
+          console.log('[PopupController] Not authenticated, no retry needed');
+        }
+        
         return null;
       }
 
@@ -450,14 +493,19 @@ export class PopupController {
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
           console.log('[PopupController] API session check timed out');
-          // Schedule retry for timeout
+          // Schedule retry for timeout (could be temporary network issue)
           this.scheduleRetry();
         } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
           console.log('[PopupController] API session check failed - network error');
-          // Schedule retry for network errors
-          this.scheduleRetry();
+          // Only retry network errors if we haven't exceeded max retries
+          if (this.retryCount < RETRY_CONFIG.maxRetries) {
+            this.scheduleRetry();
+          } else {
+            console.log('[PopupController] Max retries reached, stopping');
+          }
         } else {
           console.log('[PopupController] API session check failed:', error.message);
+          // Don't retry unknown errors
         }
       } else {
         console.log('[PopupController] API session check failed:', error);
@@ -545,18 +593,42 @@ export class PopupController {
 
   /**
    * Get configured app URL
+   * Priority:
+   * 1. User-configured appUrl from sync storage (for advanced users)
+   * 2. If active tab is on localhost:3000, use localhost (for developers)
+   * 3. Default to production URL (for regular users)
    */
   private async getAppUrl(): Promise<string> {
     try {
+      // Check for user-configured URL first
       const result = await this.storage.syncGet<{ appUrl?: string }>(['appUrl']);
-      return result.appUrl || this.config.defaultAppUrl;
+      if (result.appUrl) {
+        return result.appUrl;
+      }
+
+      // Check if developer is on localhost (secondary option for developers)
+      const [activeTab] = await this.tabs.query({ active: true, currentWindow: true });
+      if (activeTab?.url) {
+        try {
+          const url = new URL(activeTab.url);
+          if (url.hostname === 'localhost' && url.port === '3000') {
+            return 'http://localhost:3000';
+          }
+        } catch {
+          // If URL parsing fails, fall through to default app URL
+        }
+      }
+
+      // Default to production URL for regular users
+      return this.config.defaultAppUrl;
     } catch {
       return this.config.defaultAppUrl;
     }
   }
 
   /**
-   * Set up storage change listener
+   * Set up storage change listener with debouncing
+   * Prevents rapid re-checks when storage changes frequently
    */
   private setupStorageListener(): void {
     this.storageListener = (changes, areaName) => {
@@ -570,7 +642,15 @@ export class PopupController {
         changes[PopupStorageKeys.SESSION_TOKEN];
 
       if (localSessionChanged || tokenChanged) {
-        this.checkSession();
+        // Debounce: Only check once per 500ms to prevent refresh loops
+        if (this.storageDebounceId) {
+          clearTimeout(this.storageDebounceId);
+        }
+        
+        this.storageDebounceId = setTimeout(() => {
+          console.log('[PopupController] Storage changed, checking session (debounced)');
+          this.checkSession();
+        }, 500);
       }
     };
 
@@ -715,8 +795,39 @@ export class PopupController {
           }
         }
       }
+
+      // Update CTA button text based on state (state-adaptive CTA)
+      // Determine wallet state: true if detected on allowed domain, unknown (true) if not on domain yet
+      const walletDetected = isAllowedDomain ? walletStatusEl?.textContent === '✅' : true;
+      this.updateConnectButtonState(isAllowedDomain, walletDetected);
     } catch (error) {
       console.error('[PopupController] Failed to update status indicators:', error);
+    }
+  }
+
+  /**
+   * Update the connect button text based on current state
+   * State-adaptive CTA for better reviewer/user guidance
+   */
+  private updateConnectButtonState(isAllowedDomain: boolean, walletDetected: boolean): void {
+    const connectButton = document.getElementById('connectButton');
+    if (!connectButton) return;
+
+    if (!walletDetected && isAllowedDomain) {
+      // No wallet detected on allowed domain - primary action is get MetaMask
+      this.ctaButtonState = 'get-metamask';
+      connectButton.textContent = 'Get MetaMask';
+      connectButton.setAttribute('aria-label', 'Install MetaMask extension');
+    } else if (!isAllowedDomain) {
+      // Not on allowed domain (wallet state unknown) - primary action is go to site
+      this.ctaButtonState = 'open-ctj';
+      connectButton.textContent = 'Open CTJ App';
+      connectButton.setAttribute('aria-label', 'Open Crypto Trading Journal to connect MetaMask');
+    } else {
+      // On site with wallet - primary action is connect (handled by main app)
+      this.ctaButtonState = 'connect-on-page';
+      connectButton.textContent = 'Connect on Page';
+      connectButton.setAttribute('aria-label', 'Use the Connect button on the page to link MetaMask');
     }
   }
 }

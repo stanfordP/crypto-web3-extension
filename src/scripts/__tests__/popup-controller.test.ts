@@ -215,7 +215,7 @@ describe('PopupController', () => {
       await controller.openMainApp();
 
       expect(createSpy).toHaveBeenCalledWith({
-        url: 'http://localhost:3000',
+        url: 'https://cryptotradingjournal.xyz',
         active: true,
       });
     });
@@ -256,7 +256,7 @@ describe('PopupController', () => {
       await controller.openTradingJournal();
 
       expect(createSpy).toHaveBeenCalledWith({
-        url: 'http://localhost:3000/dashboard',
+        url: 'https://cryptotradingjournal.xyz/dashboard',
         active: true,
       });
     });

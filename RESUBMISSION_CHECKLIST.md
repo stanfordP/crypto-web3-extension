@@ -1,9 +1,9 @@
 # Chrome Web Store Resubmission Checklist
 
 **Extension:** Crypto Trading Journal - Web3 Auth  
-**Version:** 2.2.4  
-**Date:** January 31, 2026  
-**Status:** ⏳ Pending Resubmission — Additional Items Required
+**Version:** 2.2.5  
+**Date:** February 1, 2026  
+**Status:** ✅ UX Audit Complete — Ready for Resubmission
 
 ---
 
@@ -22,6 +22,32 @@
 
 ---
 
+## UX Audit Findings (February 1, 2026)
+
+### ✅ Implemented (v2.2.5)
+
+| # | Item | Status | Details |
+|---|------|--------|--------|
+| U1 | **Remove double logo** | ✅ Done | Replaced center logo in notConnected state with SVG link icon |
+| U2 | **Add header help icon** | ✅ Done | Added SVG info icon linking to reviewer.html |
+| U3 | **Update subtitle** | ✅ Done | Changed "Web3 Authentication" → "Web3 Auth Bridge" |
+| U4 | **Positive framing** | ✅ Done | Changed "NOT a wallet" → "🔐 Authentication Bridge" in info-box |
+| U5 | **Horizontal header layout** | ✅ Done | Logo + title/subtitle + help icon in row format |
+| U6 | **State-adaptive CTA** | ✅ Done | Button text changes: "Get MetaMask" / "Open CTJ App" / "Connect on Page" |
+| U7 | **Connected state double logo** | ✅ Done | Replaced with SVG checkmark success icon |
+| U8 | **Explicit "not a wallet" text** | ✅ Done | Re-added "⚠️ This is NOT a wallet" alongside positive framing |
+| U9 | **SVG icons** | ✅ Done | Replaced emoji (🔗/✅/ℹ️) with inline SVG for cross-platform consistency |
+| U10 | **Page title consistency** | ✅ Done | Updated HTML title to "Web3 Auth Bridge" |
+
+### 🟢 Remaining Low Priority Polish
+
+| # | Item | Status | Notes |
+|---|------|-----------|-------|
+| U11 | **Redundant footer links** | ⬜ Keep for now | "How it works" in both header icon and footer helps reviewers |
+| U12 | **Cold-open edge cases** | ⬜ Monitor | Getting Started may not show on chrome:// pages |
+
+---
+
 ## Comprehensive Resubmission Requirements
 
 ### 🔴 P0 — Approval Blockers (MUST FIX)
@@ -31,7 +57,7 @@
 | 1 | **Main site availability** | ⬜ Verify | Confirm cryptotradingjournal.xyz is accessible 24/7, no CAPTCHA, < 3s response |
 | 2 | **Exact test URL** | ⬜ Update | Change "Visit site" to "Visit https://cryptotradingjournal.xyz/login" |
 | 3 | **MetaMask in line 1** | ⬜ Update | First line MUST be "REQUIRES MetaMask extension already installed." |
-| 4 | **Version consistency** | ✅ Done | manifest.json (2.2.4) = package.json (2.2.4) |
+| 4 | **Version consistency** | ✅ Done | manifest.json (2.2.5) = package.json (2.2.5) |
 | 5 | **Permissions rationale** | ⬜ Add | Fill in CWS "Privacy practices" with justifications for `storage`, `activeTab`, `alarms` |
 | 6 | **Privacy disclosure match** | ⬜ Cross-check | Ensure CWS data handling fields match PRIVACY.md exactly |
 
@@ -48,10 +74,24 @@
 
 | # | Item | Status | Action Required |
 |---|------|--------|-----------------|
+| 15 | **State-adaptive CTA button** | ✅ Done | Implemented state-adaptive CTA: shows "Get MetaMask" / "Open CTJ App" / "Connect" based on state |
+| 16 | **Remove connected state double logo** | ✅ Done | Replaced with SVG checkmark success icon |
+| 17 | **Re-add explicit wallet disclaimer** | ✅ Done | Added "⚠️ This is NOT a wallet" alongside positive framing |
+| 18 | **Replace emoji with SVG icons** | ✅ Done | All emojis (🔗/✅/ℹ️) replaced with inline SVG |
 | 11 | **A11y on status indicators** | ⬜ Add | ARIA labels on popup status icons for automated accessibility checks |
 | 12 | **Promotional tiles** | ⬜ Optional | Create 440x280 and 1400x560 images for potential featuring |
 | 13 | **Uninstall feedback URL** | ⬜ Add | `chrome.runtime.setUninstallURL()` for user feedback |
 | 14 | **Remove deprecated files** | ⬜ Clean | Delete legacy `src/scripts/*.ts` files not in `entry/` |
+
+### 📚 Theme & Design Documentation (NEW)
+
+| # | Item | Status | Details |
+|---|------|--------|---------|
+| 19 | **Theme Design System doc** | ✅ Added | `docs/THEME_DESIGN_SYSTEM.md` — full palette, accessibility analysis, recommendations |
+| 20 | **Accessibility gap analysis** | ✅ Documented | Muted text at 3.8:1 (below WCAG AA 4.5:1) identified and documented |
+| 21 | **Recommended palette tweaks** | ✅ Documented | Non-breaking adjustments for improved readability recorded |
+| 22 | **Color psychology mapping** | ✅ Added | Trust/clarity associations documented for trading UI |
+| 23 | **Main app CLAUDE.md sync** | ✅ Done | Added UI & Theme section with cross-reference |
 
 ---
 
@@ -74,7 +114,7 @@ outside of active authentication flows.
 
 ---
 
-## Updated Test Instructions (v2.2.4)
+## Updated Test Instructions (v2.2.5)
 
 **Character count:** 484/500 ✅
 
