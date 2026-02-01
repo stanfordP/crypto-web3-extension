@@ -55,7 +55,7 @@ Background Service Worker (session storage, keep-alive)
 
 ## Message Protocol
 
-The extension supports both the legacy v1.1 protocol and the newer v2.0 app‑driven protocol. Message names and semantics should match `claude.md` (protocol section).
+The extension supports both the legacy v1.1 protocol and the newer v2.0 app-driven protocol. Message names and semantics should match `claude.md` (protocol section).
 
 ### App → Extension (v1.1 Legacy)
 - `CJ_OPEN_AUTH` - Open legacy authentication flow (popup-based)
@@ -69,11 +69,18 @@ The extension supports both the legacy v1.1 protocol and the newer v2.0 app‑dr
 - `CJ_STORE_SESSION` - Store authenticated session details in the extension
 - `CJ_CLEAR_SESSION` - Clear stored session on logout or disconnect
 
-### Extension → App
+### Extension → App (v1.1 Legacy)
+- `CJ_EXTENSION_PRESENT` - Response to `CJ_CHECK_EXTENSION`, confirms extension is installed
+- `CJ_AUTH_OPENED` - Auth page was opened (legacy flow result)
+- `CJ_SESSION_RESPONSE` - Session response with current session details
+- `CJ_SESSION_CHANGED` - Session changed event (login, logout, account change, or chain change)
+- `CJ_DISCONNECT_RESPONSE` - Disconnect confirmation
+
+### Extension → App (v2.0 App-Driven)
 - `CJ_WALLET_RESULT` - Wallet connection result, including selected address and chain
 - `CJ_SIGN_RESULT` - Signature result, including success/failure and signature payload
-- `CJ_SESSION_CHANGED` - Session changed event (login, logout, account change, or chain change)
-- `CJ_EXTENSION_INFO` - Extension version and capability flags (e.g., protocol version support)
+- `CJ_SESSION_STORED` - Session stored confirmation after app verifies signature
+- `CJ_ERROR` - Error response with code and message (for any v2.0 request)
 
 ## Chrome Web Store Submission Rules
 
