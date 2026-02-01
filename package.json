@@ -16,7 +16,8 @@
     "test": "playwright test",
     "test:e2e": "playwright test tests/auth-flow.test.ts",
     "test:e2e:security": "playwright test tests/security-compat.test.ts",
-    "test:e2e:all": "playwright test tests/auth-flow.test.ts tests/security-compat.test.ts",
+    "test:e2e:a11y": "playwright test tests/accessibility.test.ts --project=accessibility",
+    "test:e2e:all": "playwright test tests/auth-flow.test.ts tests/security-compat.test.ts tests/accessibility.test.ts",
     "test:unit": "jest --config jest.config.js",
     "test:coverage": "jest --config jest.config.js --coverage",
     "test:all": "npm run test:unit && npm run test:e2e:all",
@@ -29,7 +30,10 @@
     "version:major": "npm version major && node scripts/sync-manifest-version.js",
     "release": "npm run validate && npm run test:unit && npm run build:prod",
     "package": "node scripts/package-extension.js",
-    "release:full": "npm run release && npm run package"
+    "release:full": "npm run release && npm run package",
+    "sync-version": "node scripts/sync-manifest-version.js",
+    "check-version": "node scripts/check-version-sync.js",
+    "prerelease": "npm run check-version"
   },
   "keywords": [
     "web3",
@@ -46,6 +50,7 @@
     "zod": "^4.2.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@playwright/test": "^1.57.0",
     "@types/chrome": "^0.0.268",
     "@types/jest": "^29.5.12",

@@ -13,6 +13,7 @@ module.exports = {
     '<rootDir>/tests/extension.test.ts',
     '<rootDir>/tests/auth-flow.test.ts',
     '<rootDir>/tests/security-compat.test.ts',
+    '<rootDir>/tests/accessibility.test.ts',
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',

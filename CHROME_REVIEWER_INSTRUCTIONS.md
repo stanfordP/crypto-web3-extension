@@ -1,9 +1,11 @@
 # Chrome Web Store Reviewer Testing Instructions
 
+**CRITICAL:** REQUIRES MetaMask extension (or similar) installed. This extension is an "AUTHENTICATION BRIDGE," not a standalone wallet.
+
 ## Extension Overview
 
 **Name:** Crypto Trading Journal - Web3 Auth  
-**Version:** 2.2.2  
+**Version:** 2.2.4  
 **Type:** Authentication Bridge (NOT a wallet)
 
 **Important:** This extension is NOT a standalone cryptocurrency wallet. It bridges existing wallet extensions (MetaMask, Brave Wallet, etc.) to the Crypto Trading Journal web application for authentication purposes only.

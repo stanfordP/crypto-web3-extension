@@ -24,6 +24,7 @@ interface EthereumProvider {
   isRabby?: boolean;
   isBraveWallet?: boolean;
   isPhantom?: boolean;
+  isCoinbaseWallet?: boolean;  // Coinbase Wallet detection
   providers?: EthereumProvider[];
   // Security extension markers
   isWrappedBySecurityExtension?: boolean;
@@ -239,8 +240,9 @@ function getProvider(): EthereumProvider | null {
   const priorityOrder = [
     (p: EthereumProvider) => p.isRabby,      // 1. Rabby (best UX)
     (p: EthereumProvider) => p.isMetaMask && !p.isBraveWallet, // 2. MetaMask (not Brave pretending)
-    (p: EthereumProvider) => p.isPhantom,    // 3. Phantom
-    (p: EthereumProvider) => p.isBraveWallet, // 4. Brave Wallet (last - intercepts other wallets)
+    (p: EthereumProvider) => p.isCoinbaseWallet, // 3. Coinbase Wallet
+    (p: EthereumProvider) => p.isPhantom,    // 4. Phantom
+    (p: EthereumProvider) => p.isBraveWallet, // 5. Brave Wallet (last - intercepts other wallets)
   ];
   
   // First, try EIP-6963 providers (cleanest discovery method)

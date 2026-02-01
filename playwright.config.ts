@@ -43,5 +43,13 @@ export default defineConfig({
         browserName: 'chromium',
       },
     },
+    {
+      name: 'accessibility',
+      testMatch: 'accessibility.test.ts',
+      use: {
+        browserName: 'chromium',
+        headless: true,
+      },
+    },
   ],
 });

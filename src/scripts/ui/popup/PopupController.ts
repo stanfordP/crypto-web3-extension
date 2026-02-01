@@ -71,6 +71,16 @@ const DEFAULT_CONFIG: PopupControllerConfig = {
 };
 
 // ============================================================================
+// Retry Configuration
+// ============================================================================
+
+const RETRY_CONFIG = {
+  maxRetries: 3,
+  baseDelayMs: 1000,
+  maxDelayMs: 10000,
+} as const;
+
+// ============================================================================
 // PopupController Class
 // ============================================================================
 
@@ -84,6 +94,8 @@ export class PopupController {
     changes: Record<string, { oldValue?: unknown; newValue?: unknown }>,
     areaName: string
   ) => void) | null = null;
+  private retryCount: number = 0;
+  private retryTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
     private storage: IStorageAdapter,
@@ -132,6 +144,54 @@ export class PopupController {
       this.storage.offChanged(this.storageListener);
       this.storageListener = null;
     }
+    if (this.retryTimeoutId) {
+      clearTimeout(this.retryTimeoutId);
+      this.retryTimeoutId = null;
+    }
+  }
+
+  // ============================================================================
+  // Retry Logic
+  // ============================================================================
+
+  /**
+   * Calculate exponential backoff delay
+   */
+  private getRetryDelay(): number {
+    const delay = Math.min(
+      RETRY_CONFIG.baseDelayMs * Math.pow(2, this.retryCount),
+      RETRY_CONFIG.maxDelayMs
+    );
+    return delay;
+  }
+
+  /**
+   * Schedule automatic retry
+   */
+  private scheduleRetry(): void {
+    if (this.retryCount >= RETRY_CONFIG.maxRetries) {
+      console.log('[PopupController] Max retries reached');
+      return;
+    }
+
+    const delay = this.getRetryDelay();
+    console.log(`[PopupController] Scheduling retry ${this.retryCount + 1}/${RETRY_CONFIG.maxRetries} in ${delay}ms`);
+
+    this.retryTimeoutId = setTimeout(() => {
+      this.retryCount++;
+      this.checkSession();
+    }, delay);
+  }
+
+  /**
+   * Reset retry counter
+   */
+  private resetRetry(): void {
+    this.retryCount = 0;
+    if (this.retryTimeoutId) {
+      clearTimeout(this.retryTimeoutId);
+      this.retryTimeoutId = null;
+    }
   }
 
   // ============================================================================
@@ -163,6 +223,7 @@ export class PopupController {
    * Handle retry button click
    */
   private async handleRetry(): Promise<void> {
+    this.resetRetry();
     await this.checkSession();
   }
 
@@ -243,6 +304,8 @@ export class PopupController {
           accountMode: localData.accountMode,
           sessionToken: token,
         });
+        // Reset retry on success
+        this.resetRetry();
       } else {
         this.view.showView('notConnected');
         // Update status indicators for Chrome reviewers
@@ -250,6 +313,30 @@ export class PopupController {
       }
     } catch (error) {
       console.error('[PopupController] Failed to check session:', error);
+      
+      // Try to show cached session data if available
+      try {
+        const cachedData = await this.storage.localGet<StoredSessionData>([
+          PopupStorageKeys.CONNECTED_ADDRESS,
+          PopupStorageKeys.CHAIN_ID,
+          PopupStorageKeys.ACCOUNT_MODE,
+        ]);
+        
+        if (cachedData.connectedAddress) {
+          console.log('[PopupController] Showing cached session data');
+          this.displayConnectedState({
+            connectedAddress: cachedData.connectedAddress,
+            chainId: cachedData.chainId,
+            accountMode: cachedData.accountMode,
+          });
+          // Show offline indicator with cached data
+          this.view.updateOnlineStatus(false);
+          return;
+        }
+      } catch {
+        // Ignore storage errors
+      }
+      
       this.view.showView('notConnected');
       // Update status indicators even on error
       await this.updateStatusIndicators();
@@ -318,13 +405,19 @@ export class PopupController {
       const appUrl = await this.getAppUrl();
       console.log('[PopupController] Checking session via API...');
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const response = await fetch(`${appUrl}${this.config.apiSessionEndpoint}`, {
         method: 'GET',
         credentials: 'include',
         headers: {
           'Accept': 'application/json',
         },
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         console.log('[PopupController] API session check returned:', response.status);
@@ -332,6 +425,9 @@ export class PopupController {
       }
 
       const data: ApiSessionResponse = await response.json();
+      
+      // Success - reset retry counter
+      this.resetRetry();
 
       if (data.authenticated && data.address) {
         console.log('[PopupController] API confirmed session for:', data.address.slice(0, 10) + '...');
@@ -350,7 +446,22 @@ export class PopupController {
 
       return null;
     } catch (error) {
-      console.log('[PopupController] API session check failed:', error);
+      // Handle different error types
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          console.log('[PopupController] API session check timed out');
+          // Schedule retry for timeout
+          this.scheduleRetry();
+        } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+          console.log('[PopupController] API session check failed - network error');
+          // Schedule retry for network errors
+          this.scheduleRetry();
+        } else {
+          console.log('[PopupController] API session check failed:', error.message);
+        }
+      } else {
+        console.log('[PopupController] API session check failed:', error);
+      }
       return null;
     }
   }
@@ -571,6 +682,7 @@ export class PopupController {
       // Update domain status
       const domainStatusEl = document.getElementById('domainStatus');
       const domainLabelEl = document.getElementById('domainStatusLabel');
+      const gettingStartedEl = document.getElementById('gettingStarted');
       
       if (domainStatusEl && domainLabelEl) {
         // Clear any existing content
@@ -580,6 +692,10 @@ export class PopupController {
           domainStatusEl.textContent = '✅';
           domainLabelEl.textContent = 'Supported Domain: Yes';
           domainLabelEl.className = 'status-label status-success';
+          // Hide getting started when on supported domain
+          if (gettingStartedEl) {
+            gettingStartedEl.classList.add('hidden');
+          }
         } else {
           domainStatusEl.textContent = '⚠️';
           domainLabelEl.textContent = 'Domain: Visit supported site';
@@ -592,6 +708,11 @@ export class PopupController {
           linkEl.className = 'status-link';
           linkEl.textContent = ' (Go to cryptotradingjournal.xyz)';
           domainLabelEl.appendChild(linkEl);
+          
+          // Show getting started guide when off-site
+          if (gettingStartedEl) {
+            gettingStartedEl.classList.remove('hidden');
+          }
         }
       }
     } catch (error) {

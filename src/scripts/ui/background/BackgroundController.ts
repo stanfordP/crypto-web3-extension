@@ -356,6 +356,14 @@ export class BackgroundController {
 
   /**
    * Validate message sender origin
+   * 
+   * SECURITY NOTE: Uses strict origin matching to prevent similar-domain attacks.
+   * e.g., "cryptotradingjournal.xyz.evil.com" must NOT match "cryptotradingjournal.xyz"
+   * 
+   * Supports wildcards:
+   * - Port wildcard: "http://localhost:*" matches any port on localhost
+   * - Path wildcard: "https://example.com/*" matches any path on example.com
+   * - Subdomain wildcard: "https://*.example.com" matches any subdomain
    */
   validateSenderOrigin(sender: RuntimeMessageSender): boolean {
     const extensionId = this.runtimeAdapter.id;
@@ -373,10 +381,40 @@ export class BackgroundController {
     // Messages from content scripts (has tab URL)
     if (sender.tab?.url) {
       try {
-        const senderOrigin = new URL(sender.tab.url).origin;
-        return this.allowedOrigins.some((allowed) =>
-          senderOrigin.startsWith(allowed.replace('/*', '').replace('*', ''))
-        );
+        const senderUrl = new URL(sender.tab.url);
+        
+        return this.allowedOrigins.some((allowed) => {
+          // Handle port wildcard: "http://localhost:*"
+          if (allowed.includes(':*')) {
+            const [protocol, hostPart] = allowed.split('://');
+            const host = hostPart.replace(':*', '').replace('/*', '');
+            return senderUrl.protocol === protocol + ':' && senderUrl.hostname === host;
+          }
+          
+          // Handle subdomain wildcard: "https://*.example.com"
+          if (allowed.includes('*.')) {
+            const pattern = allowed
+              .replace('/*', '')  // Remove path wildcard
+              .replace('*.', '')  // Remove subdomain wildcard prefix
+              .replace(/^https?:\/\//, ''); // Remove protocol
+            const senderHost = senderUrl.hostname;
+            // Must end with .pattern (subdomain) or be exactly pattern
+            return senderHost === pattern || senderHost.endsWith('.' + pattern);
+          }
+          
+          // Standard pattern: exact origin match
+          // Remove trailing path wildcard: "https://example.com/*" -> "https://example.com"
+          const cleanedPattern = allowed.replace(/\/\*$/, '');
+          
+          try {
+            const allowedUrl = new URL(cleanedPattern);
+            // Exact origin match - prevents cryptotradingjournal.xyz.evil.com attacks
+            return senderUrl.origin === allowedUrl.origin;
+          } catch {
+            // If pattern isn't a valid URL, do exact string match on origin
+            return senderUrl.origin === cleanedPattern;
+          }
+        });
       } catch {
         return false;
       }

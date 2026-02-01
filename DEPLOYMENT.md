@@ -110,12 +110,40 @@ export const ALLOWED_ORIGINS: readonly string[] = [
 
 ```bash
 # Create submission package
-cd dist
-zip -r ../crypto-web3-extension-v2.0.0.zip .
-cd ..
+npm run package
+# or manually:
+# cd dist && zip -r ../crypto-web3-extension.zip . && cd ..
 ```
 
-### Step 6: Chrome Web Store Submission
+---
+
+## 🧪 Beta Distribution (Manual Side-loading)
+
+Since Chrome policies block remote one-click installations from GitHub, testers must use "Developer Mode":
+
+### 1. Preparation for Testers
+Run the full release pipeline to create a clean package:
+```bash
+# Validates, tests, builds, and zips the extension
+npm run release:full
+```
+The resulting ZIP will be in the project root.
+
+### 2. Manual Installation Steps
+1.  **Download** the latest `.zip` release from the GitHub repository.
+2.  **Extract** the archive to a permanent folder on your machine.
+3.  Open Chrome and navigate to `chrome://extensions`.
+4.  Enable **"Developer mode"** (toggle in top-right corner).
+5.  Click **"Load unpacked"** and select the folder where you extracted the extension.
+
+### 3. Known Limitations for Beta
+*   **No Auto-Updates:** Users must manually repeat this process for every new version.
+*   **Security Warnings:** Chrome will show a "Disable developer mode extensions" dialog on startup; users must click "Keep" or close the dialog.
+*   **Extension Persistence:** Developer-mode extensions may occasionally be disabled after major Chrome updates.
+
+---
+
+### Step 6: Chrome Web Store Submission (Official Release)
 
 1. Go to [Chrome Developer Dashboard](https://chrome.google.com/webstore/devconsole)
 2. Click "New Item"

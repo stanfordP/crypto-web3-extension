@@ -173,7 +173,7 @@ body::before {
 
 .subtitle {
   font-size: 12px;
-  color: var(--text-muted);
+  color: var(--text-secondary); /* Changed from text-muted for better contrast */
   font-weight: 500;
 }
 
@@ -460,6 +460,75 @@ h2 {
 }
 
 /* ============================================================================
+   Getting Started Guide
+   ============================================================================ */
+
+.getting-started {
+  width: 100%;
+  padding: 12px;
+  background: rgba(20, 184, 166, 0.08);
+  border: 1px solid rgba(20, 184, 166, 0.25);
+  border-radius: var(--radius);
+  margin: 12px 0;
+}
+
+.getting-started h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cj-teal-light);
+  margin-bottom: 10px;
+}
+
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.steps-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: var(--cj-ocean-mid);
+  border: 1px solid rgba(20, 184, 166, 0.4);
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--cj-teal-light);
+  flex-shrink: 0;
+}
+
+.step-text {
+  line-height: 1.5;
+}
+
+.step-text a {
+  color: var(--cj-teal-glow);
+  text-decoration: none;
+}
+
+.step-text a:hover {
+  text-decoration: underline;
+}
+
+.step-text a:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ============================================================================
    Header Logo
    ============================================================================ */
 
@@ -571,7 +640,7 @@ h2 {
 
 .footer-text {
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--text-secondary); /* Changed from text-muted for better contrast */
   font-weight: 500;
 }
 

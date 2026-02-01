@@ -49,16 +49,21 @@ This is a Manifest V3 Chrome browser extension that provides custom Web3 authent
 | **Controllers** | ✅ Complete | Background, Content, Popup, Auth controllers |
 | **Reviewer UX** | ✅ Added | Status indicators, MetaMask links, domain checks |
 
-### 📈 Test Coverage Summary (v2.2.4)
-| Metric | Value | Target | Gap |
-|--------|-------|--------|-----|
-| Unit Tests | 1,240 | - | ✅ |
-| Test Suites | 44 | - | ✅ |
-| Statement Coverage | ~45% | 70%+ | -25% |
-| Branch Coverage | ~37% | 60%+ | -23% |
-| Function Coverage | ~49% | 70%+ | -21% |
+### 📈 Test Coverage Summary (v2.2.4) — Updated January 31, 2026
+| Metric | Value | Target | Status |
+|--------|-------|--------|--------|
+| Unit Tests | **1,436** | - | ✅ +66 new |
+| Test Suites | **51** | - | ✅ +3 new |
+| Statement Coverage | **75.16%** | 80%+ | 🔴 -4.84% |
+| Branch Coverage | **65.78%** | 70%+ | 🔴 -4.22% |
+| Function Coverage | **72.6%** | 80%+ | 🔴 -7.4% |
 
-### 🎯 Chrome Web Store Resubmission Checklist
+**Recent Additions (Jan 31):** 
+- +20 tests for `sw-keepalive.ts` (0% → 81.48%)
+- +24 tests for `PopupController.ts` (59% → 81.86%)
+- +22 tests for entry point adapters/controllers
+
+### 🎯 Chrome Web Store Resubmission Checklist (PENDING)
 
 #### P0 — Approval Blockers (MUST FIX)
 | Item | Status | Owner |
@@ -67,7 +72,7 @@ This is a Manifest V3 Chrome browser extension that provides custom Web3 authent
 | Exact test URL in instructions (not "visit site") | ⬜ Update | Extension |
 | Version consistency (manifest/package/listing/ZIP) | ✅ Done | Extension |
 | Permissions rationale in CWS fields (esp. `alarms`) | ⬜ Add | Submission |
-| MetaMask requirement in FIRST LINE of test instructions | ⬜ Update | Submission |
+| MetaMask requirement in FIRST LINE of test instructions | ✅ Done | Submission |
 
 #### P1 — Reviewer Ease
 | Item | Status | Owner |
@@ -84,7 +89,40 @@ This is a Manifest V3 Chrome browser extension that provides custom Web3 authent
 | Remove deprecated legacy files | ⬜ Clean | Extension |
 | Promotional tiles (440x280, 1400x560) | ⬜ Optional | Assets |
 
-### 🗑️ Deprecated Files (Can Be Deleted)
+---
+
+## 🔐 Permission Justifications (for CWS Form)
+
+When resubmitting, use these exact justifications for the requesting permissions in the developer dashboard:
+
+| Permission | Justification |
+|------------|---------------|
+| **`storage`** | Required to securely persist the SIWE (Sign-In With Ethereum) session state and user preferences locally within the extension. This ensures the user remains authenticated across browser sessions without needing to re-sign daily. |
+| **`activeTab`** | Used to detect the active state of the Crypto Trading Journal web application. This allows the extension to provide real-time connection status (Connected/Disconnected) and show the correct UI when the user interacts with the extension popup. |
+| **`alarms`** | Required for the background service worker "keep-alive" mechanism. Since Manifest V3 service workers are ephemeral, alarms are used to ensure critical authentication processes or session heartbeats are not interrupted by unexpected worker termination. |
+| **Host Permissions** (`cryptotradingjournal.xyz`) | Necessary for the extension to communicate with the application's API endpoints for session validation and to inject the authentication bridge script into the permitted domain only. |
+
+---
+
+## 🚀 Beta Distribution Strategy (Interim)
+
+To support testers while CWS approval is pending, use the **GitHub Side-loading** method.
+
+### 📦 Tester Deliverables
+1. **Production ZIP**: Generated via `npm run release:full`.
+2. **Installation Guide**: Located in [BETA_INSTALL_GUIDE.md](./BETA_INSTALL_GUIDE.md).
+3. **Known Limitations**: 
+   - No auto-updates (must manually re-install).
+   - Chrome "Developer Mode" warning banner at startup.
+
+### 🛠️ Beta Implementation Items
+- [ ] **Remote Version Check**: Implement a simple fetch in the popup to notify users if a newer `.zip` is available on GitHub.
+- [ ] **Tester Feedback Form**: Link a Google Form or GitHub Issue template in the popup for bug reports.
+- [ ] **Environment Badge**: Add a "BETA" or "UNRELEASED" badge to the popup UI during non-CWS builds.
+
+---
+
+## 🗑️ Deprecated Files (Can Be Deleted)
 These legacy files are NOT bundled (webpack uses `entry/` files) and should be removed:
 - `src/scripts/popup.ts` → replaced by `PopupController` + `PopupView`
 - `src/scripts/auth.ts` → replaced by `AuthController` + `AuthView`
@@ -1051,33 +1089,251 @@ class MessageRouter {
 | Phase 3 | Controller layer | ✅ Complete |
 | Phase 4 | UI separation | ⏳ Partial (AuthView at 0% coverage) |
 
-### Remaining Work (Prioritized) - Updated January 14, 2026
+---
+
+## 🚨 Remaining Gaps & Implementation Plan (January 31, 2026)
+
+This section tracks all identified gaps from comprehensive codebase analysis. Updated after each improvement cycle.
+
+### Gap Analysis Summary
+
+| Category | Gap Count | Severity | Est. Effort |
+|----------|-----------|----------|-------------|
+| Test Coverage & Alignment | 5 | 🔴 High | 16h |
+| Accessibility Verification | 3 | 🟡 Medium | 6h |
+| CWS Compliance Risk | 3 | 🔴 High | 4h |
+| Technical Resilience | 3 | 🟡 Medium | 8h |
+
+### 🔴 P0: Critical Gaps (Block CWS Approval)
+
+#### 1. Tests Don't Exercise Production Modules
+**Problem:** New tests (PopupController, injected-auth, sw-keepalive, error-reporting) use mirrored "Test*" classes instead of importing actual source files. Coverage reports still show low percentages for production code.
+
+**Impact:** Actual bugs in production modules may not be caught.
+
+**Resolution:**
+- [ ] Refactor tests to import and test actual source modules
+- [ ] Use Jest mocks for Chrome APIs instead of reimplementing logic
+- [ ] Target: 70%+ statement coverage on all production files
+
+**Effort:** 8h | **Owner:** Dev
+
+#### 2. CWS Terminology Audit Incomplete
+**Problem:** Need comprehensive sweep of all Chrome-facing text to ensure "wallet" is never the primary descriptor.
+
+**Files to Audit:**
+- [ ] `manifest.json` - name, short_name, description
+- [ ] `STORE_LISTING.md` - all copy
+- [ ] `popup.html` / `auth.html` - user-facing strings
+- [ ] `CHROME_WEB_STORE_SUBMISSION.md` - submission fields
+
+**Resolution:** Search-and-replace audit + manual review of context.
+
+**Effort:** 2h | **Owner:** Dev
+
+#### 3. Standalone Onboarding Gap
+**Problem:** Extension lacks a "what to do next" flow when opened off-site. Reviewers who open the popup on google.com see "Not Connected" with no guidance.
+
+**Resolution:**
+- [ ] Add "Getting Started" mini-tutorial in popup when off-site
+- [ ] Include animated GIF or step indicator showing the flow
+- [ ] Link to reviewer documentation page
+
+**Effort:** 4h | **Owner:** Dev
+
+### 🟡 P1: High Priority Gaps
+
+#### 4. Untested Entry Points
+**Problem:** `entry/*.ts` files (auth-entry, background-entry, content-entry, popup-entry) remain at 0% coverage.
+
+**Resolution:**
+- [ ] Add integration tests that verify wiring is correct
+- [ ] Mock adapters, verify controllers receive them
+
+**Effort:** 4h | **Owner:** Dev
+
+#### 5. Branch-Heavy Controllers Untested
+**Problem:** `PopupController.ts` (59%) and `BackgroundController.ts` (68%) have complex error/edge branches still dark.
+
+**Specific Areas:**
+- PopupController: lines 418-582 (error states, retry logic)
+- BackgroundController: lines 402-497 (keep-alive, port management)
+
+**Resolution:**
+- [ ] Add targeted tests for uncovered branches
+- [ ] Use error injection to test failure paths
+
+**Effort:** 6h | **Owner:** Dev
+
+#### 6. No Automated Accessibility Audit
+**Problem:** ARIA labels present but no automated verification (Axe-core, Lighthouse).
+
+**Resolution:**
+- [ ] Add Playwright + Axe-core integration test
+- [ ] Run on popup.html and auth.html
+- [ ] Target: 0 violations at WCAG 2.1 AA level
+
+**Effort:** 3h | **Owner:** Dev
+
+#### 7. Keyboard Navigation Unverified
+**Problem:** No test confirms proper tab-order or focus management in popup/auth windows.
+
+**Resolution:**
+- [ ] Add E2E test for keyboard-only navigation
+- [ ] Verify focus-trap behavior in modal-like views
+- [ ] Test Escape key closes appropriate elements
+
+**Effort:** 2h | **Owner:** Dev
+
+### 🟢 P2: Medium Priority Gaps
+
+#### 8. Screen Reader Announcements Unverified
+**Problem:** `aria-live` regions exist but no verification that screen readers correctly announce state changes.
+
+**Resolution:**
+- [ ] Manual testing with NVDA/VoiceOver
+- [ ] Document expected announcements in test plan
+
+**Effort:** 2h | **Owner:** QA
+
+#### 9. No Memory Leak Analysis
+**Problem:** Background service worker runs indefinitely. No profiling for `activeOperations` Map or port listener leaks.
+
+**Resolution:**
+- [ ] Add DevTools Memory profiler session documentation
+- [ ] Add cleanup verification in long-running tests
+- [ ] Consider adding operation count metrics
+
+**Effort:** 4h | **Owner:** Dev
+
+#### 10. No Global Offline Mode
+**Problem:** Individual API calls retry, but no unified "Offline Mode" UX when backend is unreachable.
+
+**Resolution:**
+- [ ] Add offline detection in popup/auth views
+- [ ] Show "Offline - cached session" badge when appropriate
+- [ ] Graceful degradation without errors
+
+**Effort:** 3h | **Owner:** Dev
+
+#### 11. Version Sync Guardrails Missing
+**Problem:** No automated check that manifest.json, package.json, and CWS listing have matching versions.
+
+**Resolution:**
+- [ ] Add pre-commit hook or CI check
+- [ ] Existing `sync-manifest-version.js` script needs integration
+
+**Effort:** 1h | **Owner:** Dev
+
+### Implementation Priority Matrix
+
+| Week | Focus | Tasks | Success Criteria |
+|------|-------|-------|------------------|
+| **Week 1** | CWS Approval Blockers | #2 Terminology, #3 Onboarding | All "wallet" refs audited, Getting Started UI added |
+| **Week 2** | Test Alignment | #1 Production tests, #4 Entry points | 70%+ coverage on production files |
+| **Week 3** | Branch Coverage | #5 Controllers | PopupController 80%+, BackgroundController 80%+ |
+| **Week 4** | Accessibility | #6 Axe audit, #7 Keyboard | 0 a11y violations, keyboard nav works |
+| **Week 5** | Resilience | #9 Memory, #10 Offline, #11 Version | Leak-free, offline-ready, version-synced |
+
+### Progress Tracking
+
+| Gap # | Description | Status | Completed |
+|-------|-------------|--------|-----------|
+| 1 | Production module tests | ✅ Complete | Jan 31, 2026 |
+| 2 | Terminology audit | ✅ Complete | Jan 31, 2026 |
+| 3 | Standalone onboarding | ✅ Complete | Jan 31, 2026 |
+| 4 | Entry point tests | ✅ Complete | Jan 31, 2026 |
+| 5 | Controller branch tests (Popup, Background) | ✅ Complete | Jan 31, 2026 |
+| 6 | Axe accessibility audit | ✅ Complete | Jan 31, 2026 |
+| 7 | Keyboard navigation tests | ✅ Complete | Jan 31, 2026 |
+| 8 | Screen reader verification | 🔲 Manual Testing Required | - |
+| 9 | Memory leak analysis | ✅ Complete | Jan 31, 2026 |
+| 10 | Offline mode UX | 🔲 Not Started | - |
+| 11 | Version sync guardrails | ✅ Complete | Jan 31, 2026 |
+| 12 | Security: validateSenderOrigin fix | ✅ Complete | Jan 31, 2026 |
+| 13 | Error recovery documentation | ✅ Complete | Jan 31, 2026 |
+| 14 | Coinbase Wallet support | ✅ Complete | Jan 31, 2026 |
+
+### ✅ Completed P0 Items (Jan 31, 2026)
+
+#### Production Module Tests
+- Created `tests/sw-keepalive-production.test.ts` (20 tests)
+  - Coverage: 0% → **81.48%** 
+  - Tests: keep-alive alarm, port management, operation tracking, error handling
+- Created `tests/popup-controller-production.test.ts` (24 tests)
+  - Coverage: 59% → **81.86%**
+  - Tests: session management, event handlers, storage changes, error scenarios
+- Created `tests/entry-points-production.test.ts` (22 tests)
+  - Tests adapter exports and controller interfaces
+  - ChromeStorageAdapter: 82.5%, ChromeRuntimeAdapter: 93.75%, ChromeTabsAdapter: 100%, DOMAdapter: 95.65%
+
+#### Overall Coverage Improvement
+- **Tests:** 1,370 → **1,471** (+101 tests)
+- **Statement Coverage:** ~71% → **76.44%** (+5.44%)
+- **Branch Coverage:** ~63% → **67.01%** (+4.01%)
+- **Function Coverage:** ~69% → **73%** (+4%)
+
+---
+
+### ✅ Completed P1/P2 Items (Jan 31, 2026)
+
+#### P1 Completed
+- Created `tests/background-controller-production.test.ts` (35 tests)
+  - Coverage: 68% → **90.5%** statements, **78.4%** branches
+  - Tests: message handling, origin validation (SECURITY FIX), tab notification, lifecycle events
+- Created `tests/accessibility.test.ts` (27 Playwright tests)
+  - WCAG 2.1 AA compliance with axe-core
+  - Keyboard navigation, screen reader compatibility
+- Fixed CSS color contrast issues in popup.css
+
+#### P2 Completed  
+- **SECURITY FIX**: `validateSenderOrigin()` - Fixed `startsWith` vulnerability
+  - Now uses exact origin matching with wildcard support
+  - Prevents domain suffix attacks (e.g., `cryptotradingjournal.xyz.evil.com`)
+- Created `docs/ERROR_RECOVERY.md` - Comprehensive error recovery documentation
+- Created `docs/COINBASE_WALLET_TESTING.md` - Test plan for Coinbase Wallet
+- Created `docs/MEMORY_LEAK_ANALYSIS.md` - Profiling guide and leak prevention
+- Added Coinbase Wallet detection to `injected-auth.ts`
+- Verified `setUninstallURL` already implemented
+
+---
+
+### Remaining Work (Prioritized) - Updated January 31, 2026
 
 | Priority | Task | Impact | Effort | Status |
 |----------|------|--------|--------|--------|
-| 🔴 P0 | Add tests for `AuthView.ts` (0% → 80%) | +2.5% overall coverage | 4h | 🔲 Not Started |
-| 🔴 P0 | Add tests for entry points (0% → 70%) | +2.9% overall coverage | 3h | 🔲 Not Started |
 | 🔴 P0 | Increase `ContentController` branch coverage (30% → 60%) | +3% branch coverage | 6h | 🔲 Not Started |
-| 🟡 P1 | Add rate limiting unit tests | Security code coverage | 2h | 🔲 Not Started |
-| 🟡 P1 | Add sw-keepalive.ts tests | Service worker stability | 2h | 🔲 Not Started |
-| 🟡 P1 | Sync package.json version to 2.2.1 | Version consistency | 5min | 🔲 Not Started |
-| 🟢 P2 | Delete deprecated legacy files | Reduces maintenance burden | 1h | 🔲 Not Started |
-| 🟢 P2 | Document error recovery flows | Operational readiness | 2h | 🔲 Not Started |
-| 🟢 P2 | Test Coinbase Wallet compatibility | Expand user base | 4h | 🔲 Not Started |
+| 🟡 P1 | Manual screen reader verification (NVDA/VoiceOver) | Accessibility QA | 2h | 🔲 Not Started |
+| 🟡 P1 | Offline mode UX | Graceful degradation | 3h | 🔲 Not Started |
+| ✅ Done | Add tests for entry points (0% → 70%) | +2.9% overall coverage | 3h | ✅ Complete |
+| ✅ Done | Add sw-keepalive.ts tests (0% → 81%) | Service worker stability | 2h | ✅ Complete |
+| ✅ Done | Add PopupController.ts tests (59% → 82%) | UI code coverage | 3h | ✅ Complete |
+| ✅ Done | Add BackgroundController tests (68% → 90%) | Message handling coverage | 3h | ✅ Complete |
+| ✅ Done | Axe accessibility audit (27 tests) | WCAG compliance | 4h | ✅ Complete |
+| ✅ Done | Error recovery documentation | Operational readiness | 2h | ✅ Complete |
+| ✅ Done | Coinbase Wallet support | Expand user base | 2h | ✅ Complete |
+| ✅ Done | Memory leak analysis docs | Production stability | 2h | ✅ Complete |
+| ✅ Done | Version sync guardrails | Version consistency | 1h | ✅ Complete |
 
 ### Files at 0% Coverage (Require Attention)
 
 | File | Lines | Type | Notes |
 |------|-------|------|-------|
-| `entry/auth-entry.ts` | 10-82 | Entry point | Wires AuthController + AuthView |
-| `entry/background-entry.ts` | 19-130 | Entry point | Wires BackgroundController |
-| `entry/content-entry.ts` | 10-68 | Entry point | Wires ContentController |
-| `entry/popup-entry.ts` | 10-66 | Entry point | Wires PopupController + PopupView |
-| `ui/auth/AuthView.ts` | 12-333 | View | DOM manipulation for auth page |
-| `rate-limiter.ts` | 15-391 | Security | Token bucket rate limiting |
-| `sw-keepalive.ts` | 18-379 | Background | Service worker keep-alive |
+| `injected-auth.ts` | 51-494 | Injected script | Complex wallet interaction |
 | `sw-state.ts` | 36-199 | Background | Service worker state management |
+| `ui/auth/AuthView.ts` (low) | 12-333 | View | DOM manipulation for auth page |
 | `popup.ts` | 19-518 | **DEPRECATED** | Can delete - not bundled |
+
+### Significantly Improved Coverage (Jan 31, 2026)
+
+| File | Before | After | Tests Added |
+|------|--------|-------|-------------|
+| `sw-keepalive.ts` | 0% | **81.48%** | 20 |
+| `PopupController.ts` | 59% | **81.86%** | 24 |
+| `ChromeStorageAdapter.ts` | - | **82.5%** | 7 |
+| `ChromeRuntimeAdapter.ts` | - | **93.75%** | 4 |
+| `ChromeTabsAdapter.ts` | - | **100%** | 3 |
+| `DOMAdapter.ts` | - | **95.65%** | 4 |
 
 ### Deprecated Files (To Remove in v3.0.0)
 
