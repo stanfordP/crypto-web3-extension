@@ -206,10 +206,11 @@ describe('PopupController - State-Adaptive CTA Button', () => {
         expect.stringContaining('MetaMask')
       );
       // Should not use "wallet extension" terminology
-      expect(connectButton.setAttribute).toHaveBeenCalledWith(
-        'aria-label',
-        expect.not.stringContaining('wallet extension')
+      const ariaLabelCalls = connectButton.setAttribute.mock.calls.filter(
+        call => call[0] === 'aria-label'
       );
+      const ariaLabel = ariaLabelCalls[0]?.[1] as string;
+      expect(ariaLabel).not.toContain('wallet extension');
     });
 
     it('should open CTJ app when button clicked (directs user to proper domain)', async () => {

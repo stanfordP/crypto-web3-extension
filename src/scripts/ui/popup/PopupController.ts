@@ -98,7 +98,7 @@ export class PopupController {
   private retryTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private storageDebounceId: ReturnType<typeof setTimeout> | null = null;
   private isCheckingSession: boolean = false;
-  private ctaButtonState: 'get-metamask' | 'open-ctj' | 'connect-on-page' = 'connect-on-page';
+  private ctaButtonState: 'get-metamask' | 'open-ctj' | 'connect-on-page' = 'open-ctj'; // Default to safest state
 
   constructor(
     private storage: IStorageAdapter,
