@@ -57,7 +57,7 @@
 | 1 | **Main site availability** | ⬜ Verify | Confirm cryptotradingjournal.xyz is accessible 24/7, no CAPTCHA, < 3s response |
 | 2 | **Exact test URL** | ⬜ Update | Change "Visit site" to "Visit https://cryptotradingjournal.xyz/login" |
 | 3 | **MetaMask in line 1** | ⬜ Update | First line MUST be "REQUIRES MetaMask extension already installed." |
-| 4 | **Version consistency** | ✅ Done | manifest.json (2.2.4) = package.json (2.2.4) |
+| 4 | **Version consistency** | ✅ Done | manifest.json (2.2.5) = package.json (2.2.5) |
 | 5 | **Permissions rationale** | ⬜ Add | Fill in CWS "Privacy practices" with justifications for `storage`, `activeTab`, `alarms` |
 | 6 | **Privacy disclosure match** | ⬜ Cross-check | Ensure CWS data handling fields match PRIVACY.md exactly |
 
@@ -74,7 +74,7 @@
 
 | # | Item | Status | Action Required |
 |---|------|--------|-----------------|
-| 15 | **State-adaptive CTA button** | ⬜ Add | Show "Get MetaMask" / "Open CTJ App" / "Connect" based on state |
+| 15 | **State-adaptive CTA button** | ✅ Done | Implemented state-adaptive CTA: shows "Get MetaMask" / "Open CTJ App" / "Connect" based on state |
 | 16 | **Remove connected state double logo** | ✅ Done | Replaced with SVG checkmark success icon |
 | 17 | **Re-add explicit wallet disclaimer** | ✅ Done | Added "⚠️ This is NOT a wallet" alongside positive framing |
 | 18 | **Replace emoji with SVG icons** | ✅ Done | All emojis (🔗/✅/ℹ️) replaced with inline SVG |
@@ -114,7 +114,7 @@ outside of active authentication flows.
 
 ---
 
-## Updated Test Instructions (v2.2.4)
+## Updated Test Instructions (v2.2.5)
 
 **Character count:** 484/500 ✅
 

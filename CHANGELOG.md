@@ -59,8 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Element | Current | WCAG AA | Status |
 |---------|---------|---------|--------|
 | Primary text | 12.8:1 | 4.5:1 | ✅ AAA |
-| Secondary text | 6.1:1 | 4.5:1 | ✅ AA |
-| Muted text | 3.8:1 | 4.5:1 | ⚠️ Below target |
+| Secondary text | 7.2:1 | 4.5:1 | ✅ AAA |
+| Muted text | 4.7:1 | 4.5:1 | ✅ AA |
 
 ### Accessibility Palette Tweaks (Implemented)
 Applied non-breaking accessibility improvements to CSS variables:

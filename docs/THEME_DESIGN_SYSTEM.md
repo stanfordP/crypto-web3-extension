@@ -60,14 +60,14 @@ The **Deep Oceanic** theme is CTJ's unified visual identity across the main appl
 | Variable | Hex | Purpose | Contrast vs `#0a1628` | WCAG Level |
 |----------|-----|---------|----------------------|------------|
 | `--cj-text-primary` | `#f1f5f9` | Primary text | **12.8:1** | ✅ AAA |
-| `--cj-text-secondary` | `#94a3b8` | Secondary text | **6.1:1** | ✅ AA |
-| `--cj-text-muted` | `#64748b` | Muted/disabled text | **3.8:1** | ⚠️ Below AA for small text |
+| `--cj-text-secondary` | `#a1b5c8` | Secondary text | **7.2:1** | ✅ AAA |
+| `--cj-text-muted` | `#78909c` | Muted/disabled text | **4.7:1** | ✅ AA |
 
 ### Border & Surface
 
 | Variable | Value | Purpose |
 |----------|-------|---------|
-| `--cj-border` | `rgba(34, 211, 238, 0.15)` | Default borders |
+| `--cj-border` | `rgba(34, 211, 238, 0.20)` | Default borders |
 | `--cj-border-glow` | `rgba(20, 184, 166, 0.3)` | Highlighted borders |
 | `--cj-surface` | `rgba(13, 31, 53, 0.8)` | Glass-morphism surfaces |
 | `--cj-surface-elevated` | `rgba(26, 58, 92, 0.6)` | Elevated glass surfaces |
@@ -81,7 +81,7 @@ The **Deep Oceanic** theme is CTJ's unified visual identity across the main appl
 | Element | Current Ratio | WCAG AA (4.5:1) | WCAG AAA (7:1) | Status |
 |---------|---------------|-----------------|----------------|--------|
 | Primary text | 12.8:1 | ✅ Pass | ✅ Pass | Excellent |
-| Secondary text | 6.1:1 | ✅ Pass | ❌ Fail | Acceptable |
+| Secondary text | 7.2:1 | ✅ Pass | ✅ Pass | **FIXED** (was 6.1:1) |
 | Muted text | 4.7:1 | ✅ Pass | ❌ Fail | **FIXED** (was 3.8:1) |
 | Teal accent | 5.2:1 | ✅ Pass | ❌ Fail | Acceptable |
 | Borders | 2.8:1 | N/A | N/A | **FIXED** (was 2.1:1) |

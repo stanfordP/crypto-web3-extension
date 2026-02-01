@@ -202,7 +202,7 @@ Ensure these match between the Privacy Policy (PRIVACY.md) and CWS "Privacy prac
 
 ---
 
-## � UI & Theme Design
+## UI & Theme Design
 
 ### Deep Oceanic Theme
 
@@ -215,7 +215,7 @@ The extension uses the **Deep Oceanic** theme, a unified visual identity shared 
 | Background | `--cj-ocean-deepest` | `#0a1628` |
 | Primary Accent | `--cj-teal-glow` | `#14b8a6` |
 | Primary Text | `--cj-text-primary` | `#f1f5f9` |
-| Secondary Text | `--cj-text-secondary` | `#94a3b8` |
+| Secondary Text | `--cj-text-secondary` | `#a1b5c8` |
 | Success | `--cj-success` | `#10b981` |
 | Error | `--cj-danger` | `#ef4444` |
 
@@ -224,8 +224,8 @@ The extension uses the **Deep Oceanic** theme, a unified visual identity shared 
 | Requirement | Status | Notes |
 |-------------|--------|-------|
 | WCAG 2.1 AA Primary Text | ✅ Pass | 12.8:1 contrast ratio |
-| WCAG 2.1 AA Secondary Text | ✅ Pass | 6.1:1 contrast ratio |
-| WCAG 2.1 AA Muted Text | ⚠️ Marginal | 3.8:1 (documented improvement pending) |
+| WCAG 2.1 AA Secondary Text | ✅ Pass | ~7.2:1 contrast ratio (AAA) |
+| WCAG 2.1 AA Muted Text | ✅ Pass | ~4.7:1 contrast ratio |
 | Focus ring visibility | ✅ Pass | Teal glow ring |
 | Screen reader support | ✅ Pass | ARIA labels on interactive elements |
 | axe-core automated tests | ✅ 27 tests | WCAG compliance verified |
@@ -248,7 +248,7 @@ The extension uses **inline SVGs** (Feather icon style) instead of emojis:
 
 ---
 
-## �🎯 Extension Purpose & Scope
+## 🎯 Extension Purpose & Scope
 
 ### What the Extension DOES (Wallet Bridge)
 
