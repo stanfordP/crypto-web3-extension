@@ -626,7 +626,8 @@ describe('ContentController - Coverage Improvements', () => {
       const sendResponse = jest.fn();
       
       // Message from a tab (not popup or background)
-      const result = runtimeMessageCallback(
+      // Call without storing result - we're testing it doesn't throw
+      runtimeMessageCallback(
         { type: 'POPUP_GET_SESSION' },
         { id: 'external', tab: { id: 123 } },
         sendResponse

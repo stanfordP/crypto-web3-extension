@@ -158,7 +158,7 @@ describe('AuthController', () => {
       controller.destroy();
     }
     // Clean up window.ethereum
-    delete (window as any).ethereum;
+    delete (window as unknown as { ethereum?: unknown }).ethereum;
   });
 
   // ==========================================================================
@@ -211,7 +211,7 @@ describe('AuthController', () => {
     });
 
     it('should return null when no wallet is available', () => {
-      delete (window as any).ethereum;
+      delete (window as unknown as { ethereum?: unknown }).ethereum;
 
       const result = controller.getEthereumProvider();
 
@@ -253,7 +253,7 @@ describe('AuthController', () => {
     });
 
     it('should return false for hasWallet when no provider', () => {
-      delete (window as any).ethereum;
+      delete (window as unknown as { ethereum?: unknown }).ethereum;
 
       expect(controller.hasWallet()).toBe(false);
     });
@@ -401,7 +401,7 @@ describe('AuthController', () => {
 
   describe('error handling', () => {
     it('should show error when no wallet detected', async () => {
-      delete (window as any).ethereum;
+      delete (window as unknown as { ethereum?: unknown }).ethereum;
       controller.initialize();
       
       await controller.authenticate();
