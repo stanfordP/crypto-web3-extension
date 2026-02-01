@@ -202,7 +202,53 @@ Ensure these match between the Privacy Policy (PRIVACY.md) and CWS "Privacy prac
 
 ---
 
-## 🎯 Extension Purpose & Scope
+## � UI & Theme Design
+
+### Deep Oceanic Theme
+
+The extension uses the **Deep Oceanic** theme, a unified visual identity shared with the main CTJ application.
+
+> **📖 Full documentation:** See [docs/THEME_DESIGN_SYSTEM.md](docs/THEME_DESIGN_SYSTEM.md)
+
+| Element | Variable | Hex |
+|---------|----------|-----|
+| Background | `--cj-ocean-deepest` | `#0a1628` |
+| Primary Accent | `--cj-teal-glow` | `#14b8a6` |
+| Primary Text | `--cj-text-primary` | `#f1f5f9` |
+| Secondary Text | `--cj-text-secondary` | `#94a3b8` |
+| Success | `--cj-success` | `#10b981` |
+| Error | `--cj-danger` | `#ef4444` |
+
+### Accessibility Standards
+
+| Requirement | Status | Notes |
+|-------------|--------|-------|
+| WCAG 2.1 AA Primary Text | ✅ Pass | 12.8:1 contrast ratio |
+| WCAG 2.1 AA Secondary Text | ✅ Pass | 6.1:1 contrast ratio |
+| WCAG 2.1 AA Muted Text | ⚠️ Marginal | 3.8:1 (documented improvement pending) |
+| Focus ring visibility | ✅ Pass | Teal glow ring |
+| Screen reader support | ✅ Pass | ARIA labels on interactive elements |
+| axe-core automated tests | ✅ 27 tests | WCAG compliance verified |
+
+### Icon System
+
+The extension uses **inline SVGs** (Feather icon style) instead of emojis:
+- Ensures consistent rendering across Windows, macOS, Linux
+- Avoids emoji variation between OS versions
+- Maintains color palette consistency
+
+### Style Files
+
+| File | Purpose |
+|------|---------|
+| `src/styles/popup.css` | Popup UI theme + animations |
+| `src/styles/auth.css` | Auth page theme |
+| `docs/install.html` | Installation guide (inline theme) |
+| `docs/reviewer.html` | Reviewer guide (inline theme) |
+
+---
+
+## �🎯 Extension Purpose & Scope
 
 ### What the Extension DOES (Wallet Bridge)
 

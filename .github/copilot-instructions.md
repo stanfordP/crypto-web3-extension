@@ -68,6 +68,16 @@ src/scripts/
 4. **Legacy files** - files in `src/scripts/` root are deprecated, use `entry/` instead
 5. **Never call it "a wallet"** - always "authentication bridge" or "wallet bridge"
 
+## UI & Theme
+
+> **Full documentation:** See `docs/THEME_DESIGN_SYSTEM.md`
+
+The extension uses the **Deep Oceanic** theme (shared with main app):
+- Background: `--cj-ocean-deepest` (#0a1628)
+- Primary accent: `--cj-teal-glow` (#14b8a6)
+- Text: `--cj-text-primary` (#f1f5f9)
+- Use **inline SVGs** (not emojis) for cross-platform consistency
+
 ## Chrome Web Store Resubmission Requirements
 
 ### P0 — Must Fix Before Resubmission

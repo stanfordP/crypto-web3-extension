@@ -4,18 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'self'">
-  <title>Crypto Trading Journal - Web3 Auth</title>
+  <title>Crypto Trading Journal - Web3 Auth Bridge</title>
   <link rel="stylesheet" href="styles/popup.css">
 </head>
 <body>
   <div class="container" role="main">
     <!-- Header -->
     <header class="header">
-      <div class="header-logo">
-        <img src="icons/logo.png" alt="CJ Logo" class="logo-img" onerror="this.style.display='none';">
+      <div class="header-row">
+        <div class="header-logo">
+          <img src="icons/logo.png" alt="CJ Logo" class="logo-img" onerror="this.style.display='none';">
+        </div>
+        <div class="header-text">
+          <h1 class="title">CJ Trading</h1>
+          <p class="subtitle">Web3 Auth Bridge</p>
+        </div>
+        <a href="https://stanfordp.github.io/crypto-web3-extension/reviewer.html" 
+           target="_blank" 
+           rel="noopener" 
+           class="help-icon" 
+           aria-label="How this extension works - opens in new tab"
+           title="How it works">
+          <svg class="icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+        </a>
       </div>
-      <h1 class="title">CJ Trading</h1>
-      <p class="subtitle">Web3 Authentication</p>
     </header>
 
     <!-- Loading State -->
@@ -27,8 +43,11 @@
 
     <!-- Not Connected State -->
     <div id="notConnected" class="section hidden" role="region" aria-labelledby="notConnectedTitle">
-      <div class="icon-logo" aria-hidden="true">
-        <img src="icons/logo.png" alt="" class="icon-logo-img">
+      <div class="status-icon disconnected" aria-hidden="true">
+        <svg class="icon-svg-large" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        </svg>
       </div>
       <h2 id="notConnectedTitle">Not Connected</h2>
       <p class="description">
@@ -80,20 +99,21 @@
 
       <div class="info-box" role="note">
         <p>
-          <strong>⚠️ This is NOT a wallet.</strong> This extension bridges your existing 
-          MetaMask/Web3 wallet to Crypto Trading Journal for passwordless authentication (SIWE).
+          <strong>🔐 Authentication Bridge</strong> — This extension connects your existing 
+          MetaMask wallet to Crypto Trading Journal for secure, passwordless login (SIWE).
         </p>
         <p style="margin-top: 8px; font-size: 11px; color: var(--text-muted);">
-          Requires: MetaMask + cryptotradingjournal.xyz
+          <strong>⚠️ This is NOT a wallet.</strong> Requires: MetaMask extension + cryptotradingjournal.xyz
         </p>
       </div>
     </div>
 
     <!-- Connected State -->
     <div id="connected" class="section hidden" role="region" aria-labelledby="connectedTitle">
-      <div class="icon-logo success" aria-hidden="true">
-        <img src="icons/logo.png" alt="" class="icon-logo-img">
-        <span class="status-dot"></span>
+      <div class="status-icon connected" aria-hidden="true">
+        <svg class="icon-svg-large" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
       </div>
       <h2 id="connectedTitle">Connected</h2>
 
