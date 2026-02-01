@@ -55,18 +55,32 @@ Background Service Worker (session storage, keep-alive)
 
 ## Message Protocol
 
-### App → Extension
-- `CJ_WALLET_CONNECT` - Request wallet connection
-- `CJ_WALLET_SIGN` - Request message signing (SIWE)
-- `CJ_STORE_SESSION` - Store authenticated session
-- `CJ_CLEAR_SESSION` - Clear session on logout
-- `CJ_CHECK_EXTENSION` - Check if extension is installed
+The extension supports both the legacy v1.1 protocol and the newer v2.0 app-driven protocol. Message names and semantics should match `claude.md` (protocol section).
 
-### Extension → App
-- `CJ_WALLET_RESULT` - Connection result with address
-- `CJ_SIGN_RESULT` - Signature result
-- `CJ_SESSION_STATE` - Current session state
-- `CJ_EXTENSION_INFO` - Extension version/capabilities
+### App → Extension (v1.1 Legacy)
+- `CJ_OPEN_AUTH` - Open legacy authentication flow (popup-based)
+- `CJ_GET_SESSION` - Request current session details from the extension
+- `CJ_DISCONNECT` - Disconnect / clear legacy session
+- `CJ_CHECK_EXTENSION` - Check if the extension is installed and responsive
+
+### App → Extension (v2.0 App-Driven)
+- `CJ_WALLET_CONNECT` - Request wallet connection (initiates Web3 auth bridge)
+- `CJ_WALLET_SIGN` - Request message signing (SIWE or arbitrary message)
+- `CJ_STORE_SESSION` - Store authenticated session details in the extension
+- `CJ_CLEAR_SESSION` - Clear stored session on logout or disconnect
+
+### Extension → App (v1.1 Legacy)
+- `CJ_EXTENSION_PRESENT` - Response to `CJ_CHECK_EXTENSION`, confirms extension is installed
+- `CJ_AUTH_OPENED` - Auth page was opened (legacy flow result)
+- `CJ_SESSION_RESPONSE` - Session response with current session details
+- `CJ_SESSION_CHANGED` - Session changed event (login, logout, account change, or chain change)
+- `CJ_DISCONNECT_RESPONSE` - Disconnect confirmation
+
+### Extension → App (v2.0 App-Driven)
+- `CJ_WALLET_RESULT` - Wallet connection result, including selected address and chain
+- `CJ_SIGN_RESULT` - Signature result, including success/failure and signature payload
+- `CJ_SESSION_STORED` - Session stored confirmation after app verifies signature
+- `CJ_ERROR` - Error response with code and message (for any v2.0 request)
 
 ## Chrome Web Store Submission Rules
 
@@ -101,8 +115,8 @@ Background Service Worker (session storage, keep-alive)
 The extension uses the **Deep Oceanic** theme (shared with main CTJ app):
 - Background: `--cj-ocean-deepest` (#0a1628)
 - Primary accent: `--cj-teal-glow` (#14b8a6)
-- Text: `--cj-text-primary` (#f1f5f9)
-- Use **inline SVGs** (not emojis) for cross-platform consistency
+- Text: `--text-primary` (#f1f5f9)
+- Use **inline SVGs** for primary icons; emojis are acceptable for decorative accents but should not be relied on as the only visual indicator (for cross-platform consistency)
 
 ## Error Handling Codes
 
@@ -116,11 +130,10 @@ The extension uses the **Deep Oceanic** theme (shared with main CTJ app):
 ## Common Tasks
 
 ### Preparing for Chrome Web Store Submission
-1. Run `npm run release:full` to validate, test, and build
+1. Run `npm run release:full` to validate, test, build, and package
 2. Ensure version sync: `npm run check-version`
 3. Update CHANGELOG.md with version notes
-4. Create ZIP package with `npm run package`
-5. Review RESUBMISSION_CHECKLIST.md for all requirements
+4. Review RESUBMISSION_CHECKLIST.md for all requirements
 
 ### Adding New Features
 1. Add business logic to `src/scripts/core/` (no Chrome APIs)
