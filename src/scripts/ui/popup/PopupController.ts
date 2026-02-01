@@ -813,18 +813,18 @@ export class PopupController {
     const connectButton = document.getElementById('connectButton');
     if (!connectButton) return;
 
-    if (!walletDetected && !isAllowedDomain) {
-      // No wallet detected and not on site - primary action is get MetaMask
+    if (!walletDetected && isAllowedDomain) {
+      // No wallet detected on allowed domain - primary action is get MetaMask
       this.ctaButtonState = 'get-metamask';
       connectButton.textContent = 'Get MetaMask';
       connectButton.setAttribute('aria-label', 'Install MetaMask extension');
     } else if (!isAllowedDomain) {
-      // Has wallet but not on site - primary action is go to site
+      // Not on allowed domain (wallet state unknown) - primary action is go to site
       this.ctaButtonState = 'open-ctj';
       connectButton.textContent = 'Open CTJ App';
       connectButton.setAttribute('aria-label', 'Open Crypto Trading Journal to connect MetaMask');
     } else {
-      // On site - primary action is connect (handled by main app)
+      // On site with wallet - primary action is connect (handled by main app)
       this.ctaButtonState = 'connect-on-page';
       connectButton.textContent = 'Connect on Page';
       connectButton.setAttribute('aria-label', 'Use the Connect button on the page to link MetaMask');
