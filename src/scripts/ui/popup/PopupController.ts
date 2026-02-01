@@ -98,6 +98,7 @@ export class PopupController {
   private retryTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private storageDebounceId: ReturnType<typeof setTimeout> | null = null;
   private isCheckingSession: boolean = false;
+  private ctaButtonState: 'get-metamask' | 'open-ctj' | 'connect-on-page' = 'connect-on-page';
 
   constructor(
     private storage: IStorageAdapter,
@@ -208,7 +209,17 @@ export class PopupController {
    * Handle connect button click
    */
   private async handleConnect(): Promise<void> {
-    await this.openMainApp();
+    // Handle state-adaptive CTA behavior
+    if (this.ctaButtonState === 'get-metamask') {
+      // Open MetaMask download page
+      window.open('https://metamask.io/download/', '_blank');
+    } else if (this.ctaButtonState === 'open-ctj') {
+      // Open CTJ app
+      await this.openMainApp();
+    } else {
+      // On supported page - close popup so user can use the page button
+      window.close();
+    }
   }
 
   /**
@@ -597,8 +608,15 @@ export class PopupController {
 
       // Check if developer is on localhost (secondary option for developers)
       const [activeTab] = await this.tabs.query({ active: true, currentWindow: true });
-      if (activeTab?.url?.includes('localhost:3000')) {
-        return 'http://localhost:3000';
+      if (activeTab?.url) {
+        try {
+          const url = new URL(activeTab.url);
+          if (url.hostname === 'localhost' && url.port === '3000') {
+            return 'http://localhost:3000';
+          }
+        } catch {
+          // If URL parsing fails, fall through to default app URL
+        }
       }
 
       // Default to production URL for regular users
@@ -779,7 +797,9 @@ export class PopupController {
       }
 
       // Update CTA button text based on state (state-adaptive CTA)
-      this.updateConnectButtonState(isAllowedDomain, walletStatusEl?.textContent === '✅');
+      // Determine wallet state: true if detected on allowed domain, unknown (true) if not on domain yet
+      const walletDetected = isAllowedDomain ? walletStatusEl?.textContent === '✅' : true;
+      this.updateConnectButtonState(isAllowedDomain, walletDetected);
     } catch (error) {
       console.error('[PopupController] Failed to update status indicators:', error);
     }
@@ -795,26 +815,19 @@ export class PopupController {
 
     if (!walletDetected && !isAllowedDomain) {
       // No wallet detected and not on site - primary action is get MetaMask
+      this.ctaButtonState = 'get-metamask';
       connectButton.textContent = 'Get MetaMask';
-      connectButton.setAttribute('aria-label', 'Install MetaMask wallet extension');
-      // Update click handler to open MetaMask
-      connectButton.onclick = () => {
-        window.open('https://metamask.io/download/', '_blank');
-      };
+      connectButton.setAttribute('aria-label', 'Install MetaMask extension');
     } else if (!isAllowedDomain) {
       // Has wallet but not on site - primary action is go to site
+      this.ctaButtonState = 'open-ctj';
       connectButton.textContent = 'Open CTJ App';
-      connectButton.setAttribute('aria-label', 'Open Crypto Trading Journal to connect your wallet');
-      connectButton.onclick = () => {
-        window.open('https://cryptotradingjournal.xyz/login', '_blank');
-      };
+      connectButton.setAttribute('aria-label', 'Open Crypto Trading Journal to connect MetaMask');
     } else {
       // On site - primary action is connect (handled by main app)
+      this.ctaButtonState = 'connect-on-page';
       connectButton.textContent = 'Connect on Page';
-      connectButton.setAttribute('aria-label', 'Use the Connect Wallet button on the page');
-      connectButton.onclick = () => {
-        window.close(); // Close popup, user should use the page button
-      };
+      connectButton.setAttribute('aria-label', 'Use the Connect button on the page to link MetaMask');
     }
   }
 }
