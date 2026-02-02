@@ -67,12 +67,10 @@ This document tracks compliance with the **CTJ Deep Oceanic Design System** (def
 **Changes Applied:**
 1. **Alert Icons** (⚠️ → SVG triangle warning icon)
    - Line 825: Warning alert icon
-   - Line 836: Lock/security icon (🔐 → padlock SVG)
+   - Lines 840–846: Warning + lock/security alert icons (emoji → inline SVG)
 
 2. **Prerequisites Icons**
-   - Line 852: Browser icon (🌐 → globe SVG)
-   - Line 857: Wallet icon (🦊 → wallet SVG)
-   - Line 862: Time icon (⏱️ → clock SVG)
+   - Lines 878–904: Browser, wallet, and time icons (emojis → inline SVGs)
 
 3. **CSS Updates**
    - `.alert-icon`: Now sized for SVG (24x24px)
@@ -221,7 +219,7 @@ Before submitting to Chrome Web Store or deploying updates:
 
 ```bash
 # Check for emoji usage in HTML/CSS files
-grep -rE '[\x{1F300}-\x{1F9FF}]|[\x{2600}-\x{26FF}]|[\x{2700}-\x{27BF}]' src/ docs/ --color
+grep -rP '[\x{1F300}-\x{1F9FF}]|[\x{2600}-\x{26FF}]|[\x{2700}-\x{27BF}]' src/ docs/ --color
 
 # Run accessibility tests
 npm run test:accessibility
@@ -237,7 +235,7 @@ npm run type-check
 ### February 2, 2026 - install.html SVG Migration
 - **Changed:** Replaced all emoji icons with inline SVGs
 - **Files Modified:** `docs/install.html`
-- **Lines Changed:** 825, 836, 852, 857, 862
+- **Lines Changed:** multiple inline icon locations (see git diff for exact context)
 - **Reason:** Compliance with THEME_DESIGN_SYSTEM.md and claude.md requirements
 - **Impact:** Cross-platform visual consistency improved
 
