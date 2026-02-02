@@ -320,7 +320,7 @@ https://github.com/user-attachments/assets/8442b2d1-6feb-4973-a638-ff6e4e85d305
    ./validate-design.sh
 
 2. Check for emojis manually
-   grep -rE '[\x{1F300}-\x{1F9FF}]' src/ docs/*.html
+   grep -rP '[\x{1F300}-\x{1F9FF}]' src/ docs/*.html
 
 3. Verify SVG usage
    grep -r "svg viewBox" src/ docs/*.html
