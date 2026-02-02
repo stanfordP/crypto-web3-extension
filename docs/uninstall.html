@@ -5,27 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Extension Uninstalled - Crypto Trading Journal</title>
     <meta name="description" content="Thank you for using the Crypto Trading Journal Web3 Extension">
+    <link rel="icon" type="image/png" href="icon48.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #1a1a2e;
-            --text-primary: #e4e4e7;
-            --text-secondary: #a1a1aa;
-            --accent: #6366f1;
-            --accent-hover: #818cf8;
-            --border: #27272a;
+            /* Deep Oceanic Color Palette */
+            --cj-ocean-deepest: #0a1628;
+            --cj-ocean-deep: #0d1f35;
+            --cj-ocean-mid: #132d46;
+            --cj-ocean-light: #1a3a5c;
+            
+            --cj-teal-glow: #14b8a6;
+            --cj-teal-light: #2dd4bf;
+            --cj-cyan-glow: #22d3ee;
+            --cj-blue-electric: #3b82f6;
+            
+            --cj-success: #10b981;
+            --cj-warning: #f59e0b;
+            
+            --cj-text-primary: #f1f5f9;
+            --cj-text-secondary: #a1b5c8;
+            --cj-text-muted: #78909c;
+            
+            --cj-border: rgba(34, 211, 238, 0.20);
+            --cj-surface: rgba(13, 31, 53, 0.8);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--cj-ocean-deepest);
+            color: var(--cj-text-primary);
             line-height: 1.7;
             min-height: 100vh;
             display: flex;
@@ -33,158 +50,255 @@
             justify-content: center;
             padding: 2rem;
         }
-        
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(20, 184, 166, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 20%, rgba(59, 130, 246, 0.04) 0%, transparent 50%),
+                linear-gradient(180deg, var(--cj-ocean-deepest) 0%, var(--cj-ocean-deep) 100%);
+            z-index: -1;
+        }
+
         .container {
             max-width: 600px;
             text-align: center;
         }
-        
+
         .icon {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(59, 130, 246, 0.1));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        
+
+        .icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: var(--cj-teal-glow);
+        }
+
         h1 {
             font-size: 2rem;
+            font-weight: 700;
             margin-bottom: 1rem;
-            color: var(--accent);
+            background: linear-gradient(135deg, var(--cj-teal-light) 0%, var(--cj-cyan-glow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        
+
         p {
-            color: var(--text-secondary);
+            color: var(--cj-text-secondary);
             margin-bottom: 1.5rem;
         }
-        
+
         .card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            background: var(--cj-surface);
+            border: 1px solid var(--cj-border);
+            border-radius: 16px;
             padding: 2rem;
             margin: 2rem 0;
-        }
-        
-        .card h2 {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-        
-        .data-list {
+            backdrop-filter: blur(8px);
             text-align: left;
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--cj-text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card h2 svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--cj-teal-glow);
+        }
+
+        .data-list {
+            list-style: none;
             margin: 1rem 0;
         }
-        
+
         .data-list li {
-            margin: 0.5rem 0;
-            color: var(--text-secondary);
+            margin: 0.75rem 0;
+            color: var(--cj-text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        
-        .feedback-form {
-            margin-top: 2rem;
+
+        .data-list li svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--cj-success);
+            flex-shrink: 0;
         }
-        
+
+        .note {
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--cj-ocean-mid);
+            border-radius: 8px;
+            color: var(--cj-text-muted);
+        }
+
+        .note strong {
+            color: var(--cj-text-secondary);
+        }
+
         .feedback-form label {
             display: block;
             text-align: left;
             margin-bottom: 0.5rem;
-            color: var(--text-secondary);
+            color: var(--cj-text-secondary);
             font-size: 0.9rem;
         }
-        
+
         .feedback-form textarea {
             width: 100%;
             min-height: 100px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            background: var(--cj-ocean-mid);
+            border: 1px solid var(--cj-border);
+            border-radius: 10px;
             padding: 1rem;
-            color: var(--text-primary);
+            color: var(--cj-text-primary);
             font-family: inherit;
+            font-size: 0.95rem;
             resize: vertical;
+            transition: border-color 0.2s;
         }
-        
+
         .feedback-form textarea:focus {
             outline: none;
-            border-color: var(--accent);
+            border-color: var(--cj-teal-glow);
         }
-        
+
+        .feedback-form textarea::placeholder {
+            color: var(--cj-text-muted);
+        }
+
         .btn {
-            display: inline-block;
-            background: var(--accent);
-            color: white;
-            padding: 0.75rem 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--cj-teal-glow) 0%, #0d9488 100%);
+            color: var(--cj-ocean-deepest);
+            padding: 0.875rem 1.5rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
             text-decoration: none;
             margin-top: 1rem;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
-        
+
         .btn:hover {
-            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(20, 184, 166, 0.3);
         }
-        
-        .btn-secondary {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-        }
-        
-        .btn-secondary:hover {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-        }
-        
+
         .links {
             margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
         }
-        
+
         .links a {
-            color: var(--accent);
+            color: var(--cj-text-secondary);
             text-decoration: none;
-            margin: 0 0.5rem;
+            font-size: 0.9rem;
+            transition: color 0.2s;
         }
-        
+
         .links a:hover {
-            text-decoration: underline;
+            color: var(--cj-teal-glow);
         }
-        
+
         .success-message {
             display: none;
-            background: #22c55e22;
-            border: 1px solid #22c55e;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
             padding: 1rem;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-top: 1rem;
-            color: #22c55e;
+            color: var(--cj-success);
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.6rem; }
+            .card { padding: 1.5rem; }
+            .links { flex-direction: column; gap: 0.75rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="icon">👋</div>
+        <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+        </div>
         <h1>Thanks for Trying Our Extension</h1>
-        <p>The Crypto Trading Journal Web3 Auth extension has been uninstalled from your browser.</p>
+        <p>The CTJ Web3 Auth extension has been uninstalled from your browser.</p>
         
         <div class="card">
-            <h2>🗑️ Your Data Has Been Cleared</h2>
-            <p>The following local data was automatically removed when you uninstalled:</p>
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                </svg>
+                Your Data Has Been Cleared
+            </h2>
+            <p style="color: var(--cj-text-secondary);">The following local data was automatically removed:</p>
             <ul class="data-list">
-                <li>✓ Session tokens (local storage)</li>
-                <li>✓ Connected wallet address (local storage)</li>
-                <li>✓ Chain/network preferences</li>
+                <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    Session tokens (local storage)
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    Connected wallet address (local storage)
+                </li>
+                <li>
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    Chain/network preferences
+                </li>
             </ul>
-            <p style="font-size: 0.85rem; margin-top: 1rem;">
+            <div class="note">
                 <strong>Note:</strong> If you have an account on cryptotradingjournal.xyz, your trading data 
                 is stored on our servers and is not affected by uninstalling this extension.
-            </p>
+            </div>
         </div>
         
         <div class="card">
-            <h2>📝 Quick Feedback (Optional)</h2>
-            <p>Help us improve! Why did you uninstall?</p>
+            <h2>
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+                Quick Feedback (Optional)
+            </h2>
+            <p style="color: var(--cj-text-secondary);">Help us improve! Why did you uninstall?</p>
             <form class="feedback-form" id="feedbackForm">
                 <label for="reason">Your feedback:</label>
                 <textarea 
@@ -192,7 +306,13 @@
                     name="reason" 
                     placeholder="e.g., Didn't need it anymore, found a bug, confusing to use..."
                 ></textarea>
-                <button type="submit" class="btn">Send Feedback</button>
+                <button type="submit" class="btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                        <line x1="22" y1="2" x2="11" y2="13"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                    Send Feedback
+                </button>
             </form>
             <div class="success-message" id="successMessage">
                 ✓ Thank you for your feedback!
@@ -200,11 +320,9 @@
         </div>
         
         <div class="links">
-            <a href="https://cryptotradingjournal.xyz" target="_blank">Visit Trading Journal</a>
-            <span style="color: var(--border);">•</span>
-            <a href="https://github.com/stanfordP/crypto-web3-extension/issues" target="_blank">Report Issue</a>
-            <span style="color: var(--border);">•</span>
-            <a href="https://chrome.google.com/webstore/detail/crypto-trading-journal-we/cphjlogninjhikeldohmihhpaaafnheb" target="_blank">Reinstall Extension</a>
+            <a href="https://cryptotradingjournal.xyz">Visit Trading Journal</a>
+            <a href="https://github.com/stanfordP/crypto-web3-extension/issues">Report Issue</a>
+            <a href="install.html">Reinstall Extension</a>
         </div>
     </div>
     
@@ -212,21 +330,9 @@
         document.getElementById('feedbackForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const reason = document.getElementById('reason').value;
-            
-            // In a real implementation, you'd send this to your backend
-            // For now, we'll just show the success message
             console.log('Uninstall feedback:', reason);
-            
-            // Show success message
             document.getElementById('successMessage').style.display = 'block';
             document.getElementById('feedbackForm').style.display = 'none';
-            
-            // Optionally send to analytics (if you have a backend)
-            // fetch('https://cryptotradingjournal.xyz/api/feedback/uninstall', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify({ reason, timestamp: new Date().toISOString() })
-            // }).catch(() => {});
         });
     </script>
 </body>
