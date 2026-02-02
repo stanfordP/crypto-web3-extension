@@ -5,20 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chrome Web Store Reviewer Guide - Crypto Trading Journal Web3 Extension</title>
     <meta name="description" content="Quick testing guide for Chrome Web Store reviewers testing the Crypto Trading Journal Web3 Extension">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #1a1a2e;
-            --bg-card: #16162a;
-            --text-primary: #e4e4e7;
-            --text-secondary: #a1a1aa;
-            --accent: #6366f1;
-            --accent-hover: #818cf8;
-            --border: #27272a;
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --info: #3b82f6;
+            /* Deep Oceanic Theme */
+            --cj-ocean-deepest: #0a1628;
+            --cj-ocean-deep: #0f2744;
+            --cj-ocean-medium: #1a365d;
+            --cj-ocean-light: #2c5282;
+            --cj-teal-glow: #14b8a6;
+            --cj-teal-light: #2dd4bf;
+            --cj-teal-dark: #0d9488;
+            --cj-text-primary: #f1f5f9;
+            --cj-text-secondary: #94a3b8;
+            --cj-text-muted: #64748b;
+            --cj-border: #1e3a5f;
+            --cj-success: #22c55e;
+            --cj-warning: #f59e0b;
+            --cj-error: #ef4444;
+            --cj-info: #3b82f6;
         }
         
         * {
@@ -28,28 +35,80 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(180deg, var(--cj-ocean-deepest) 0%, var(--cj-ocean-deep) 100%);
+            background-attachment: fixed;
+            color: var(--cj-text-primary);
             line-height: 1.7;
-            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+        
+        /* Navigation Bar */
+        .nav {
+            background: rgba(10, 22, 40, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--cj-border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--cj-text-primary);
+            font-weight: 600;
+        }
+        
+        .nav-logo svg {
+            width: 24px;
+            height: 24px;
+            color: var(--cj-teal-glow);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--cj-text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--cj-teal-glow);
         }
         
         .container {
             max-width: 900px;
             margin: 0 auto;
+            padding: 2rem 1rem;
         }
         
         header {
             text-align: center;
             margin-bottom: 2rem;
             padding-bottom: 2rem;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--cj-border);
         }
         
         .badge {
             display: inline-block;
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--cj-teal-glow) 0%, var(--cj-teal-dark) 100%);
             color: white;
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
@@ -62,14 +121,14 @@
         h1 {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+            background: linear-gradient(135deg, var(--cj-teal-glow) 0%, var(--cj-teal-light) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         
         .subtitle {
-            color: var(--text-secondary);
+            color: var(--cj-text-secondary);
             font-size: 1.1rem;
         }
         
@@ -77,12 +136,13 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: var(--bg-secondary);
+            background: var(--cj-ocean-deep);
+            border: 1px solid var(--cj-border);
             padding: 0.75rem 1.5rem;
             border-radius: 8px;
             margin-top: 1rem;
             font-weight: 600;
-            color: var(--success);
+            color: var(--cj-success);
         }
         
         .time-estimate svg {
@@ -91,22 +151,31 @@
         }
         
         h2 {
-            color: var(--accent-hover);
+            color: var(--cj-teal-light);
             font-size: 1.5rem;
             margin: 2.5rem 0 1rem;
             padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--cj-border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        h2 svg {
+            width: 24px;
+            height: 24px;
+            color: var(--cj-teal-glow);
         }
         
         h3 {
-            color: var(--text-primary);
+            color: var(--cj-text-primary);
             font-size: 1.15rem;
             margin: 1.5rem 0 0.75rem;
         }
         
         p {
             margin-bottom: 1rem;
-            color: var(--text-secondary);
+            color: var(--cj-text-secondary);
         }
         
         .quick-facts {
@@ -117,28 +186,36 @@
         }
         
         .fact-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
+            background: var(--cj-ocean-deep);
+            border: 1px solid var(--cj-border);
             border-radius: 12px;
             padding: 1.25rem;
             text-align: center;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        
+        .fact-card:hover {
+            border-color: var(--cj-teal-glow);
+            transform: translateY(-2px);
         }
         
         .fact-card .icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 0.75rem;
+            color: var(--cj-teal-glow);
         }
         
         .fact-card .label {
             font-size: 0.875rem;
-            color: var(--text-secondary);
+            color: var(--cj-text-muted);
             margin-bottom: 0.25rem;
         }
         
         .fact-card .value {
             font-size: 1.1rem;
             font-weight: 600;
-            color: var(--text-primary);
+            color: var(--cj-text-primary);
         }
         
         .steps-container {
@@ -149,24 +226,30 @@
             display: flex;
             gap: 1.5rem;
             margin-bottom: 1.5rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
+            background: var(--cj-ocean-deep);
+            border: 1px solid var(--cj-border);
             border-radius: 12px;
             padding: 1.5rem;
             position: relative;
+            transition: border-color 0.2s;
+        }
+        
+        .step:hover {
+            border-color: var(--cj-ocean-light);
         }
         
         .step-number {
             flex-shrink: 0;
             width: 40px;
             height: 40px;
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--cj-teal-glow) 0%, var(--cj-teal-dark) 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
             font-size: 1.1rem;
+            color: white;
         }
         
         .step-content {
@@ -177,11 +260,11 @@
             font-weight: 600;
             font-size: 1.1rem;
             margin-bottom: 0.5rem;
-            color: var(--text-primary);
+            color: var(--cj-text-primary);
         }
         
         .step-description {
-            color: var(--text-secondary);
+            color: var(--cj-text-secondary);
             font-size: 0.95rem;
         }
         
@@ -190,56 +273,64 @@
             top: 1rem;
             right: 1rem;
             font-size: 0.8rem;
-            color: var(--success);
+            color: var(--cj-success);
             background: rgba(34, 197, 94, 0.1);
             padding: 0.25rem 0.5rem;
             border-radius: 4px;
         }
         
         .code-block {
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
+            background: var(--cj-ocean-deepest);
+            border: 1px solid var(--cj-border);
             border-radius: 8px;
             padding: 1rem;
             font-family: 'Consolas', 'Monaco', monospace;
             font-size: 0.9rem;
             overflow-x: auto;
             margin: 1rem 0;
-            color: var(--text-secondary);
+            color: var(--cj-teal-light);
         }
         
         .highlight-box {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
+            background: var(--cj-ocean-deep);
+            border: 1px solid var(--cj-border);
             border-radius: 8px;
             padding: 1.5rem;
             margin: 1.5rem 0;
         }
         
         .highlight-box.success {
-            border-left: 4px solid var(--success);
+            border-left: 4px solid var(--cj-success);
         }
         
         .highlight-box.warning {
-            border-left: 4px solid var(--warning);
+            border-left: 4px solid var(--cj-warning);
         }
         
         .highlight-box.info {
-            border-left: 4px solid var(--info);
+            border-left: 4px solid var(--cj-info);
         }
         
         .highlight-box.error {
-            border-left: 4px solid var(--error);
+            border-left: 4px solid var(--cj-error);
         }
         
         .highlight-box h4 {
             margin-bottom: 0.5rem;
-            color: var(--text-primary);
+            color: var(--cj-text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .highlight-box h4 svg {
+            width: 20px;
+            height: 20px;
         }
         
         ul, ol {
             margin: 1rem 0 1rem 1.5rem;
-            color: var(--text-secondary);
+            color: var(--cj-text-secondary);
         }
         
         li {
@@ -247,13 +338,13 @@
         }
         
         a {
-            color: var(--accent);
+            color: var(--cj-teal-glow);
             text-decoration: none;
             transition: color 0.2s;
         }
         
         a:hover {
-            color: var(--accent-hover);
+            color: var(--cj-teal-light);
             text-decoration: underline;
         }
         
@@ -270,23 +361,24 @@
         }
         
         .btn-primary {
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--cj-teal-glow) 0%, var(--cj-teal-dark) 100%);
             color: white;
         }
         
         .btn-primary:hover {
-            background: var(--accent-hover);
+            background: linear-gradient(135deg, var(--cj-teal-light) 0%, var(--cj-teal-glow) 100%);
             text-decoration: none;
+            transform: translateY(-1px);
         }
         
         .btn-secondary {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
+            background: var(--cj-ocean-deep);
+            color: var(--cj-text-primary);
+            border: 1px solid var(--cj-border);
         }
         
         .btn-secondary:hover {
-            border-color: var(--accent);
+            border-color: var(--cj-teal-glow);
             text-decoration: none;
         }
         
@@ -298,8 +390,8 @@
         }
         
         .flow-diagram {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
+            background: var(--cj-ocean-deep);
+            border: 1px solid var(--cj-border);
             border-radius: 12px;
             padding: 2rem;
             margin: 2rem 0;
@@ -315,8 +407,8 @@
         }
         
         .flow-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
+            background: var(--cj-ocean-medium);
+            border: 1px solid var(--cj-border);
             border-radius: 8px;
             padding: 1rem 1.5rem;
             text-align: center;
@@ -324,18 +416,20 @@
         }
         
         .flow-item .icon {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 0.5rem;
+            color: var(--cj-teal-glow);
         }
         
         .flow-item .label {
             font-size: 0.85rem;
-            color: var(--text-secondary);
+            color: var(--cj-text-secondary);
         }
         
         .flow-arrow {
             font-size: 1.5rem;
-            color: var(--accent);
+            color: var(--cj-teal-glow);
         }
         
         .success-criteria {
@@ -346,24 +440,28 @@
         }
         
         .criteria-card {
-            background: var(--bg-card);
-            border: 1px solid var(--success);
+            background: var(--cj-ocean-deep);
+            border: 1px solid var(--cj-success);
             border-radius: 8px;
             padding: 1rem;
         }
         
         .criteria-card .check {
-            color: var(--success);
-            font-size: 1.5rem;
+            color: var(--cj-success);
             margin-bottom: 0.5rem;
+        }
+        
+        .criteria-card .check svg {
+            width: 28px;
+            height: 28px;
         }
         
         footer {
             margin-top: 4rem;
             padding-top: 2rem;
-            border-top: 1px solid var(--border);
+            border-top: 1px solid var(--cj-border);
             text-align: center;
-            color: var(--text-secondary);
+            color: var(--cj-text-muted);
         }
         
         @media (max-width: 600px) {
@@ -375,8 +473,16 @@
                 font-size: 1.3rem;
             }
             
-            body {
+            .container {
                 padding: 1rem 0.75rem;
+            }
+            
+            .nav {
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                display: none;
             }
             
             .step {
@@ -393,6 +499,23 @@
     </style>
 </head>
 <body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="https://cryptotradingjournal.xyz" class="nav-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>CTJ Web3 Extension</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Privacy Policy</a>
+                <a href="install.html">Install Guide</a>
+                <a href="https://github.com/stanfordP/crypto-web3-extension" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
         <header>
             <span class="badge">For Chrome Web Store Reviewers</span>
@@ -409,25 +532,38 @@
         <main>
             <!-- Quick Facts -->
             <section>
-                <h2>⚡ Quick Facts</h2>
+                <h2>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    Quick Facts
+                </h2>
                 <div class="quick-facts">
                     <div class="fact-card">
-                        <div class="icon">🔌</div>
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                        </svg>
                         <div class="label">Type</div>
                         <div class="value">Auth Bridge</div>
                     </div>
                     <div class="fact-card">
-                        <div class="icon">🦊</div>
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                        </svg>
                         <div class="label">Requires</div>
                         <div class="value">MetaMask</div>
                     </div>
                     <div class="fact-card">
-                        <div class="icon">🌐</div>
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
                         <div class="label">Works On</div>
                         <div class="value">cryptotradingjournal.xyz</div>
                     </div>
                     <div class="fact-card">
-                        <div class="icon">❌</div>
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
                         <div class="label">NOT a</div>
                         <div class="value">Wallet</div>
                     </div>
@@ -437,28 +573,44 @@
             <!-- Important Notice -->
             <section>
                 <div class="highlight-box warning">
-                    <h4>⚠️ Important: This is NOT a Cryptocurrency Wallet</h4>
+                    <h4>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        Important: This is NOT a Cryptocurrency Wallet
+                    </h4>
                     <p style="margin-bottom: 0;">This extension is an <strong>authentication bridge</strong> that connects existing wallet extensions (like MetaMask) to the Crypto Trading Journal web application. It does NOT store funds, private keys, or seed phrases.</p>
                 </div>
             </section>
 
             <!-- How It Works -->
             <section>
-                <h2>🔄 How It Works</h2>
+                <h2>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    How It Works
+                </h2>
                 <div class="flow-diagram">
                     <div class="flow-steps">
                         <div class="flow-item">
-                            <div class="icon">🦊</div>
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/>
+                            </svg>
                             <div class="label">MetaMask<br>(Existing Wallet)</div>
                         </div>
                         <div class="flow-arrow">→</div>
                         <div class="flow-item">
-                            <div class="icon">🔌</div>
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                            </svg>
                             <div class="label">This Extension<br>(Auth Bridge)</div>
                         </div>
                         <div class="flow-arrow">→</div>
                         <div class="flow-item">
-                            <div class="icon">📊</div>
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
                             <div class="label">Trading Journal<br>(Web App)</div>
                         </div>
                     </div>
@@ -468,7 +620,12 @@
 
             <!-- Testing Steps -->
             <section>
-                <h2>📋 Testing Steps</h2>
+                <h2>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                    Testing Steps
+                </h2>
                 <div class="steps-container">
                     <div class="step">
                         <div class="step-number">1</div>
@@ -556,29 +713,51 @@
 
             <!-- Success Criteria -->
             <section>
-                <h2>✅ Success Criteria</h2>
+                <h2>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Success Criteria
+                </h2>
                 <div class="success-criteria">
                     <div class="criteria-card">
-                        <div class="check">✓</div>
+                        <div class="check">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
                         <strong>Extension popup shows status indicators</strong>
-                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Proves code is functional even before connecting</p>
+                        <p style="font-size: 0.9rem; color: var(--cj-text-secondary); margin-top: 0.5rem;">Proves code is functional even before connecting</p>
                     </div>
                     <div class="criteria-card">
-                        <div class="check">✓</div>
+                        <div class="check">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
                         <strong>Wallet address appears in popup after auth</strong>
-                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Shows successful SIWE authentication</p>
+                        <p style="font-size: 0.9rem; color: var(--cj-text-secondary); margin-top: 0.5rem;">Shows successful SIWE authentication</p>
                     </div>
                     <div class="criteria-card">
-                        <div class="check">✓</div>
+                        <div class="check">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
                         <strong>Disconnect button clears session</strong>
-                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Returns to "Not Connected" state</p>
+                        <p style="font-size: 0.9rem; color: var(--cj-text-secondary); margin-top: 0.5rem;">Returns to "Not Connected" state</p>
                     </div>
                 </div>
             </section>
 
             <!-- What to Expect on the Main Website -->
             <section>
-                <h2>🌐 What to Expect on cryptotradingjournal.xyz</h2>
+                <h2>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    What to Expect on cryptotradingjournal.xyz
+                </h2>
                 <div class="highlight-box success">
                     <h4>When you visit the main website, you should see:</h4>
                     <ol>
@@ -594,7 +773,12 @@
             <!-- If Website is Unavailable -->
             <section>
                 <div class="highlight-box info">
-                    <h4>ℹ️ If cryptotradingjournal.xyz is Unavailable</h4>
+                    <h4>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        If cryptotradingjournal.xyz is Unavailable
+                    </h4>
                     <p>If the external website is temporarily unavailable, you can still verify the extension's functionality:</p>
                     <ol>
                         <li><strong>Click extension icon</strong> - Status indicators prove extension loads correctly</li>
@@ -609,7 +793,12 @@
 
             <!-- What This Extension Does NOT Do -->
             <section>
-                <h2>❌ What This Extension Does NOT Do</h2>
+                <h2>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                    </svg>
+                    What This Extension Does NOT Do
+                </h2>
                 <div class="highlight-box error">
                     <ul style="margin: 0;">
                         <li><strong>NOT a wallet</strong> - Cannot store, send, or receive cryptocurrency</li>
@@ -622,7 +811,12 @@
 
             <!-- Contact -->
             <section>
-                <h2>📞 Contact & Support</h2>
+                <h2>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                    </svg>
+                    Contact & Support
+                </h2>
                 <p>If you have questions or encounter issues during testing:</p>
                 <div class="buttons-row">
                     <a href="https://github.com/stanfordP/crypto-web3-extension/issues" target="_blank" class="btn btn-primary">Report Issue</a>
@@ -633,9 +827,14 @@
 
             <!-- Additional Resources -->
             <section>
-                <h2>📚 Additional Resources</h2>
+                <h2>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    Additional Resources
+                </h2>
                 <ul>
-                    <li><a href="https://stanfordp.github.io/crypto-web3-extension/">Privacy Policy</a></li>
+                    <li><a href="index.html">Privacy Policy</a></li>
                     <li><a href="https://login.xyz/" target="_blank">Learn about Sign-In With Ethereum (SIWE)</a></li>
                     <li><a href="https://eips.ethereum.org/EIPS/eip-4361" target="_blank">EIP-4361 Specification</a></li>
                 </ul>
@@ -643,7 +842,7 @@
         </main>
 
         <footer>
-            <p>&copy; 2026 Crypto Trading Journal. All rights reserved.</p>
+            <p>&copy; 2025 Crypto Trading Journal. All rights reserved.</p>
             <p><a href="https://cryptotradingjournal.xyz">Back to Crypto Trading Journal</a></p>
         </footer>
     </div>
