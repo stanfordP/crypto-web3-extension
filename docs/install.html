@@ -358,9 +358,18 @@
         }
 
         .alert-icon {
-            font-size: 1.5rem;
             flex-shrink: 0;
             margin-top: 0.1rem;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .alert-icon svg {
+            width: 100%;
+            height: 100%;
         }
 
         .alert h3 {
@@ -407,7 +416,13 @@
             align-items: center;
             justify-content: center;
             margin-bottom: 1rem;
-            font-size: 1.5rem;
+        }
+
+        .prereq-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: var(--cj-teal-glow);
+        }
         }
 
         .prereq-card h3 {
@@ -822,7 +837,13 @@
         <!-- Alert -->
         <div class="alert alert-warning">
             <div class="alert-content">
-                <span class="alert-icon">⚠️</span>
+                <span class="alert-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                </span>
                 <div>
                     <h3>Manual Installation Required (Chrome Web Store Review In Progress)</h3>
                     <p><strong>REQUIRES MetaMask or similar wallet extension already installed.</strong> This extension is currently under Chrome Web Store review. Follow the step-by-step guide below to install it manually in Developer Mode — it only takes 5 minutes.</p>
@@ -833,7 +854,12 @@
         <!-- Important Notice -->
         <div class="alert" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3);">
             <div class="alert-content">
-                <span class="alert-icon">🔐</span>
+                <span class="alert-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                </span>
                 <div>
                     <h3>This is NOT a Cryptocurrency Wallet</h3>
                     <p>This extension is an <strong>authentication bridge</strong> that connects your existing wallet (MetaMask, Brave Wallet, etc.) to Crypto Trading Journal for passwordless sign-in. It does NOT store private keys, send/receive crypto, or provide wallet functionality. You must have MetaMask or another EIP-1193 compatible wallet extension already installed.</p>
@@ -849,17 +875,33 @@
             </div>
             <div class="prereq-grid">
                 <div class="prereq-card">
-                    <div class="prereq-icon">🌐</div>
+                    <div class="prereq-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="2" y1="12" x2="22" y2="12"/>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        </svg>
+                    </div>
                     <h3>Chromium Browser</h3>
                     <p>Chrome, Brave, Edge, or Opera. Any Chromium-based browser will work perfectly.</p>
                 </div>
                 <div class="prereq-card">
-                    <div class="prereq-icon">🦊</div>
+                    <div class="prereq-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                        </svg>
+                    </div>
                     <h3>Web3 Wallet (REQUIRED)</h3>
                     <p><strong><a href="https://metamask.io/download/" target="_blank">MetaMask</a> required</strong> (or Brave Wallet, Coinbase Wallet, Rabby). This extension cannot work without an existing wallet extension — it's an authentication bridge, not a standalone wallet.</p>
                 </div>
                 <div class="prereq-card">
-                    <div class="prereq-icon">⏱️</div>
+                    <div class="prereq-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
                     <h3>5 Minutes</h3>
                     <p>The entire setup process is quick and straightforward. No technical expertise required.</p>
                 </div>
