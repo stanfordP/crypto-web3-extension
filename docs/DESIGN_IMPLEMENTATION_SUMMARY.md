@@ -85,7 +85,7 @@ This created visual inconsistency and violated the unified Deep Oceanic theme id
 | Alert banner icon in "Before you install" section | `⚠️` | Triangle warning SVG | Alert warning |
 | Prerequisite card: "Requires MetaMask extension" | `🔐` | Padlock SVG | Security/lock |
 | Prerequisite card: "Supported browsers" | `🌐` | Globe with meridians SVG | Browser/internet |
-| Prerequisite card: "Connect via MetaMask (authentication bridge)" | `🦊` | Bridge SVG | Web3 authentication bridge |
+| Prerequisite card: "Connect via MetaMask (authentication bridge)" | `🦊` | Wallet SVG | Web3 wallet |
 | Prerequisite card: "Installation time estimate" | `⏱️` | Clock SVG | Time/duration |
 
 **Total Changes:** 5 emoji replacements with SVGs
