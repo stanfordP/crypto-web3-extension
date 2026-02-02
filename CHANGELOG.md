@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.2.5] - 2026-02-01 (UX Audit Implementation - Complete)
 
+### Added - Documentation
+- **Install page updates** (`docs/install.html`) to align with Chrome Web Store submission requirements:
+  - Added prominent "NOT a Wallet" disclaimer in hero badge and new alert section
+  - Enhanced MetaMask requirement emphasis in prerequisites (marked as REQUIRED)
+  - Added FAQ entry explaining Chrome Web Store review status and expected timeline
+  - Updated all version references from 2.2.4 to 2.2.5
+  - Clarified extension positioning as "authentication bridge" throughout
+  - Added explicit disclaimers that extension requires existing wallet (MetaMask)
+  - Updated alert to mention "Chrome Web Store Review In Progress" status
+
 ### Added
 - **Header help icon** (inline SVG) linking to reviewer.html for instant context
 - **Horizontal header layout** with Logo → Title/Subtitle → Help icon

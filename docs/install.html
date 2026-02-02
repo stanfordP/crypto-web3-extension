@@ -784,7 +784,7 @@
             <div class="nav-links">
                 <a href="https://cryptotradingjournal.xyz">Main App</a>
                 <a href="https://github.com/stanfordP/crypto-web3-extension" target="_blank">GitHub</a>
-                <span class="nav-badge">v2.2.4</span>
+                <span class="nav-badge">v2.2.5</span>
             </div>
         </div>
     </nav>
@@ -795,12 +795,12 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
-            Secure Web3 Authentication Bridge
+            Web3 Authentication Bridge • NOT a Wallet
         </div>
         <h1>Connect Your Wallet to CTJ</h1>
         <p class="hero-subtitle">
-            Sign in securely to Crypto Trading Journal using your existing Web3 wallet. 
-            No passwords, no seed phrases shared — just cryptographic signatures.
+            Sign in securely to Crypto Trading Journal using your <strong>existing Web3 wallet</strong> (MetaMask required). 
+            No passwords, no seed phrases shared — just cryptographic signatures. This extension bridges your wallet for authentication only.
         </p>
         <div class="hero-cta">
             <a href="#download" class="btn btn-primary">
@@ -824,8 +824,19 @@
             <div class="alert-content">
                 <span class="alert-icon">⚠️</span>
                 <div>
-                    <h3>Manual Installation Required</h3>
-                    <p>This extension is pending Chrome Web Store approval. Follow the step-by-step guide below to install it in Developer Mode — it only takes 5 minutes.</p>
+                    <h3>Manual Installation Required (Chrome Web Store Review In Progress)</h3>
+                    <p><strong>REQUIRES MetaMask or similar wallet extension already installed.</strong> This extension is currently under Chrome Web Store review. Follow the step-by-step guide below to install it manually in Developer Mode — it only takes 5 minutes.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Important Notice -->
+        <div class="alert" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3);">
+            <div class="alert-content">
+                <span class="alert-icon">🔐</span>
+                <div>
+                    <h3>This is NOT a Cryptocurrency Wallet</h3>
+                    <p>This extension is an <strong>authentication bridge</strong> that connects your existing wallet (MetaMask, Brave Wallet, etc.) to Crypto Trading Journal for passwordless sign-in. It does NOT store private keys, send/receive crypto, or provide wallet functionality. You must have MetaMask or another EIP-1193 compatible wallet extension already installed.</p>
                 </div>
             </div>
         </div>
@@ -844,8 +855,8 @@
                 </div>
                 <div class="prereq-card">
                     <div class="prereq-icon">🦊</div>
-                    <h3>Web3 Wallet</h3>
-                    <p><a href="https://metamask.io/download/" target="_blank">MetaMask</a>, Brave Wallet, Coinbase Wallet, or any EIP-1193 compatible wallet.</p>
+                    <h3>Web3 Wallet (REQUIRED)</h3>
+                    <p><strong><a href="https://metamask.io/download/" target="_blank">MetaMask</a> required</strong> (or Brave Wallet, Coinbase Wallet, Rabby). This extension cannot work without an existing wallet extension — it's an authentication bridge, not a standalone wallet.</p>
                 </div>
                 <div class="prereq-card">
                     <div class="prereq-icon">⏱️</div>
@@ -883,7 +894,7 @@
                     <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
                     <polyline points="22 4 12 14.01 9 11.01"/>
                 </svg>
-                Latest: v2.2.4 • Updated Feb 2026
+                Latest: v2.2.5 • Updated Feb 2026
             </div>
         </section>
 
@@ -990,6 +1001,15 @@
             </div>
 
             <div class="faq-grid">
+                <details class="faq-item">
+                    <summary>When will this be available on Chrome Web Store?</summary>
+                    <div class="faq-answer">
+                        <p>The extension is currently under Chrome Web Store review. Once approved, it will be available for one-click installation directly from the Chrome Web Store, eliminating the need for manual Developer Mode installation.</p>
+                        <p style="margin-top: 0.5rem;"><strong>Current Status:</strong> Under review after positioning clarification as an "authentication bridge" (not a standalone wallet). Expected approval timeline: 1-5 business days after resubmission.</p>
+                        <p style="margin-top: 0.5rem;">Check back on this page for updates, or watch the <a href="https://github.com/stanfordP/crypto-web3-extension" target="_blank">GitHub repository</a> for announcements.</p>
+                    </div>
+                </details>
+
                 <details class="faq-item">
                     <summary>"Wallet not detected" error</summary>
                     <div class="faq-answer">
@@ -1101,7 +1121,7 @@
 
         // Track download
         document.getElementById('downloadBtn')?.addEventListener('click', () => {
-            console.log('[CTJ Install] Download initiated - v2.2.4');
+            console.log('[CTJ Install] Download initiated - v2.2.5');
         });
     </script>
 </body>
