@@ -8,7 +8,7 @@ const { chromium } = require('playwright');
   await page.goto('file://' + process.cwd() + '/docs/install.html');
   
   // Wait for page to load fully
-  await page.waitForTimeout(2000);
+  await page.waitForLoadState('networkidle');
   
   // Take screenshot of the entire page
   await page.screenshot({ 
