@@ -1132,9 +1132,10 @@
             // Briefly highlight the step that changed
             const stepEl = document.getElementById('step-extensions-page');
             if (stepEl) {
-                stepEl.classList.add('pulse-highlight');
+                stepEl.classList.add('highlight-pulse');
+                // Remove class after animation completes to allow re-triggering
                 setTimeout(() => {
-                    stepEl.classList.remove('pulse-highlight');
+                    stepEl.classList.remove('highlight-pulse');
                 }, 500);
             }
         }
