@@ -80,16 +80,17 @@ describe('MessageRouter - Pure Functions', () => {
     });
 
     it('should not allow negative tokens', () => {
-      const state: RateLimiterState = { tokens: 1, lastRefill: Date.now() };
-      const now = Date.now();
+      // Use a fixed timestamp to avoid timing-dependent test flakiness
+      const fixedTime = 10000;
+      const state: RateLimiterState = { tokens: 1, lastRefill: fixedTime };
 
-      // First request
-      const result1 = checkRateLimit(state, DEFAULT_CONFIG, now);
+      // First request at the exact same time - consumes 1 token
+      const result1 = checkRateLimit(state, DEFAULT_CONFIG, fixedTime);
       expect(result1.isLimited).toBe(false);
-      expect(result1.newState.tokens).toBeCloseTo(0, 5);
+      expect(result1.newState.tokens).toBe(0);
 
-      // Second request immediately - no tokens
-      const result2 = checkRateLimit(result1.newState, DEFAULT_CONFIG, now);
+      // Second request immediately - no tokens available
+      const result2 = checkRateLimit(result1.newState, DEFAULT_CONFIG, fixedTime);
       expect(result2.isLimited).toBe(true);
     });
   });
