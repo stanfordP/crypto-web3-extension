@@ -503,6 +503,33 @@
             border-color: var(--cj-border-glow);
         }
 
+        /* Browser-dependent step highlighting */
+        .step-content.browser-dependent-step {
+            border-color: var(--cj-teal-glow);
+            box-shadow: 0 0 20px rgba(20, 184, 166, 0.15);
+        }
+
+        .step-content.browser-dependent-step:hover {
+            border-color: var(--cj-teal-glow);
+        }
+
+        /* Pulse animation for browser selection change */
+        .step-content.pulse-highlight {
+            animation: pulseGlow 0.5s ease;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 0 20px rgba(20, 184, 166, 0.15);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(20, 184, 166, 0.4);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(20, 184, 166, 0.15);
+            }
+        }
+
         .step-content h3 {
             font-size: 1.15rem;
             font-weight: 600;
@@ -898,6 +925,9 @@
             </div>
 
             <!-- Browser Selector -->
+            <p style="text-align: center; color: var(--cj-text-secondary); margin-bottom: 1rem;">
+                <strong style="color: var(--cj-text-primary);">Select your browser</strong> — instructions will update automatically
+            </p>
             <div class="browser-selector">
                 <button class="browser-btn active" onclick="selectBrowser('chrome', this)">
                     <svg viewBox="0 0 24 24" fill="currentColor">
@@ -935,8 +965,8 @@
 
                 <div class="step">
                     <div class="step-marker">3</div>
-                    <div class="step-content">
-                        <h3>🔧 Open the Extensions Page</h3>
+                    <div class="step-content browser-dependent-step" id="step-extensions-page">
+                        <h3>🔧 Open the Extensions Page <span style="font-size: 0.75rem; background: rgba(20, 184, 166, 0.15); padding: 0.25rem 0.5rem; border-radius: 4px; color: var(--cj-teal-light); margin-left: 0.5rem;">← Changes by browser</span></h3>
                         <p id="extensionsUrl">Open your browser and type <code>chrome://extensions</code> in the address bar, then press Enter.</p>
                         <div class="step-tip">
                             <strong>💡 Tip:</strong> You can also access this via Menu (⋮) → Extensions → Manage Extensions.
@@ -1098,6 +1128,16 @@
             
             document.getElementById('extensionsUrl').innerHTML = 
                 `Open ${browserNames[browser]} and type <code>${urlMap[browser]}</code> in the address bar, then press Enter.`;
+            
+            // Briefly highlight the step that changed
+            const stepEl = document.getElementById('step-extensions-page');
+            if (stepEl) {
+                stepEl.classList.add('highlight-pulse');
+                // Remove class after animation completes to allow re-triggering
+                setTimeout(() => {
+                    stepEl.classList.remove('highlight-pulse');
+                }, 500);
+            }
         }
 
         // Smooth scroll for anchor links
