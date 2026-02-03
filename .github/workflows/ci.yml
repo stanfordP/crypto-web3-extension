@@ -16,37 +16,10 @@ env:
 
 jobs:
   # ============================================================
-  # PATH DETECTION - Skip jobs if only docs changed
+  # LINT & TYPE CHECK
   # ============================================================
-  changes:
-    name: Detect Changes
-    runs-on: ubuntu-latest
-    outputs:
-      src: ${{ steps.filter.outputs.src }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Detect changed paths
-        uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            src:
-              - 'src/**'
-              - 'tests/**'
-              - 'scripts/**'
-              - 'package.json'
-              - 'package-lock.json'
-              - 'tsconfig.json'
-              - 'webpack.config.js'
-              - 'manifest.json'
-              - 'jest.config.js'
-
   lint-and-typecheck:
     name: Lint & Type Check
-    needs: changes
-    if: needs.changes.outputs.src == 'true' || github.event_name == 'push'
     runs-on: ubuntu-latest
 
     steps:
