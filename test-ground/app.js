@@ -139,7 +139,7 @@ class TestGroundApp {
 
       this.isConnected = false
       this.currentAccount = null
-      this.current ChainId = null
+      this.currentChainId = null
       this.updateUI()
     } catch (error) {
       this.log(`Disconnect failed: ${error.message}`, 'error')
@@ -344,12 +344,19 @@ class TestGroundApp {
 
     // Remove "waiting" message if present
     if (logEl.querySelector('.text-gray-500')) {
-      logEl.innerHTML = ''
+      logEl.textContent = ''
     }
 
     const entry = document.createElement('div')
     entry.className = `log-entry mb-2 ${colorClass}`
-    entry.innerHTML = `<span class="text-gray-500">[${timestamp}]</span> ${icon} ${message}`
+
+    // Use textContent for message to prevent XSS
+    const timestampSpan = document.createElement('span')
+    timestampSpan.className = 'text-gray-500'
+    timestampSpan.textContent = `[${timestamp}]`
+
+    entry.appendChild(timestampSpan)
+    entry.appendChild(document.createTextNode(` ${icon} ${message}`))
 
     logEl.appendChild(entry)
     logEl.scrollTop = logEl.scrollHeight
@@ -360,7 +367,12 @@ class TestGroundApp {
 
   clearLog() {
     const logEl = document.getElementById('eventLog')
-    logEl.innerHTML = '<div class="text-gray-500">Log cleared. Waiting for events...</div>'
+    // Use textContent instead of innerHTML to prevent potential XSS
+    logEl.textContent = ''
+    const waitingDiv = document.createElement('div')
+    waitingDiv.className = 'text-gray-500'
+    waitingDiv.textContent = 'Log cleared. Waiting for events...'
+    logEl.appendChild(waitingDiv)
     this.log('Log cleared', 'info')
   }
 
