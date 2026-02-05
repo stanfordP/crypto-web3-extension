@@ -81,7 +81,7 @@ describe('Config', () => {
       it('should reject subdomain injection attacks', () => {
         // Attack: malicious.com.cryptotradingjournal.xyz
         expect(isAllowedOrigin('https://malicious.com.cryptotradingjournal.xyz')).toBe(false);
-        // Attack: evil.com as subdomain
+        // Attack: evil.com as subdomain - this tests the security fix: [a-zA-Z0-9-]+ instead of [^/]+
         expect(isAllowedOrigin('https://evil.com.cryptotradingjournal.xyz')).toBe(false);
       });
 
@@ -95,11 +95,6 @@ describe('Config', () => {
       it('should handle subdomains with hyphens', () => {
         expect(isAllowedOrigin('https://staging-v2.cryptotradingjournal.xyz')).toBe(true);
         expect(isAllowedOrigin('https://api-test.cryptotradingjournal.xyz')).toBe(true);
-      });
-
-      it('should reject subdomains with dots in wildcard position', () => {
-        // This tests the security fix: [a-zA-Z0-9-]+ instead of [^/]+
-        expect(isAllowedOrigin('https://evil.com.cryptotradingjournal.xyz')).toBe(false);
       });
 
       it('should reject empty subdomains', () => {
