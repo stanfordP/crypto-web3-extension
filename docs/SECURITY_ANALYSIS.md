@@ -40,7 +40,6 @@ The extension demonstrates **solid security foundations** with most recommended 
 
 | Issue ID | Category | Description | Risk | Status | Recommendation |
 |----------|----------|-------------|------|--------|----------------|
-| SEC-010 | Timing Attacks | Session token comparison timing | LOW | ✅ Implemented | Constant-time comparison added |
 | SEC-011 | SIWE Nonce Expiry | Challenge replay prevention | LOW | Server-side | Enforce 5-minute nonce expiry on backend |
 | SEC-012 | HMAC Responses | Signed response messages | VERY LOW | Optional | Consider for high-security scenarios |
 | SEC-013 | Wallet Op Confirmation | Additional user confirmation | LOW | Optional | Consider for sensitive operations |
