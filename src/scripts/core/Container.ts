@@ -325,7 +325,7 @@ export function createMockTabsAdapter(): ITabsAdapter {
         if (options.active !== undefined && tab.active !== options.active) return false;
         if (options.url) {
           const urls = Array.isArray(options.url) ? options.url : [options.url];
-          if (!urls.some(u => tab.url.includes(u.replace('*', '')))) return false;
+          if (!urls.some(u => tab.url.includes(u.replace(/\*/g, '')))) return false;
         }
         return true;
       });
