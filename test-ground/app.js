@@ -343,7 +343,7 @@ class TestGroundApp {
     }
 
     // Remove "waiting" message if present
-    if (logEl.querySelector('.text-gray-500')) {
+    if (logEl.querySelector('.waiting-message')) {
       logEl.textContent = ''
     }
 
@@ -370,7 +370,7 @@ class TestGroundApp {
     // Use textContent instead of innerHTML to prevent potential XSS
     logEl.textContent = ''
     const waitingDiv = document.createElement('div')
-    waitingDiv.className = 'text-gray-500'
+    waitingDiv.className = 'text-gray-500 waiting-message'
     waitingDiv.textContent = 'Log cleared. Waiting for events...'
     logEl.appendChild(waitingDiv)
     this.log('Log cleared', 'info')
