@@ -190,25 +190,28 @@ export function isTimestampValid(timestamp?: number, maxAgeMs = MESSAGE_MAX_AGE_
 /**
  * Constant-time string comparison to prevent timing side-channel attacks.
  * 
- * SECURITY NOTE: Standard JavaScript `===` comparison may leak information
- * about string contents through timing differences. This function ensures
- * comparison time is independent of where strings differ.
+ * TIMING PROPERTIES:
+ * - Always iterates over max(a.length, b.length) characters
+ * - Length difference is incorporated into result via XOR (no early exit)
+ * - All operations are constant-time (no branching on secret data)
  */
 export function constantTimeEqual(a: string | undefined, b: string | undefined): boolean {
   if (a === undefined && b === undefined) return true;
   if (a === undefined || b === undefined) return false;
   
-  const lengthMatch = a.length === b.length;
   const compareLength = Math.max(a.length, b.length);
   
-  let result = 0;
+  // Incorporate length difference into result using XOR
+  // This avoids a separate length check that could leak timing info
+  let result = a.length ^ b.length;
+  
   for (let i = 0; i < compareLength; i++) {
     const charA = i < a.length ? a.charCodeAt(i) : 0;
     const charB = i < b.length ? b.charCodeAt(i) : 0;
     result |= charA ^ charB;
   }
   
-  return result === 0 && lengthMatch;
+  return result === 0;
 }
 ```
 

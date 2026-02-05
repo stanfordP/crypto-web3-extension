@@ -20,22 +20,28 @@ import type { StoredSession } from '../storage/StorageService';
  * about string contents through timing differences. This function ensures
  * comparison time is independent of where strings differ.
  * 
+ * TIMING PROPERTIES:
+ * - Always iterates over max(a.length, b.length) characters
+ * - Length difference is incorporated into result via XOR (no early exit)
+ * - All operations are constant-time (no branching on secret data)
+ * 
  * @param a - First string to compare
  * @param b - Second string to compare
  * @returns true if strings are equal, false otherwise
  * @security Use for comparing sensitive values like session tokens
  */
 export function constantTimeEqual(a: string | undefined, b: string | undefined): boolean {
-  // Handle undefined cases
+  // Handle undefined cases - these are not timing-sensitive as undefined
+  // is not a secret value (it indicates absence of a token)
   if (a === undefined && b === undefined) return true;
   if (a === undefined || b === undefined) return false;
   
-  // Different lengths - still do full comparison to maintain constant time
-  // but we'll return false at the end
-  const lengthMatch = a.length === b.length;
   const compareLength = Math.max(a.length, b.length);
   
-  let result = 0;
+  // Incorporate length difference into result using XOR
+  // This avoids a separate length check that could leak timing info
+  let result = a.length ^ b.length;
+  
   for (let i = 0; i < compareLength; i++) {
     // Use charCodeAt with fallback to 0 for out-of-bounds
     const charA = i < a.length ? a.charCodeAt(i) : 0;
@@ -43,7 +49,7 @@ export function constantTimeEqual(a: string | undefined, b: string | undefined):
     result |= charA ^ charB;
   }
   
-  return result === 0 && lengthMatch;
+  return result === 0;
 }
 
 /**
