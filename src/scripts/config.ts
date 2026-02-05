@@ -72,14 +72,18 @@ export const INJECTION_ORIGINS: readonly string[] = [
 
 /**
  * Convert an origin pattern with '*' wildcards into a safe regular expression.
- * Escapes all regex metacharacters and replaces all '*' segments with a
- * subpattern that matches a non-empty sequence of non-slash characters.
+ *
+ * Escapes all regex metacharacters and replaces '*' segments with a subpattern
+ * that matches a single-level subdomain component (alphanumeric characters and
+ * hyphens only). This ensures that patterns like 'https://*.example.com' match
+ * 'https://staging.example.com' but do not match multi-level domains such as
+ * 'https://a.b.example.com'.
  */
 function wildcardOriginToRegExp(pattern: string): RegExp {
   // First escape all regex metacharacters
   const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  // Then replace all escaped '*' characters with the wildcard subpattern
-  const withWildcards = escaped.replace(/\\\*/g, '[^/]+');
+  // Then replace all escaped '*' characters with a subdomain-safe wildcard
+  const withWildcards = escaped.replace(/\\\*/g, '[a-zA-Z0-9-]+');
   return new RegExp(`^${withWildcards}$`);
 }
 
