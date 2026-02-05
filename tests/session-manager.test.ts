@@ -17,11 +17,54 @@ import {
   truncateAddress,
   getChainName,
   SessionManager,
+  constantTimeEqual,
   type SessionChangeEvent,
 } from '../src/scripts/core/session/SessionManager';
 import type { StoredSession } from '../src/scripts/core/storage/StorageService';
 
 describe('SessionManager - Pure Functions', () => {
+  describe('constantTimeEqual', () => {
+    it('should return true for equal strings', () => {
+      expect(constantTimeEqual('abc', 'abc')).toBe(true);
+      expect(constantTimeEqual('', '')).toBe(true);
+      expect(constantTimeEqual('test-token-123', 'test-token-123')).toBe(true);
+    });
+
+    it('should return true for both undefined', () => {
+      expect(constantTimeEqual(undefined, undefined)).toBe(true);
+    });
+
+    it('should return false for different strings', () => {
+      expect(constantTimeEqual('abc', 'abd')).toBe(false);
+      expect(constantTimeEqual('abc', 'ABC')).toBe(false);
+      expect(constantTimeEqual('test', 'testing')).toBe(false);
+    });
+
+    it('should return false when one is undefined', () => {
+      expect(constantTimeEqual('abc', undefined)).toBe(false);
+      expect(constantTimeEqual(undefined, 'abc')).toBe(false);
+    });
+
+    it('should return false for different length strings', () => {
+      expect(constantTimeEqual('short', 'longer-string')).toBe(false);
+      expect(constantTimeEqual('a', 'ab')).toBe(false);
+    });
+
+    it('should handle empty and non-empty strings', () => {
+      expect(constantTimeEqual('', 'abc')).toBe(false);
+      expect(constantTimeEqual('abc', '')).toBe(false);
+    });
+
+    it('should handle UUID-like session tokens', () => {
+      const token1 = '550e8400-e29b-41d4-a716-446655440000';
+      const token2 = '550e8400-e29b-41d4-a716-446655440000';
+      const token3 = '550e8400-e29b-41d4-a716-446655440001';
+      
+      expect(constantTimeEqual(token1, token2)).toBe(true);
+      expect(constantTimeEqual(token1, token3)).toBe(false);
+    });
+  });
+
   describe('isValidEthereumAddress', () => {
     it('should validate correct addresses', () => {
       expect(isValidEthereumAddress('0x1234567890123456789012345678901234567890')).toBe(true);
