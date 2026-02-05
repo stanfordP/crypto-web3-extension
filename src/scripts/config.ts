@@ -96,7 +96,11 @@ export function isAllowedOrigin(origin: string): boolean {
       // Handle wildcard subdomains
       return wildcardOriginToRegExp(allowed).test(origin);
     }
-    return origin === allowed || origin.startsWith(allowed.replace('/*', ''));
+    // Exact match or path-based match (only if pattern ends with /*)
+    if (allowed.endsWith('/*')) {
+      return origin.startsWith(allowed.replace('/*', ''));
+    }
+    return origin === allowed;
   });
 }
 
@@ -108,7 +112,11 @@ export function shouldInjectProvider(origin: string): boolean {
     if (allowed.includes('*')) {
       return wildcardOriginToRegExp(allowed).test(origin);
     }
-    return origin === allowed || origin.startsWith(allowed.replace('/*', ''));
+    // Exact match or path-based match (only if pattern ends with /*)
+    if (allowed.endsWith('/*')) {
+      return origin.startsWith(allowed.replace('/*', ''));
+    }
+    return origin === allowed;
   });
 }
 
