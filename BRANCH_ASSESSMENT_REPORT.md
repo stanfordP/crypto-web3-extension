@@ -168,7 +168,7 @@ found 0 vulnerabilities
    npm update @playwright/test playwright viem zod webpack
    ```
 2. **Add .npmrc** to suppress deprecation warnings if desired
-3. **Update claude.md** with latest version references (currently shows 2.2.4)
+3. **Keep claude.md** version references in sync with releases (currently aligned at 2.2.5)
 
 ### Medium-Term (After Chrome Web Store Approval)
 1. **Plan ESLint migration** to v10.x (breaking changes)
