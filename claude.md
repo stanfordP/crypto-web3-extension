@@ -17,8 +17,8 @@ This is a Manifest V3 Chrome browser extension that provides custom Web3 authent
 
 **Supported Browsers:** Chrome, Brave, Edge, Opera (all Chromium-based)
 
-**Version:** 2.2.4 (manifest & package.json synced)
-**Last Updated:** January 31, 2026
+**Version:** 2.2.5 (manifest & package.json synced)
+**Last Updated:** February 7, 2026
 **Status:** Rejected by Chrome Web Store (Violation ID: Red Potassium) — Resubmission pending
 
 ---
