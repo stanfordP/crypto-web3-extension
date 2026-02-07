@@ -5,9 +5,9 @@ A Manifest V3 Chrome browser extension providing secure Web3 wallet authenticati
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue.svg)](https://www.typescriptlang.org/)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-green.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Coverage](https://img.shields.io/badge/Coverage-44.31%25-yellow.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.2.3-blue.svg)]()
-[![Tests](https://img.shields.io/badge/Tests-1015-green.svg)]()
+[![Coverage](https://img.shields.io/badge/Coverage-75.16%25-brightgreen.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.2.5-blue.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-1542-brightgreen.svg)]()
 [![Status](https://img.shields.io/badge/Status-Ready%20for%20Resubmission-green.svg)]()
 
 ## Overview
