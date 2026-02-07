@@ -9,6 +9,49 @@
 
 import type { StoredSession } from '../storage/StorageService';
 
+// ============================================================================
+// Security Utilities
+// ============================================================================
+
+/**
+ * Constant-time string comparison to prevent timing side-channel attacks.
+ * 
+ * SECURITY NOTE: Standard JavaScript `===` comparison may leak information
+ * about string contents through timing differences. This function ensures
+ * comparison time is independent of where strings differ.
+ * 
+ * TIMING PROPERTIES:
+ * - Always iterates over max(a.length, b.length) characters
+ * - Length difference is incorporated into result via XOR (no early exit)
+ * - All operations are constant-time (no branching on secret data)
+ * 
+ * @param a - First string to compare
+ * @param b - Second string to compare
+ * @returns true if strings are equal, false otherwise
+ * @security Use for comparing sensitive values like session tokens
+ */
+export function constantTimeEqual(a: string | undefined, b: string | undefined): boolean {
+  // Handle undefined cases - these are not timing-sensitive as undefined
+  // is not a secret value (it indicates absence of a token)
+  if (a === undefined && b === undefined) return true;
+  if (a === undefined || b === undefined) return false;
+  
+  const compareLength = Math.max(a.length, b.length);
+  
+  // Incorporate length difference into result using XOR
+  // This avoids a separate length check that could leak timing info
+  let result = a.length ^ b.length;
+  
+  for (let i = 0; i < compareLength; i++) {
+    // Use charCodeAt with fallback to 0 for out-of-bounds
+    const charA = i < a.length ? a.charCodeAt(i) : 0;
+    const charB = i < b.length ? b.charCodeAt(i) : 0;
+    result |= charA ^ charB;
+  }
+  
+  return result === 0;
+}
+
 /**
  * Session validation result
  */
@@ -106,6 +149,9 @@ export function parseApiSessionResponse(
 /**
  * Compare two sessions for equality
  * Pure function - no side effects
+ * 
+ * @security Uses constant-time comparison for session tokens to prevent
+ * timing side-channel attacks.
  */
 export function sessionsEqual(
   a: StoredSession | null,
@@ -114,10 +160,12 @@ export function sessionsEqual(
   if (a === null && b === null) return true;
   if (a === null || b === null) return false;
 
+  // Use constant-time comparison for sensitive sessionToken
+  // Regular comparison is fine for non-sensitive fields
   return (
     normalizeAddress(a.address) === normalizeAddress(b.address) &&
     a.chainId === b.chainId &&
-    a.sessionToken === b.sessionToken
+    constantTimeEqual(a.sessionToken, b.sessionToken)
   );
 }
 

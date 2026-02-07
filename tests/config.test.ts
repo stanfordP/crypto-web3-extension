@@ -64,6 +64,55 @@ describe('Config', () => {
     it('should handle production domain', () => {
       expect(isAllowedOrigin('https://cryptotradingjournal.xyz')).toBe(true);
     });
+
+    describe('wildcard subdomain matching', () => {
+      it('should allow valid single-level subdomains', () => {
+        expect(isAllowedOrigin('https://staging.cryptotradingjournal.xyz')).toBe(true);
+        expect(isAllowedOrigin('https://api.cryptotradingjournal.xyz')).toBe(true);
+        expect(isAllowedOrigin('https://dev.cryptotradingjournal.xyz')).toBe(true);
+        expect(isAllowedOrigin('https://test-123.cryptotradingjournal.xyz')).toBe(true);
+      });
+
+      it('should reject multi-level subdomains', () => {
+        expect(isAllowedOrigin('https://a.b.cryptotradingjournal.xyz')).toBe(false);
+        expect(isAllowedOrigin('https://staging.api.cryptotradingjournal.xyz')).toBe(false);
+      });
+
+      it('should reject subdomain injection attacks', () => {
+        // Attack: malicious.com.cryptotradingjournal.xyz
+        expect(isAllowedOrigin('https://malicious.com.cryptotradingjournal.xyz')).toBe(false);
+        // Attack: evil.com as subdomain - this tests the security fix: [a-zA-Z0-9-]+ instead of [^/]+
+        expect(isAllowedOrigin('https://evil.com.cryptotradingjournal.xyz')).toBe(false);
+      });
+
+      it('should reject domain suffix attacks', () => {
+        // Attack: cryptotradingjournal.xyz.evil.com
+        expect(isAllowedOrigin('https://cryptotradingjournal.xyz.evil.com')).toBe(false);
+        // Attack: subdomain with suffix
+        expect(isAllowedOrigin('https://staging.cryptotradingjournal.xyz.evil.com')).toBe(false);
+      });
+
+      it('should handle subdomains with hyphens', () => {
+        expect(isAllowedOrigin('https://staging-v2.cryptotradingjournal.xyz')).toBe(true);
+        expect(isAllowedOrigin('https://api-test.cryptotradingjournal.xyz')).toBe(true);
+      });
+
+      it('should reject empty subdomains', () => {
+        expect(isAllowedOrigin('https://.cryptotradingjournal.xyz')).toBe(false);
+      });
+
+      it('should reject special characters in subdomain', () => {
+        expect(isAllowedOrigin('https://test!.cryptotradingjournal.xyz')).toBe(false);
+        expect(isAllowedOrigin('https://test@.cryptotradingjournal.xyz')).toBe(false);
+        expect(isAllowedOrigin('https://test$.cryptotradingjournal.xyz')).toBe(false);
+      });
+
+      it('should properly escape regex metacharacters in domain', () => {
+        // The dot in domain name should be treated as literal dot, not regex wildcard
+        // This is implicitly tested by other tests, but explicitly verify here
+        expect(isAllowedOrigin('https://stagingXcryptotradingjournal.xyz')).toBe(false);
+      });
+    });
   });
 
   describe('shouldInjectProvider', () => {
@@ -78,6 +127,22 @@ describe('Config', () => {
 
     it('should inject on production domain', () => {
       expect(shouldInjectProvider('https://cryptotradingjournal.xyz')).toBe(true);
+    });
+
+    describe('wildcard subdomain injection', () => {
+      it('should inject on valid single-level subdomains', () => {
+        expect(shouldInjectProvider('https://staging.cryptotradingjournal.xyz')).toBe(true);
+        expect(shouldInjectProvider('https://api.cryptotradingjournal.xyz')).toBe(true);
+      });
+
+      it('should not inject on multi-level subdomains', () => {
+        expect(shouldInjectProvider('https://a.b.cryptotradingjournal.xyz')).toBe(false);
+      });
+
+      it('should not inject on subdomain injection attacks', () => {
+        expect(shouldInjectProvider('https://malicious.com.cryptotradingjournal.xyz')).toBe(false);
+        expect(shouldInjectProvider('https://cryptotradingjournal.xyz.evil.com')).toBe(false);
+      });
     });
   });
 

@@ -71,16 +71,36 @@ export const INJECTION_ORIGINS: readonly string[] = [
 ] as const;
 
 /**
+ * Convert an origin pattern with '*' wildcards into a safe regular expression.
+ *
+ * Escapes all regex metacharacters and replaces '*' segments with a subpattern
+ * that matches a single-level subdomain component (alphanumeric characters and
+ * hyphens only). This ensures that patterns like 'https://*.example.com' match
+ * 'https://staging.example.com' but do not match multi-level domains such as
+ * 'https://a.b.example.com'.
+ */
+function wildcardOriginToRegExp(pattern: string): RegExp {
+  // First escape all regex metacharacters
+  const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // Then replace all escaped '*' characters with a subdomain-safe wildcard
+  const withWildcards = escaped.replace(/\\\*/g, '[a-zA-Z0-9-]+');
+  return new RegExp(`^${withWildcards}$`);
+}
+
+/**
  * Check if an origin is allowed
  */
 export function isAllowedOrigin(origin: string): boolean {
   return ALLOWED_ORIGINS.some((allowed) => {
     if (allowed.includes('*')) {
       // Handle wildcard subdomains
-      const pattern = allowed.replace('*', '[^/]+');
-      return new RegExp(`^${pattern}$`).test(origin);
+      return wildcardOriginToRegExp(allowed).test(origin);
     }
-    return origin === allowed || origin.startsWith(allowed.replace('/*', ''));
+    // Exact match or path-based match (only if pattern ends with /*)
+    if (allowed.endsWith('/*')) {
+      return origin.startsWith(allowed.replace('/*', ''));
+    }
+    return origin === allowed;
   });
 }
 
@@ -90,10 +110,13 @@ export function isAllowedOrigin(origin: string): boolean {
 export function shouldInjectProvider(origin: string): boolean {
   return INJECTION_ORIGINS.some((allowed) => {
     if (allowed.includes('*')) {
-      const pattern = allowed.replace('*', '[^/]+');
-      return new RegExp(`^${pattern}$`).test(origin);
+      return wildcardOriginToRegExp(allowed).test(origin);
     }
-    return origin === allowed || origin.startsWith(allowed.replace('/*', ''));
+    // Exact match or path-based match (only if pattern ends with /*)
+    if (allowed.endsWith('/*')) {
+      return origin.startsWith(allowed.replace('/*', ''));
+    }
+    return origin === allowed;
   });
 }
 
