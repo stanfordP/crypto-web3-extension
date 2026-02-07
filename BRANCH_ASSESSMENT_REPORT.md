@@ -218,8 +218,9 @@ The identified issues are minor documentation discrepancies and technical debt i
 
 ## Appendix: Environment Details
 
-**Node.js:** v24.13.0  
-**npm:** 11.6.2  
+**Node.js (project toolchain, per `.nvmrc`):** v20.x  
+**Node.js (CI runner):** v24.13.0  
+**npm (CI runner):** 11.6.2  
 **TypeScript:** 5.4.5  
 **Webpack:** 5.104.1  
 **Jest:** 29.7.0  
