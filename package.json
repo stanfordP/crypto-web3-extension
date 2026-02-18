@@ -73,7 +73,8 @@
   },
   "overrides": {
     "jest-environment-jsdom": {
-      "jsdom": "$jsdom"
+      "jsdom": "$jsdom",
+      "canvas": "$canvas"
     }
   }
 }
