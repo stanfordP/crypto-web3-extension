@@ -371,4 +371,4 @@ cd dist && zip -r ../crypto-web3-extension-v2.0.0.zip . && cd ..
 
 ---
 
-*Last Updated: December 2024*
+*Last Updated: February 2026*

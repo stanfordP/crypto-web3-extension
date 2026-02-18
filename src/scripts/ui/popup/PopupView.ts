@@ -45,6 +45,7 @@ export interface PopupElements {
   accountMode: HTMLElement;
   errorMessage: HTMLElement;
   offlineIndicator?: HTMLElement;
+  copyAddressButton?: HTMLElement;
 }
 
 /**
@@ -69,6 +70,7 @@ export class PopupView {
   private elements: PopupElements;
   private handlers: PopupViewEventHandlers | null = null;
   private isOnline: boolean = true;
+  private fullAddress: string = '';
 
   constructor(
     private dom: IDOMAdapter,
@@ -89,6 +91,7 @@ export class PopupView {
       accountMode: customElements?.accountMode ?? this.getElement('accountMode'),
       errorMessage: customElements?.errorMessage ?? this.getElement('errorMessage'),
       offlineIndicator: customElements?.offlineIndicator ?? dom.getElementById('offlineIndicator') ?? undefined,
+      copyAddressButton: customElements?.copyAddressButton ?? dom.getElementById('copyAddressButton') ?? undefined,
     };
   }
 
@@ -141,6 +144,10 @@ export class PopupView {
         return;
       }
       this.handlers!.onRetry();
+    });
+
+    this.elements.copyAddressButton?.addEventListener('click', () => {
+      this.copyAddressToClipboard();
     });
   }
 
@@ -220,6 +227,7 @@ export class PopupView {
    * Update connected state display
    */
   showConnectedState(data: SessionDisplayData): void {
+    this.fullAddress = data.address;
     this.elements.address.textContent = data.shortAddress;
     this.elements.network.textContent = data.networkName;
     this.elements.accountMode.textContent = data.accountMode;
@@ -247,6 +255,37 @@ export class PopupView {
    */
   getOnlineStatus(): boolean {
     return this.isOnline;
+  }
+
+  /**
+   * Copy full wallet address to clipboard with visual feedback
+   */
+  private async copyAddressToClipboard(): Promise<void> {
+    if (!this.fullAddress) return;
+    const btn = this.elements.copyAddressButton;
+    if (!btn) return;
+
+    try {
+      await navigator.clipboard.writeText(this.fullAddress);
+      btn.classList.add('copied');
+      btn.setAttribute('aria-label', 'Address copied!');
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.setAttribute('aria-label', 'Copy full wallet address to clipboard');
+      }, 2000);
+    } catch {
+      // Fallback: select text in a temporary input
+      const input = document.createElement('input');
+      input.value = this.fullAddress;
+      input.style.position = 'fixed';
+      input.style.opacity = '0';
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+      btn.classList.add('copied');
+      setTimeout(() => btn.classList.remove('copied'), 2000);
+    }
   }
 
   /**
