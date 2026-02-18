@@ -64,7 +64,7 @@ abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon 
 
 | Step | Action | Expected Result |
 |------|--------|-----------------|
-| 1 | Visit https://cryptotradingjournal.xyz/login | Page loads with "Connect Wallet" button |
+| 1 | Visit https://cryptotradingjournal.xyz | Page loads with "Connect Wallet" button |
 | 2 | Click "Connect Wallet" | Coinbase Wallet popup appears |
 | 3 | Approve connection | Extension shows "Connecting..." state |
 | 4 | Complete SIWE signing | Extension shows "Connected" with address |

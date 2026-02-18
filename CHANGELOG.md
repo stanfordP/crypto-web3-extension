@@ -5,6 +5,23 @@ All notable changes to the Crypto Trading Journal Web3 Extension will be documen
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.6] - 2026-02-17 (Branding & CWS Preparation)
+
+### Fixed
+- **Extension logo:** Replaced old eagle "CJ" logo (`icons/logo.png`, 456KB) with CTJ 16C brand mark SVG (`icons/icon.svg`) in both `popup.html` and `auth.html`
+- **Logo clipping:** Changed `border-radius: 50%` (circle) to `19%` (rounded rectangle) on `.logo-image`, `.icon-logo-img` classes to match the SVG's rounded-rect shape
+- **Auth page logo:** Updated `auth.html` logo reference from `icons/logo.png` to `icons/icon.svg`
+
+### Changed
+- **Version bump:** manifest.json and package.json synced to 2.2.6
+
+### Notes
+- Old `icons/logo.png` (456KB eagle badge) can be deleted — no longer referenced
+- All icon references now use the CTJ 16C brand mark (gold grid + teal dot on Deep Oceanic background)
+- Main app (`crypto-futures-jn`) favicon also fixed in parallel: removed default Next.js `app/favicon.ico`, added background rect to `public/favicon.svg`
+
+---
+
 ## [2.2.5] - 2026-02-01 (UX Audit Implementation - Complete)
 
 ### Added - Documentation

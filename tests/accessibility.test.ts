@@ -230,7 +230,7 @@ test.describe('Auth Page Accessibility', () => {
     expect(lang).toBe('en');
     
     const title = await page.title();
-    expect(title).toContain('Crypto Trading Journal');
+    expect(title).toContain('CTJ');
     
     const main = await page.$('[role="main"]');
     expect(main).toBeTruthy();
