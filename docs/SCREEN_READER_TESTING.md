@@ -1,7 +1,7 @@
 # Screen Reader Testing Guide
 
 > **Version**: 1.0  
-> **Last Updated**: January 2025  
+> **Last Updated**: February 2026  
 > **Extension**: Crypto Trading Journal Web3 Auth Bridge
 
 ## Overview

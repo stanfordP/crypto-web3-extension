@@ -613,7 +613,7 @@ NEXT_PUBLIC_ALLOWED_ORIGINS=chrome-extension://YOUR_EXTENSION_ID
 ---
 
 **Document Version**: 1.0
-**Last Updated**: December 27, 2025
+**Last Updated**: February 2026
 **Related Project**: crypto-futures-jn (Next.js Trading Journal)
 **Language**: TypeScript
 **Supported Browsers**: Chrome, Brave, Edge, Opera (Chromium-based)
