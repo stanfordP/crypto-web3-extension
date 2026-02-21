@@ -644,8 +644,8 @@
                         <div class="step-content">
                             <div class="step-title">Import Test Wallet</div>
                             <div class="step-description">
-                                <p>In MetaMask, during initial setup choose "Import wallet" (or if MetaMask is already set up, you can use the existing account). Use this test seed phrase:</p>
-                                <div class="code-block">abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about</div>
+                                <p>In MetaMask, during initial setup choose "Import wallet" (or if MetaMask is already set up, you can use the existing account). Copy and use this test seed phrase:</p>
+                                <div class="code-block" style="cursor: pointer; position: relative;" onclick="navigator.clipboard.writeText('abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about').then(() => { this.querySelector('.copy-msg').style.opacity = 1; setTimeout(() => this.querySelector('.copy-msg').style.opacity = 0, 1500); })" title="Click to copy seed phrase">abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about<span class="copy-msg" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: var(--cj-success); opacity: 0; transition: opacity 0.3s;">Copied!</span></div>
                                 <p><em>This is a standard BIP-39 test mnemonic with no real funds. Easiest: use a fresh MetaMask installation.</em></p>
                             </div>
                         </div>
@@ -673,7 +673,7 @@
                         <div class="step-content">
                             <div class="step-title">Visit the Web App</div>
                             <div class="step-description">
-                                <p>Go to <a href="https://cryptotradingjournal.xyz" target="_blank">https://cryptotradingjournal.xyz</a></p>
+                                <p>Go to <a href="https://cryptotradingjournal.xyz/login" target="_blank">https://cryptotradingjournal.xyz/login</a></p>
                                 <p>Click "Connect Wallet" on the login page.</p>
                             </div>
                         </div>

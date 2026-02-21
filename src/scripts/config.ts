@@ -141,13 +141,13 @@ export const PROVIDER_INFO = {
 
 export const TIMEOUTS = {
   /** Request timeout in milliseconds */
-  REQUEST_TIMEOUT: 60_000,
+  REQUEST_TIMEOUT: 15_000,
   /** Rate limit window in milliseconds */
   RATE_LIMIT_WINDOW: 500,
   /** Session token expiry (24 hours) */
   SESSION_EXPIRY: 24 * 60 * 60 * 1000,
-  /** Nonce expiry (5 minutes) */
-  NONCE_EXPIRY: 5 * 60 * 1000,
+  /** Nonce expiry (2 minutes) */
+  NONCE_EXPIRY: 2 * 60 * 1000,
   /** Keep-alive alarm interval in minutes (must be < 0.5 for 30s threshold) */
   KEEPALIVE_INTERVAL_MINUTES: 0.4,
   /** Maximum operation time before timeout (5 minutes) */

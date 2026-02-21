@@ -154,7 +154,7 @@ Track your trades, analyze performance, and improve your trading—all secured w
 
 1. Install MetaMask or another wallet extension (if not already installed)
 2. Install this authentication bridge extension
-3. Visit cryptotradingjournal.xyz and click "Connect Wallet"
+3. Visit cryptotradingjournal.xyz/login and click "Connect Wallet"
 4. Approve connection in your wallet
 5. Sign the authentication message (SIWE)
 6. You're authenticated—no password required!
@@ -240,14 +240,14 @@ Keywords: crypto, trading, journal, web3, wallet, ethereum, SIWE, authentication
 **Use this exact text when submitting to Chrome Web Store:**
 
 ```
-REQUIRES MetaMask extension.
+REQUIRES MetaMask extension installed.
 
-TEST WALLET (no real funds):
+TEST WALLET (no real funds — copy seed below):
 abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
 
 STEPS:
-1. In MetaMask: Import wallet using seed above
-2. Visit https://cryptotradingjournal.xyz
+1. In MetaMask: Import wallet using copied seed above
+2. Visit https://cryptotradingjournal.xyz/login
 3. Click "Connect Wallet" on site
 4. Approve in MetaMask popup
 5. Success = wallet address shown in extension popup

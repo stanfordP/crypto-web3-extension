@@ -55,7 +55,7 @@
 | # | Item | Status | Action Required |
 |---|------|--------|-----------------|
 | 1 | **Main site availability** | ⬜ Verify | Confirm cryptotradingjournal.xyz is accessible 24/7, no CAPTCHA, < 3s response |
-| 2 | **Exact test URL** | ✅ Done | Use "Visit https://cryptotradingjournal.xyz" (no /login — route does not exist) |
+| 2 | **Exact test URL** | ✅ Done | Use "Visit https://cryptotradingjournal.xyz/login" |
 | 3 | **MetaMask in line 1** | ⬜ Update | First line MUST be "REQUIRES MetaMask extension already installed." |
 | 4 | **Version consistency** | ✅ Done | manifest.json (2.2.6) = package.json (2.2.6) |
 | 5 | **Permissions rationale** | ⬜ Add | Fill in CWS "Privacy practices" with justifications for `storage`, `activeTab`, `alarms` |
@@ -121,12 +121,12 @@ outside of active authentication flows.
 ```
 REQUIRES MetaMask extension installed.
 
-TEST WALLET (no real funds):
+TEST WALLET (no real funds — copy seed below):
 abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
 
 STEPS:
-1. In MetaMask: Import wallet using seed above
-2. Visit https://cryptotradingjournal.xyz
+1. In MetaMask: Import wallet using copied seed above
+2. Visit https://cryptotradingjournal.xyz/login
 3. Click "Connect Wallet" button
 4. Approve in MetaMask popup
 5. Sign message
@@ -201,14 +201,14 @@ Production build compiled successfully after all changes.
 
 **Copy-paste this for Chrome Web Store submission:**
 ```
-REQUIRES MetaMask extension.
+REQUIRES MetaMask extension installed.
 
-TEST WALLET (no real funds):
+TEST WALLET (no real funds — copy seed below):
 abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
 
 STEPS:
-1. In MetaMask: Import wallet using seed above
-2. Visit https://cryptotradingjournal.xyz
+1. In MetaMask: Import wallet using copied seed above
+2. Visit https://cryptotradingjournal.xyz/login
 3. Click "Connect Wallet" on site
 4. Approve in MetaMask popup
 5. Success = wallet address shown in extension popup
@@ -353,7 +353,7 @@ See `TEST_INSTRUCTIONS_500_CHAR.txt` for the complete text (466 characters)
 - Takes ~30 seconds
 
 ### 4. Visit Site
-- Go to https://cryptotradingjournal.xyz
+- Go to https://cryptotradingjournal.xyz/login
 - Click "Connect Wallet"
 - Extension facilitates connection
 
