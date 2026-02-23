@@ -5,9 +5,9 @@ A Manifest V3 Chrome browser extension providing secure Web3 wallet authenticati
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue.svg)](https://www.typescriptlang.org/)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-green.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Coverage](https://img.shields.io/badge/Coverage-75.16%25-brightgreen.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.2.5-blue.svg)]()
-[![Tests](https://img.shields.io/badge/Tests-1542-brightgreen.svg)]()
+[![Coverage](https://img.shields.io/badge/Coverage-44%25-yellow.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.2.6-blue.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-1621-brightgreen.svg)]()
 [![Status](https://img.shields.io/badge/Status-Ready%20for%20Resubmission-green.svg)]()
 
 ## Overview
@@ -60,7 +60,7 @@ The extension popup now displays helpful status indicators showing:
 
 ### Installationbash
 # Clone the repository
-git clone https://github.com/your-org/crypto-web3-extension.git
+git clone https://github.com/stanfordP/crypto-web3-extension.git
 cd crypto-web3-extension
 
 # Install dependencies
@@ -255,7 +255,7 @@ npm run test:e2e:security
 
 ### Test Coverage
 
-**Current Status:** 1015 tests passing (39 suites), 44% statement coverage
+**Current Status:** 1621 tests passing (57 suites), 44% statement coverage
 
 | Component | Coverage | Notes |
 |-----------|----------|-------|
@@ -415,7 +415,7 @@ src/scripts/
 | ContentController branches | 30% | 🟡 High - message routing edge cases |
 
 ### Key Benefits
-- **1015 unit tests** (up from 532)
+- **1621 unit tests** (up from 532)
 - **44.31% statement coverage** (up from 23%)
 - **Fully mockable** Chrome APIs via adapters
 - **Testable controllers** with injected dependencies
@@ -425,6 +425,6 @@ See [claude.md](claude.md) for detailed architecture documentation.
 
 ## Related
 
-- [Crypto Trading Journal (Main App)](https://github.com/your-org/crypto-futures-jn)
+- [Crypto Trading Journal (Main App)](https://github.com/stanfordP/crypto-futures-jn)
 - [SIWE Specification (EIP-4361)](https://eips.ethereum.org/EIPS/eip-4361)
 - [Chrome Extension Docs](https://developer.chrome.com/docs/extensions/)

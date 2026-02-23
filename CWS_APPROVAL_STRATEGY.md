@@ -1,8 +1,8 @@
 # Chrome Web Store Approval Strategy
 
-**Extension:** Crypto Trading Journal - Web3 Auth  
-**Version:** 2.2.4  
-**Date:** January 31, 2026  
+**Extension:** Crypto Trading Journal - Web3 Auth
+**Version:** 2.2.6
+**Date:** February 18, 2026
 **Previous Rejection:** Violation ID: Red Potassium (January 6, 2026)
 
 ---
@@ -33,7 +33,7 @@ This document consolidates all findings from the rejection analysis and provides
 
 ## 2. What Has Been Addressed
 
-### ✅ Completed Items (v2.2.3-2.2.4)
+### ✅ Completed Items (v2.2.3-2.2.6)
 
 | Item | Implementation | Files Modified |
 |------|----------------|----------------|
@@ -43,7 +43,7 @@ This document consolidates all findings from the rejection analysis and provides
 | "NOT a wallet" disclaimers | Explicit disclaimers in popup | popup.html |
 | Reviewer documentation | Quick start guide, improvements doc | REVIEWER_*.md files |
 | Main app requirements doc | Dependencies documented | MAIN_APP_REQUIREMENTS.md |
-| Version sync | manifest = package.json = 2.2.4 | Both files |
+| Version sync | manifest = package.json = 2.2.6 | Both files |
 
 ---
 
@@ -122,7 +122,7 @@ This document consolidates all findings from the rejection analysis and provides
 2. Reviewer installs this extension
    └── Clicks extension icon → sees status indicators
 
-3. Reviewer visits https://cryptotradingjournal.xyz/login
+3. Reviewer visits https://cryptotradingjournal.xyz
    └── Page loads in <3 seconds, "Connect Wallet" visible
 
 4. Reviewer clicks "Connect Wallet"

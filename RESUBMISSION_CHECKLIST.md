@@ -1,9 +1,9 @@
 # Chrome Web Store Resubmission Checklist
 
-**Extension:** Crypto Trading Journal - Web3 Auth  
-**Version:** 2.2.5  
-**Date:** February 1, 2026  
-**Status:** ✅ UX Audit Complete — Ready for Resubmission
+**Extension:** CTJ - Web3 Auth Bridge
+**Version:** 2.2.6
+**Date:** February 17, 2026
+**Status:** ✅ Branding Fixed — Ready for Resubmission
 
 ---
 
@@ -55,9 +55,9 @@
 | # | Item | Status | Action Required |
 |---|------|--------|-----------------|
 | 1 | **Main site availability** | ⬜ Verify | Confirm cryptotradingjournal.xyz is accessible 24/7, no CAPTCHA, < 3s response |
-| 2 | **Exact test URL** | ⬜ Update | Change "Visit site" to "Visit https://cryptotradingjournal.xyz/login" |
+| 2 | **Exact test URL** | ✅ Done | Use "Visit https://cryptotradingjournal.xyz" (no /login — route does not exist) |
 | 3 | **MetaMask in line 1** | ⬜ Update | First line MUST be "REQUIRES MetaMask extension already installed." |
-| 4 | **Version consistency** | ✅ Done | manifest.json (2.2.5) = package.json (2.2.5) |
+| 4 | **Version consistency** | ✅ Done | manifest.json (2.2.6) = package.json (2.2.6) |
 | 5 | **Permissions rationale** | ⬜ Add | Fill in CWS "Privacy practices" with justifications for `storage`, `activeTab`, `alarms` |
 | 6 | **Privacy disclosure match** | ⬜ Cross-check | Ensure CWS data handling fields match PRIVACY.md exactly |
 
@@ -126,7 +126,7 @@ abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon 
 
 STEPS:
 1. In MetaMask: Import wallet using seed above
-2. Visit https://cryptotradingjournal.xyz/login
+2. Visit https://cryptotradingjournal.xyz
 3. Click "Connect Wallet" button
 4. Approve in MetaMask popup
 5. Sign message
@@ -155,7 +155,37 @@ Before resubmission, verify cryptotradingjournal.xyz meets these requirements:
 
 ---
 
-## Changes Made in v2.2.3
+## Changes Made in v2.2.6
+
+### 1. ✅ Extension Branding Fix (CTJ 16C Brand Mark)
+
+**Problem:** `popup.html` and `auth.html` still referenced `icons/logo.png` (456KB old eagle "CJ" logo) instead of the CTJ 16C brand mark.
+
+**Fix:**
+- Updated `popup.html` logo reference: `icons/logo.png` → `icons/icon.svg`
+- Updated `auth.html` logo reference: `icons/logo.png` → `icons/icon.svg`
+- Fixed CSS `border-radius: 50%` → `19%` on `.logo-image` and `.icon-logo-img` (matches SVG rounded-rect)
+- All icon references now use the CTJ 16C brand mark (gold grid + teal dot on Deep Oceanic background)
+
+**Files Modified:**
+- `src/auth.html` - Logo reference updated
+- `src/styles/auth.css` - Border-radius fixed
+- `src/styles/popup.css` - Border-radius fixed
+- `manifest.json` - Version 2.2.6
+- `package.json` - Version 2.2.6
+
+### 2. ✅ Version Sync
+
+- `manifest.json`: 2.2.6
+- `package.json`: 2.2.6
+
+### 3. ✅ Build Verified
+
+Production build compiled successfully after all changes.
+
+---
+
+## Changes Made in v2.2.5
 
 ### 1. ✅ Test Instructions (Under 500 chars)
 
@@ -419,7 +449,7 @@ cphjlogninjhikeldohmihhpaaafnheb
 
 ---
 
-**Status:** ✅ Ready for Resubmission  
-**Confidence Level:** High  
-**Version:** 2.2.3  
-**Date:** January 30, 2026
+**Status:** ✅ Ready for Resubmission
+**Confidence Level:** High
+**Version:** 2.2.6
+**Date:** February 17, 2026

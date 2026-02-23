@@ -466,6 +466,57 @@ h2 {
   word-break: break-all;
 }
 
+/* Address copy row */
+.address-item {
+  grid-column: 1 / -1;
+}
+
+.address-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.copy-btn:hover {
+  background: var(--bg-tertiary, rgba(255, 255, 255, 0.08));
+  color: var(--text-primary);
+  border-color: var(--accent, #14b8a6);
+}
+
+.copy-btn:active {
+  transform: scale(0.92);
+}
+
+.copy-btn.copied {
+  color: var(--success, #10b981);
+  border-color: var(--success, #10b981);
+}
+
+.copy-btn .check-icon.hidden,
+.copy-btn.copied .copy-icon {
+  display: none;
+}
+
+.copy-btn.copied .check-icon {
+  display: block;
+}
+
 /* ============================================================================
    Status Badge
    ============================================================================ */
@@ -595,7 +646,7 @@ h2 {
 .logo-img {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: 19%;
   border: 2px solid var(--border-light);
   box-shadow: 0 0 12px rgba(20, 184, 166, 0.3);
 }
@@ -697,7 +748,7 @@ h2 {
   z-index: 1;
   width: 56px;
   height: 56px;
-  border-radius: 50%;
+  border-radius: 19%;
   border: 2px solid var(--border-light);
   object-fit: cover;
 }

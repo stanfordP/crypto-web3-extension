@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Crypto Trading Journal - Web3 Auth",
-  "version": "2.2.5",
+  "name": "CTJ - Web3 Auth Bridge",
+  "version": "2.2.6",
   "description": "Authentication bridge connecting your wallet to Crypto Trading Journal (requires MetaMask or similar)",
   "permissions": [
     "storage",

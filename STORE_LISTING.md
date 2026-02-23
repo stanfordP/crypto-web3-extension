@@ -2,8 +2,8 @@
 
 Use this content when submitting to the Chrome Web Store.
 
-**Current Version:** 2.2.4  
-**Last Updated:** January 30, 2026  
+**Current Version:** 2.2.6
+**Last Updated:** February 18, 2026
 **Status:** Resubmission after rejection (Violation ID: Red Potassium)
 
 ---
@@ -16,6 +16,19 @@ Use this content when submitting to the Chrome Web Store.
 ## Short Description (132 characters max)
 ```
 Web3 authentication bridge for Crypto Trading Journal. Connects your existing MetaMask/Brave wallet for passwordless sign-in (SIWE).
+```
+
+---
+
+## What's New in v2.2.6
+
+```
+🔧 BRANDING & ICON UPDATE
+
+• Fixed extension branding: popup and auth pages now use CTJ 16C brand mark
+• Enlarged favicon design for better visibility at all sizes (16px, 48px, 128px)
+• Fixed broken URLs in documentation and UI
+• Updated all docs to reflect current version
 ```
 
 ---

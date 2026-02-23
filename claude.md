@@ -23,7 +23,7 @@ This is a Manifest V3 Chrome browser extension that provides custom Web3 authent
 
 ---
 
-## 📊 Current Project Status (January 31, 2026)
+## 📊 Current Project Status (February 7, 2026)
 
 ### 🔴 Chrome Web Store Rejection Analysis
 
@@ -49,7 +49,9 @@ This is a Manifest V3 Chrome browser extension that provides custom Web3 authent
 | **Controllers** | ✅ Complete | Background, Content, Popup, Auth controllers |
 | **Reviewer UX** | ✅ Added | Status indicators, MetaMask links, domain checks |
 
-### 📈 Test Coverage Summary (v2.2.4) — Updated January 31, 2026
+### 📈 Test Coverage Summary (v2.2.5) — Updated February 7, 2026
+> **Note:** Test count data below reflects the latest validated snapshot from January 31, 2026.
+
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
 | Unit Tests | **1,436** | - | ✅ +66 new |
@@ -165,7 +167,7 @@ abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon 
 
 STEPS:
 1. Install MetaMask, import wallet using seed above
-2. Visit https://cryptotradingjournal.xyz/login
+2. Visit https://cryptotradingjournal.xyz
 3. Click "Connect Wallet" button
 4. Approve connection in MetaMask popup
 5. Sign the message in MetaMask
@@ -232,7 +234,14 @@ The extension uses the **Deep Oceanic** theme, a unified visual identity shared 
 
 ### Icon System
 
-The extension uses **inline SVGs** (Feather icon style) instead of emojis:
+The extension uses the **CTJ 16C Brand Mark** (Tier 1 grid+dot design) for all icon sizes:
+- `src/icons/icon.svg` - Master SVG with Deep Oceanic colors (gold cells `#d4a854`, teal dot `#2dd4bf`, bg `#0a1628`)
+- `src/icons/icon-16.png` - Toolbar icon (16x16)
+- `src/icons/icon-48.png` - Extensions page (48x48)
+- `src/icons/icon-128.png` - Chrome Web Store / install dialog (128x128)
+- Generated via `node scripts/generate-icons.js` (requires `canvas` npm package)
+
+UI elements use **inline SVGs** (Feather icon style) instead of emojis:
 - Ensures consistent rendering across Windows, macOS, Linux
 - Avoids emoji variation between OS versions
 - Maintains color palette consistency
@@ -454,7 +463,11 @@ crypto-web3-extension/
 │   │   ├── auth.css           # Auth page styles
 │   │   └── popup.css          # Popup styles
 │   │
-│   └── icons/                 # Extension icons
+│   └── icons/                 # CTJ 16C brand mark icons
+│       ├── icon.svg           # Master SVG (Tier 1 grid+dot)
+│       ├── icon-16.png        # 16x16 toolbar icon
+│       ├── icon-48.png        # 48x48 extensions page
+│       └── icon-128.png       # 128x128 CWS / install dialog
 │
 ├── dist/                      # Built extension (load this in browser)
 ├── packages/                  # Release zip files

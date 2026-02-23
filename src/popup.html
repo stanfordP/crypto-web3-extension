@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'self'">
-  <title>Crypto Trading Journal - Web3 Auth Bridge</title>
+  <title>CTJ - Web3 Auth Bridge</title>
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-48.png">
   <link rel="stylesheet" href="styles/popup.css">
 </head>
 <body>
@@ -13,10 +15,10 @@
     <header class="header">
       <div class="header-row">
         <div class="header-logo">
-          <img src="icons/logo.png" alt="CJ Logo" class="logo-img">
+          <img src="icons/icon.svg" alt="CTJ Logo" class="logo-img">
         </div>
         <div class="header-text">
-          <h1 class="title">CJ Trading</h1>
+          <h1 class="title">CTJ</h1>
           <p class="subtitle">Web3 Auth Bridge</p>
         </div>
         <a href="https://stanfordp.github.io/crypto-web3-extension/reviewer.html" 
@@ -80,7 +82,7 @@
           </li>
           <li role="listitem">
             <span class="step-number">2</span>
-            <span class="step-text">Visit <a href="https://cryptotradingjournal.xyz/login" target="_blank" rel="noopener">cryptotradingjournal.xyz</a></span>
+            <span class="step-text">Visit <a href="https://cryptotradingjournal.xyz" target="_blank" rel="noopener">cryptotradingjournal.xyz</a></span>
           </li>
           <li role="listitem">
             <span class="step-number">3</span>
@@ -118,9 +120,20 @@
       <h2 id="connectedTitle">Connected</h2>
 
       <div class="info-grid" role="list" aria-label="Wallet connection details">
-        <div class="info-item" role="listitem">
+        <div class="info-item address-item" role="listitem">
           <span class="info-label" id="addressLabel">Address</span>
-          <span id="address" class="info-value mono" aria-labelledby="addressLabel"></span>
+          <div class="address-row">
+            <span id="address" class="info-value mono" aria-labelledby="addressLabel"></span>
+            <button id="copyAddressButton" class="copy-btn" aria-label="Copy full wallet address to clipboard" title="Copy address">
+              <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <svg class="check-icon hidden" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div class="info-item" role="listitem">
