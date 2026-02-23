@@ -186,8 +186,8 @@ describe('ApiClient', () => {
       });
 
       await expect(apiClient.validateSession('token')).rejects.toThrow(ApiError);
-      // Default is 3 retries + 1 initial = 4 attempts
-      expect(global.fetch).toHaveBeenCalledTimes(4);
+      // Default is 2 retries + 1 initial = 3 attempts
+      expect(global.fetch).toHaveBeenCalledTimes(3);
     }, 30000); // Increase timeout due to retry delays
 
     it('should retry on network errors', async () => {

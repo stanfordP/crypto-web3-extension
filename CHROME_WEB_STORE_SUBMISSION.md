@@ -92,7 +92,7 @@ Securely authenticate to Crypto Trading Journal using your Web3 wallet (MetaMask
 ## How It Works
 
 1. Install this extension
-2. Visit cryptotradingjournal.xyz
+2. Visit cryptotradingjournal.xyz/login
 3. Click "Connect Wallet"
 4. Approve connection in MetaMask
 5. Sign the authentication message

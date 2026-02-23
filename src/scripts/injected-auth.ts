@@ -73,10 +73,10 @@ const WalletMessageType = {
 const inFlightWalletRequests = new Map<string, { promise: Promise<unknown>; timestamp: number }>();
 
 /** Request timeout - after this, allow new requests */
-const REQUEST_DEDUP_TIMEOUT_MS = 60000;
+const REQUEST_DEDUP_TIMEOUT_MS = 30000;
 
 /** Wallet operation timeout - reject if wallet doesn't respond */
-const WALLET_REQUEST_TIMEOUT_MS = 45000; // 45s (longer than content.ts 30s timeout)
+const WALLET_REQUEST_TIMEOUT_MS = 20000; // 20s (below content script's 30s timeout)
 
 /** Custom error class for wallet timeouts */
 class WalletTimeoutError extends Error {

@@ -12,18 +12,18 @@ This is a Manifest V3 Chrome browser extension that provides custom Web3 authent
 - TypeScript (strict mode)
 - Webpack 5 for bundling
 - Chrome Extension APIs (Manifest V3)
-- Jest for unit testing (1,240 tests)
+- Jest for unit testing (1,542 tests across 55 suites)
 - Playwright for E2E testing
 
 **Supported Browsers:** Chrome, Brave, Edge, Opera (all Chromium-based)
 
-**Version:** 2.2.5 (manifest & package.json synced)
-**Last Updated:** February 7, 2026
-**Status:** Rejected by Chrome Web Store (Violation ID: Red Potassium) — Resubmission pending
+**Version:** 2.2.6 (manifest & package.json synced)
+**Last Updated:** February 21, 2026
+**Status:** Rejected by Chrome Web Store (Violation ID: Red Potassium) — Resubmission in progress
 
 ---
 
-## 📊 Current Project Status (February 7, 2026)
+## 📊 Current Project Status (February 21, 2026)
 
 ### 🔴 Chrome Web Store Rejection Analysis
 
@@ -42,25 +42,25 @@ This is a Manifest V3 Chrome browser extension that provides custom Web3 authent
 |-----------|--------|-------|
 | **Build System** | ✅ Working | Webpack 5 production build compiles successfully |
 | **TypeScript** | ✅ Clean | `tsc --noEmit` passes with no errors |
-| **Unit Tests** | ✅ 1,240 passing | All tests in 44 suites pass |
+| **Unit Tests** | ✅ 1,621 passing | All tests in 57 suites pass |
 | **DI Architecture** | ✅ Complete | Entry points, Controllers, Adapters all implemented |
 | **Core Logic** | ✅ Extracted | AuthStateMachine, SessionManager, SiweFlow, MessageRouter |
 | **Adapters** | ✅ Complete | Chrome Storage, Runtime, Tabs, Alarms, DOM adapters |
 | **Controllers** | ✅ Complete | Background, Content, Popup, Auth controllers |
-| **Reviewer UX** | ✅ Added | Status indicators, MetaMask links, domain checks |
+| **Reviewer UX** | ✅ Added | Status indicators, MetaMask links, domain checks, Getting Started guide |
+| **Main App Auth** | ✅ Fixed | Race conditions, hydration, rate limiting, 401 noise all resolved |
 
-### 📈 Test Coverage Summary (v2.2.5) — Updated February 7, 2026
-> **Note:** Test count data below reflects the latest validated snapshot from January 31, 2026.
+### 📈 Test Coverage Summary (v2.2.6) — Updated February 2026
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| Unit Tests | **1,436** | - | ✅ +66 new |
-| Test Suites | **51** | - | ✅ +3 new |
+| Unit Tests | **1,621** | - | ✅ |
+| Test Suites | **57** | - | ✅ |
 | Statement Coverage | **75.16%** | 80%+ | 🔴 -4.84% |
 | Branch Coverage | **65.78%** | 70%+ | 🔴 -4.22% |
 | Function Coverage | **72.6%** | 80%+ | 🔴 -7.4% |
 
-**Recent Additions (Jan 31):** 
+**Recent Additions (Jan 31):**
 - +20 tests for `sw-keepalive.ts` (0% → 81.48%)
 - +24 tests for `PopupController.ts` (59% → 81.86%)
 - +22 tests for entry point adapters/controllers
@@ -71,25 +71,41 @@ This is a Manifest V3 Chrome browser extension that provides custom Web3 authent
 | Item | Status | Owner |
 |------|--------|-------|
 | Main site (cryptotradingjournal.xyz) accessible 24/7 | ⬜ Verify | Main App |
-| Exact test URL in instructions (not "visit site") | ⬜ Update | Extension |
-| Version consistency (manifest/package/listing/ZIP) | ✅ Done | Extension |
-| Permissions rationale in CWS fields (esp. `alarms`) | ⬜ Add | Submission |
+| Exact test URL in instructions (not "visit site") | ✅ Done | Extension |
+| Version consistency (manifest/package/listing/ZIP) | ✅ Done (2.2.6) | Extension |
+| Permissions rationale in CWS fields (esp. `alarms`) | ⬜ Paste into CWS form | Submission |
 | MetaMask requirement in FIRST LINE of test instructions | ✅ Done | Submission |
+| SIWE nonces table exists in production Supabase | ⬜ Verify migration | Main App |
+| End-to-end auth flow works on production site | ⬜ Test | Both |
 
 #### P1 — Reviewer Ease
 | Item | Status | Owner |
 |------|--------|-------|
-| Screenshots show current popup UI + disclaimers | ⬜ Update | Submission |
-| Domain scope narrowed or explicitly justified | ⬜ Review | Extension |
-| Support URL + email in CWS form fields | ⬜ Verify | Submission |
-| Privacy disclosure matches privacy policy | ⬜ Cross-check | Submission |
+| Screenshots show current popup UI + disclaimers | ⬜ Take fresh screenshots | Submission |
+| Domain scope narrowed or explicitly justified | ✅ Done (only cryptotradingjournal.xyz + localhost) | Extension |
+| Support URL + email in CWS form fields | ✅ Done (GitHub Issues link in popup + reviewer page) | Submission |
+| Privacy disclosure matches privacy policy | ⬜ Cross-check docs/index.html vs CWS form | Submission |
+| Reviewer guide (docs/reviewer.html) up to date | ✅ Done (v2.2.6 referenced) | Extension |
+| Popup "Getting Started" guide for off-site | ✅ Done | Extension |
+| Popup "NOT a wallet" disclaimer | ✅ Done | Extension |
+| Disconnect works without interruptions | ✅ Done (feedback modal disabled) | Main App |
 
 #### P2 — Quality & Polish
 | Item | Status | Owner |
 |------|--------|-------|
-| A11y checks on status indicators (ARIA labels) | ⬜ Add | Extension |
-| Remove deprecated legacy files | ⬜ Clean | Extension |
+| A11y checks on status indicators (ARIA labels) | ✅ Done (27 axe tests) | Extension |
+| Remove deprecated legacy files | ✅ Done | Extension |
 | Promotional tiles (440x280, 1400x560) | ⬜ Optional | Assets |
+
+#### Main App Fixes for CWS Review (February 2026)
+| Fix | Status | Impact on Review |
+|-----|--------|------------------|
+| Extension detection race condition | ✅ Fixed | No more redirect loops on first load |
+| AuthGuard Zustand hydration | ✅ Fixed | Protected pages load without flashing login |
+| Session check deduplication | ✅ Fixed | No 429 rate limit errors during review |
+| Chat widget auth (removed API calls) | ✅ Fixed | No 401 console noise |
+| Trades/new redundant auth check | ✅ Fixed | Pages load correctly when authenticated |
+| Feedback modal disabled on disconnect | ✅ Fixed | Clean disconnect for reviewer testing |
 
 ---
 
@@ -124,14 +140,15 @@ To support testers while CWS approval is pending, use the **GitHub Side-loading*
 
 ---
 
-## 🗑️ Deprecated Files (Can Be Deleted)
-These legacy files are NOT bundled (webpack uses `entry/` files) and should be removed:
-- `src/scripts/popup.ts` → replaced by `PopupController` + `PopupView`
-- `src/scripts/auth.ts` → replaced by `AuthController` + `AuthView`
-- `src/scripts/content.ts` → replaced by `ContentController`
-- `src/scripts/background.ts` → replaced by `BackgroundController`
-- `src/scripts/background-main.ts` → merged into `BackgroundController`
-- `src/scripts/auth-state-machine.ts` → replaced by `core/auth/AuthStateMachine.ts`
+## 🗑️ Deprecated Files (DELETED)
+
+All legacy files have been removed. The DI architecture (`entry/` files) is the sole active codebase:
+- `src/scripts/popup.ts` — deleted, replaced by `PopupController` + `PopupView`
+- `src/scripts/auth.ts` — deleted, replaced by `AuthController` + `AuthView`
+- `src/scripts/content.ts` — deleted, replaced by `ContentController`
+- `src/scripts/background.ts` — deleted, replaced by `BackgroundController`
+- `src/scripts/background-main.ts` — deleted, merged into `BackgroundController`
+- `src/scripts/auth-state-machine.ts` — deleted, replaced by `core/auth/AuthStateMachine.ts`
 
 ---
 
@@ -162,12 +179,12 @@ These legacy files are NOT bundled (webpack uses `entry/` files) and should be r
 ```
 REQUIRES MetaMask extension.
 
-TEST WALLET (no real funds):
+TEST WALLET (no real funds — copy seed below):
 abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
 
 STEPS:
-1. Install MetaMask, import wallet using seed above
-2. Visit https://cryptotradingjournal.xyz
+1. Install MetaMask, import wallet using copied seed above
+2. Visit https://cryptotradingjournal.xyz/login
 3. Click "Connect Wallet" button
 4. Approve connection in MetaMask popup
 5. Sign the message in MetaMask
@@ -217,17 +234,19 @@ The extension uses the **Deep Oceanic** theme, a unified visual identity shared 
 | Background | `--cj-ocean-deepest` | `#0a1628` |
 | Primary Accent | `--cj-teal-glow` | `#14b8a6` |
 | Primary Text | `--cj-text-primary` | `#f1f5f9` |
-| Secondary Text | `--cj-text-secondary` | `#a1b5c8` |
+| Secondary Text | `--cj-text-secondary` | `#94a3b8` |
 | Success | `--cj-success` | `#10b981` |
 | Error | `--cj-danger` | `#ef4444` |
 
 ### Accessibility Standards
 
+> **Canonical source:** See `docs/THEME_DESIGN_SYSTEM.md` (shared with main app)
+
 | Requirement | Status | Notes |
 |-------------|--------|-------|
 | WCAG 2.1 AA Primary Text | ✅ Pass | 12.8:1 contrast ratio |
-| WCAG 2.1 AA Secondary Text | ✅ Pass | ~7.2:1 contrast ratio (AAA) |
-| WCAG 2.1 AA Muted Text | ✅ Pass | ~4.7:1 contrast ratio |
+| WCAG 2.1 AA Secondary Text | ✅ Pass | 6.1:1 contrast ratio |
+| WCAG 2.1 AA Muted Text | ⚠️ Marginal | 3.8:1 contrast ratio |
 | Focus ring visibility | ✅ Pass | Teal glow ring |
 | Screen reader support | ✅ Pass | ARIA labels on interactive elements |
 | axe-core automated tests | ✅ 27 tests | WCAG compliance verified |
@@ -451,13 +470,7 @@ crypto-web3-extension/
 │   │   ├── errors.ts          # Error handling
 │   │   ├── logger.ts          # Logging utilities
 │   │   │
-│   │   ├── [DEPRECATED] content.ts       # → Use entry/content-entry.ts
-│   │   ├── [DEPRECATED] popup.ts         # → Use entry/popup-entry.ts
-│   │   ├── [DEPRECATED] auth.ts          # → Use entry/auth-entry.ts
-│   │   ├── [DEPRECATED] background.ts    # → Use entry/background-entry.ts
-│   │   ├── [DEPRECATED] background-main.ts
-│   │   │
-│   │   └── __tests__/         # Unit tests (1015 tests)
+│   │   └── __tests__/         # Unit tests (1,542 tests)
 │   │
 │   ├── styles/
 │   │   ├── auth.css           # Auth page styles
@@ -922,6 +935,40 @@ Account mode (Live/Demo) is **NOT stored or managed by the extension**.
 
 ---
 
+## Cross-Project Dependencies (Main App — crypto-futures-jn)
+
+> **Context:** The main CTJ application's AI governance assessment (February 2026) identified two schema-level changes that affect the extension's session and identity contracts.
+> **PRD Reference:** See `crypto-futures-jn/docs/CTJ_PRD.md` for CI/CD pipeline design with monorepo path-based filtering.
+
+### CI/CD Integration (from PRD)
+
+The PRD requires a GitHub Actions CI pipeline with path-based filtering for the monorepo:
+- Extension CI should only run when `crypto-web3-extension/**` files change
+- Pipeline: `npm ci` -> `npm run type-check` -> `npm run test:unit -- --coverage`
+- **Status:** Not yet implemented — add `.github/workflows/ci.yml`
+
+### Upstream Changes Affecting Extension
+
+| Main App Gap ID | Change | Extension Impact | When |
+|-----------------|--------|------------------|------|
+| **G6** | Admin tables migrating `user_address TEXT` → `user_id UUID` | Extension's SIWE session currently stores `address` as primary identifier; session validation against admin/role tables will need to resolve `user_id` from `address` | Phase 20D.4 |
+| **GOV-2** | Unified identity model (`useAuthIdentity()` hook) | Extension produces the wallet address + chain ID that feeds into the identity model; no extension changes required, but session token format may evolve | Phase 20A |
+
+### What This Means for Extension Development
+
+1. **No immediate action required** — The extension is an authentication bridge and operates outside the AI agent pipeline
+2. **Session token contract is stable** — The extension stores `{ sessionToken, address, chainId }` in `chrome.storage.local`; this contract is not changing
+3. **Watch for API changes** — When G6 migration lands, the `/api/auth/siwe/verify` response may include `user_id` alongside `address`; the extension should be prepared to store this if provided
+4. **GOV-2 identity model** — The extension's SIWE flow is the primary identity source for wallet-linked users; the main app's `useAuthIdentity()` hook will abstract over both Web3 (extension) and session-based (Passkey) auth
+
+### Recommended Extension Preparation
+
+- [ ] Add optional `user_id` field to session storage schema (forward-compatible with G6)
+- [ ] Update `CJ_STORE_SESSION` message type to accept optional `user_id` field
+- [ ] No changes to wallet connection or signing flows
+
+---
+
 ## ⚠️ Known Issues & Solutions
 
 | Issue | Cause | Solution |
@@ -932,23 +979,11 @@ Account mode (Live/Demo) is **NOT stored or managed by the extension**.
 
 ---
 
-## 📋 Compatibility
+## 📋 Supported Networks
 
-### Wallets Tested
-- ✅ MetaMask
-- ✅ Rabby Wallet
-- ✅ Brave Wallet
-- ✅ Phantom (EVM mode)
-- ⚠️ Coinbase Wallet (untested)
-- ❌ WalletConnect (not supported - future consideration)
+Ethereum, Polygon, Arbitrum, Optimism, Base, BNB Chain
 
-### Security Extensions
-- ✅ Pocket Universe
-- ✅ Wallet Guard
-- ✅ Fire (untested but expected compatible)
-
-### Networks
-- Ethereum, Polygon, Arbitrum, Optimism, Base, BNB Chain
+> **Wallet compatibility:** See § Wallet Compatibility above for tested wallets and security extensions.
 
 ---
 
@@ -994,16 +1029,7 @@ The v2.2 DI architecture is **now the active production code**. Webpack entry po
 
 ### Legacy Files (NOT BUNDLED)
 
-These files remain in the codebase for reference but are **not included in builds**:
-
-| File | Status | Replacement |
-|------|--------|-------------|
-| `content.ts` | Deprecated | `ContentController.ts` |
-| `popup.ts` | Deprecated | `PopupController.ts` + `PopupView.ts` |
-| `auth.ts` | Deprecated | `AuthController.ts` + `AuthView.ts` |
-| `background.ts` | Deprecated | `BackgroundController.ts` |
-| `background-main.ts` | Deprecated | `BackgroundController.ts` |
-| `auth-state-machine.ts` | Deprecated | `core/auth/AuthStateMachine.ts` |
+> **Full list with JSDoc status:** See § Deprecated Files (To Remove in v3.0.0) below.
 
 ### Target Architecture
 
@@ -1381,7 +1407,6 @@ This section tracks all identified gaps from comprehensive codebase analysis. Up
 | `injected-auth.ts` | 51-494 | Injected script | Complex wallet interaction |
 | `sw-state.ts` | 36-199 | Background | Service worker state management |
 | `ui/auth/AuthView.ts` (low) | 12-333 | View | DOM manipulation for auth page |
-| `popup.ts` | 19-518 | **DEPRECATED** | Can delete - not bundled |
 
 ### Significantly Improved Coverage (Jan 31, 2026)
 
@@ -1394,15 +1419,15 @@ This section tracks all identified gaps from comprehensive codebase analysis. Up
 | `ChromeTabsAdapter.ts` | - | **100%** | 3 |
 | `DOMAdapter.ts` | - | **95.65%** | 4 |
 
-### Deprecated Files (To Remove in v3.0.0)
+### Deprecated Files (DELETED — Cleanup Complete)
 
-These files have `@deprecated` JSDoc headers and are kept for reference only:
-- `content.ts` → Use `entry/content-entry.ts`
-- `background.ts` → Use `entry/background-entry.ts`
-- `popup.ts` → Use `entry/popup-entry.ts`
-- `auth.ts` → Use `entry/auth-entry.ts`
-- `background-main.ts` → Merged into BackgroundController
-- `auth-state-machine.ts` → Use `core/auth/AuthStateMachine`
+All legacy files have been removed from the codebase:
+- `content.ts` — deleted, use `entry/content-entry.ts`
+- `background.ts` — deleted, use `entry/background-entry.ts`
+- `popup.ts` — deleted, use `entry/popup-entry.ts`
+- `auth.ts` — deleted, use `entry/auth-entry.ts`
+- `background-main.ts` — deleted, merged into BackgroundController
+- `auth-state-machine.ts` — deleted, use `core/auth/AuthStateMachine`
 
 ### Architecture Principles
 

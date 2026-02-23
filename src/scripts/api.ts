@@ -38,9 +38,9 @@ interface RetryConfig {
 }
 
 const DEFAULT_RETRY_CONFIG: RetryConfig = {
-  maxRetries: 3,
-  baseDelayMs: 1000,
-  maxDelayMs: 10000,
+  maxRetries: 2,
+  baseDelayMs: 500,
+  maxDelayMs: 5000,
 };
 
 /**

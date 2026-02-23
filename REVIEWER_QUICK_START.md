@@ -13,7 +13,7 @@
 | 1 | Install MetaMask (skip if installed) | ~1 min |
 | 2 | Import test wallet | ~30 sec |
 | 3 | Install & check extension | ~30 sec |
-| 4 | Visit cryptotradingjournal.xyz | ~30 sec |
+| 4 | Visit cryptotradingjournal.xyz/login | ~30 sec |
 | 5 | Connect & authenticate | ~30 sec |
 | 6 | Verify success | ~15 sec |
 | **Total** | | **~3-5 min** |
@@ -36,17 +36,17 @@
 
 ## 📋 Test Instructions (Copy-Paste Ready)
 
-### For Chrome Web Store Submission (466 characters):
+### For Chrome Web Store Submission:
 
 ```
-REQUIRES MetaMask extension.
+REQUIRES MetaMask extension installed.
 
-TEST WALLET (no real funds):
+TEST WALLET (no real funds — copy seed below):
 abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
 
 STEPS:
-1. In MetaMask: Import wallet using seed above
-2. Visit https://cryptotradingjournal.xyz
+1. In MetaMask: Import wallet using copied seed above
+2. Visit https://cryptotradingjournal.xyz/login
 3. Click "Connect Wallet" on site
 4. Approve in MetaMask popup
 5. Success = wallet address shown in extension popup
@@ -96,7 +96,7 @@ Contact: support@cryptotradingjournal.xyz
 
 ### Step 4: Visit the Website (~30 sec)
 
-1. Go to https://cryptotradingjournal.xyz
+1. Go to https://cryptotradingjournal.xyz/login
 2. You should see a "Connect Wallet" button
 
 ### Step 5: Authenticate (~30 sec)
