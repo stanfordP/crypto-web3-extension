@@ -5,17 +5,24 @@ All notable changes to the Crypto Trading Journal Web3 Extension will be documen
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.2.6] - 2026-02-17 (Branding & CWS Preparation)
+## [2.2.6] - 2026-02-24 (Timeout Harmonization & Branding)
 
 ### Fixed
+- **Wallet timeout cascade:** Harmonized all timeout values across the 3-layer chain to give users adequate time to unlock MetaMask and approve transactions:
+  - `injected-auth.ts` CONNECT_TIMEOUT_MS: 10s → 55s (was cutting users off after 10 seconds)
+  - `injected-auth.ts` WALLET_REQUEST_TIMEOUT_MS: 20s → 55s
+  - `InjectionService.ts` WALLET_MESSAGE_TIMEOUT: 30s → 58s
+  - Request dedup timeout: 30s → 60s
 - **Extension logo:** Replaced old eagle "CJ" logo (`icons/logo.png`, 456KB) with CTJ 16C brand mark SVG (`icons/icon.svg`) in both `popup.html` and `auth.html`
 - **Logo clipping:** Changed `border-radius: 50%` (circle) to `19%` (rounded rectangle) on `.logo-image`, `.icon-logo-img` classes to match the SVG's rounded-rect shape
 - **Auth page logo:** Updated `auth.html` logo reference from `icons/logo.png` to `icons/icon.svg`
 
 ### Changed
 - **Version bump:** manifest.json and package.json synced to 2.2.6
+- **Release ZIP rebuilt:** `docs/crypto-web3-extension.zip` updated with harmonized timeouts
 
 ### Notes
+- Timeout cascade: injected (55s) → content script (58s) → app sendMessage (60s) — innermost fires first, single clean error propagation
 - Old `icons/logo.png` (456KB eagle badge) can be deleted — no longer referenced
 - All icon references now use the CTJ 16C brand mark (gold grid + teal dot on Deep Oceanic background)
 - Main app (`crypto-futures-jn`) favicon also fixed in parallel: removed default Next.js `app/favicon.ico`, added background rect to `public/favicon.svg`
@@ -476,6 +483,11 @@ This release addresses the Chrome Web Store rejection where reviewers couldn't r
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.2.6 | 2026-02-24 | Timeout Harmonization & Branding |
+| 2.2.5 | 2026-02-01 | UX Audit Implementation |
+| 2.2.3 | 2026-01-30 | Chrome Web Store Resubmission |
+| 2.2.0 | 2026-01-03 | DI Architecture & Test Coverage |
+| 2.1.0 | 2026-01-02 | Session Synchronization |
 | 1.1.0 | 2024-12-29 | Extension-First Architecture, CJ_* Protocol |
 | 1.0.0 | 2024-12-15 | Initial release |
 
