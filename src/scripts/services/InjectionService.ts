@@ -70,7 +70,7 @@ export class InjectionService {
   private readonly INITIAL_RETRY_DELAY = 200;
 
   /** Timeout for wallet messages */
-  private readonly WALLET_MESSAGE_TIMEOUT = 30000;
+  private readonly WALLET_MESSAGE_TIMEOUT = 58000;
 
   constructor(deps: InjectionServiceDeps) {
     this.domAdapter = deps.domAdapter;
