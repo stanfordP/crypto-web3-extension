@@ -73,10 +73,10 @@ const WalletMessageType = {
 const inFlightWalletRequests = new Map<string, { promise: Promise<unknown>; timestamp: number }>();
 
 /** Request timeout - after this, allow new requests */
-const REQUEST_DEDUP_TIMEOUT_MS = 30000;
+const REQUEST_DEDUP_TIMEOUT_MS = 60000;
 
 /** Wallet operation timeout - reject if wallet doesn't respond */
-const WALLET_REQUEST_TIMEOUT_MS = 20000; // 20s (below content script's 30s timeout)
+const WALLET_REQUEST_TIMEOUT_MS = 55000; // 55s — allows time for wallet unlock; below content script's 60s timeout
 
 /** Custom error class for wallet timeouts */
 class WalletTimeoutError extends Error {
@@ -368,10 +368,9 @@ async function handleWalletConnect(requestId?: string): Promise<void> {
       return;
     }
 
-    // If the wallet is locked, many wallets will keep the request pending until
-    // the user unlocks the extension. Instead of letting the app hang for 30s,
-    // fail fast with a clear instruction.
-    const CONNECT_TIMEOUT_MS = 10_000;
+    // If the wallet is locked, MetaMask keeps the request pending until the user
+    // unlocks. Give enough time for password entry + approval (matches app countdown).
+    const CONNECT_TIMEOUT_MS = 55_000;
     
     // Use deduplication to prevent double-prompts from security extensions
     const accounts = await deduplicatedRequest<string[]>(

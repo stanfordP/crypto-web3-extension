@@ -1,7 +1,7 @@
 # Chrome Web Store Submission Guide
 
-> **Extension**: Crypto Trading Journal - Web3 Auth  
-> **Version**: 2.0.0  
+> **Extension**: Crypto Trading Journal - Web3 Auth
+> **Version**: 2.2.6
 > **Production Domain**: https://cryptotradingjournal.xyz
 
 ---
@@ -61,60 +61,70 @@ Located in `c:\Users\stanf\Documents\`:
 
 ### Short Description (132 characters max)
 ```
-Secure Web3 wallet authentication for Crypto Trading Journal. Connect MetaMask to sign in with your Ethereum wallet.
+Web3 authentication bridge for Crypto Trading Journal. Connects your existing MetaMask/Brave wallet for passwordless sign-in (SIWE).
 ```
 
 ### Detailed Description
 ```markdown
-# Crypto Trading Journal - Web3 Auth Extension
+# Crypto Trading Journal - Web3 Auth Bridge
 
-Securely authenticate to Crypto Trading Journal using your Web3 wallet (MetaMask, WalletConnect, etc.) through Sign-In with Ethereum (SIWE).
+Securely authenticate to Crypto Trading Journal using your existing Web3 wallet (MetaMask, Brave Wallet) through Sign-In with Ethereum (SIWE).
+
+⚠️ This is NOT a standalone wallet. It bridges your existing wallet to CTJ for passwordless authentication only.
 
 ## Features
 
-🔐 **Secure Authentication**
+🔐 **Secure Authentication Bridge**
 - Sign-In with Ethereum (EIP-4361) standard
 - No passwords to remember
 - Cryptographic proof of wallet ownership
 
 🛡️ **Privacy First**
-- Only wallet address shared with journal
+- Only wallet address shared for authentication
 - No private keys ever leave your wallet
 - All signatures local to your device
-- Session data encrypted
+- Session data stored locally in extension
 
 🔗 **Seamless Integration**
-- Auto-detects wallet connection
-- Works with MetaMask and compatible wallets
+- Auto-detects existing wallet extensions (MetaMask, Brave Wallet)
+- Works with security extensions (Pocket Universe, Wallet Guard)
 - One-click sign in experience
 - Automatic session management
 
 ## How It Works
 
 1. Install this extension
-2. Visit cryptotradingjournal.xyz/login
-3. Click "Connect Wallet"
-4. Approve connection in MetaMask
-5. Sign the authentication message
-6. You're logged in!
+2. Ensure MetaMask or Brave Wallet is installed
+3. Visit cryptotradingjournal.xyz/login
+4. Click "Connect Wallet"
+5. Approve connection in your wallet
+6. Sign the authentication message
+7. You're logged in!
+
+## Prerequisites
+
+- A Chromium-based browser (Chrome, Brave, Edge, Opera)
+- MetaMask or Brave Wallet extension installed
+- An Ethereum wallet address (no balance required)
 
 ## Security
 
 - Uses industry-standard SIWE (EIP-4361) protocol
 - Message includes domain, nonce, and timestamp
 - Signature cannot be replayed or forged
-- Sessions expire automatically
+- Sessions expire automatically (24h)
+- Extension only activates on cryptotradingjournal.xyz
 
 ## Support
 
 Website: https://cryptotradingjournal.xyz
-Issues: GitHub repository
+Email: support@cryptotradingjournal.xyz
 
 ## Permissions Explained
 
-- **storage**: Save your session locally
+- **storage**: Save your authentication session locally
 - **activeTab**: Detect when you're on the journal site
-- **alarms**: Maintain service worker for background auth
+- **alarms**: Maintain service worker during authentication (MV3 requirement)
 
 This extension only activates on cryptotradingjournal.xyz domains.
 ```
@@ -225,13 +235,13 @@ The package will be created at `packages/crypto-trading-journal-web3-v{version}-
 
 **Or manually on Windows PowerShell:**
 ```powershell
-Compress-Archive -Path dist\* -DestinationPath crypto-web3-extension-v2.0.0.zip
+Compress-Archive -Path dist\* -DestinationPath crypto-web3-extension-v2.2.6.zip
 ```
 
 ### 3. Verify Package Contents
 The ZIP should contain:
 ```
-crypto-web3-extension-v2.0.0.zip
+crypto-web3-extension-v2.2.6.zip
 ├── manifest.json
 ├── background.js
 ├── content.js
@@ -282,12 +292,17 @@ crypto-web3-extension-v2.0.0.zip
 Declare data handling:
 - **Personally identifiable info**: No
 - **Health info**: No
-- **Financial info**: No (wallet address is not financial)
-- **Authentication info**: Yes (session tokens)
+- **Financial info**: No (wallet address is a public identifier, not financial data)
+- **Authentication info**: Yes (session tokens, wallet address for login)
 - **Personal communications**: No
 - **Location**: No
 - **Web history**: No
-- **User activity**: Limited (login events)
+- **User activity**: No
+
+**Certifications:**
+- Data is NOT sold to third parties
+- Data is NOT used for purposes unrelated to the extension's core functionality
+- Data is NOT used for creditworthiness or lending purposes
 
 ### Step 4: Distribution
 - **Visibility**: Public
@@ -363,10 +378,10 @@ npm run build:prod
 npm run test
 
 # Create package (PowerShell)
-Compress-Archive -Path dist\* -DestinationPath crypto-web3-extension-v2.0.0.zip
+Compress-Archive -Path dist\* -DestinationPath crypto-web3-extension-v2.2.6.zip
 
 # Create package (bash)
-cd dist && zip -r ../crypto-web3-extension-v2.0.0.zip . && cd ..
+cd dist && zip -r ../crypto-web3-extension-v2.2.6.zip . && cd ..
 ```
 
 ---
