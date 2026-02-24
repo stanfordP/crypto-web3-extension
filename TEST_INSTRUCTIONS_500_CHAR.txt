@@ -1,15 +1,16 @@
 REQUIRES MetaMask extension installed.
 
-TEST WALLET (no real funds — copy seed below):
-abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
+SETUP: Create a new wallet in MetaMask (no import needed).
+No funds required — any Ethereum address works for SIWE auth.
+Unlock MetaMask BEFORE step 3.
 
 STEPS:
-1. In MetaMask: Import wallet using copied seed above
-2. Visit https://cryptotradingjournal.xyz/login
-3. Click "Connect Wallet" button
-4. Approve in MetaMask popup
-5. Sign message
-6. Success = wallet address in extension popup
+1. Install MetaMask, create new wallet, set any password
+2. Install this extension — click icon to see status checks
+3. Visit https://cryptotradingjournal.xyz/login
+4. Click "Connect Wallet" on the page
+5. Approve connection + sign message in MetaMask
+6. Success = wallet address shown in extension popup
 
-Bridges existing wallets for auth.
+Full guide: https://stanfordp.github.io/crypto-web3-extension/install.html
 Contact: support@cryptotradingjournal.xyz
