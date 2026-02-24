@@ -11,7 +11,7 @@
 | Step | Action | Time |
 |------|--------|------|
 | 1 | Install MetaMask (skip if installed) | ~1 min |
-| 2 | Import test wallet | ~30 sec |
+| 2 | Set up test wallet (create or unlock) | ~30 sec |
 | 3 | Install & check extension | ~30 sec |
 | 4 | Visit cryptotradingjournal.xyz/login | ~30 sec |
 | 5 | Connect & authenticate | ~30 sec |
@@ -41,15 +41,16 @@
 ```
 REQUIRES MetaMask extension installed.
 
-TEST WALLET (no real funds — copy seed below):
-abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
+TEST WALLET: Create a new wallet in MetaMask (no import needed).
+No funds required — any Ethereum address works for SIWE auth.
 
 STEPS:
-1. In MetaMask: Import wallet using copied seed above
+1. In MetaMask: Create or unlock wallet (ensure it's unlocked FIRST)
 2. Visit https://cryptotradingjournal.xyz/login
 3. Click "Connect Wallet" on site
-4. Approve in MetaMask popup
-5. Success = wallet address shown in extension popup
+4. Approve connection in MetaMask popup
+5. Sign the authentication message
+6. Success = wallet address shown in extension popup
 
 Extension ONLY works on cryptotradingjournal.xyz domain.
 Contact: support@cryptotradingjournal.xyz
@@ -69,19 +70,14 @@ Contact: support@cryptotradingjournal.xyz
 **If MetaMask IS installed:**
 - Skip to Step 2
 
-### Step 2: Import Test Wallet (~30 sec)
+### Step 2: Set Up Test Wallet (~30 sec)
 
 1. Open MetaMask
-2. If MetaMask is fresh/new: During setup, choose "Import wallet" and use the seed phrase below
-3. If MetaMask already has an account: Click the account icon → "Add account or hardware wallet" → "Import account" 
-   - Note: For seed phrase import in existing MetaMask, you may need to use Settings → Security & Privacy → "Reveal Secret Recovery Phrase" flow, or simply add a new account for testing
-4. Enter this test seed:
-   ```
-   abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
-   ```
-5. Set any password (this is a test wallet with no real funds)
+2. If MetaMask is fresh/new: During setup, choose **"Create a new wallet"** and set any password
+3. If MetaMask already has an account: Use your existing account — no special setup needed
+4. **Make sure MetaMask is unlocked** before proceeding to Step 4
 
-**Tip:** The easiest method is to use a fresh MetaMask installation and import using the seed phrase during initial setup.
+**Note:** No funds, tokens, or ETH balance required. SIWE authentication only needs a wallet address.
 
 ### Step 3: Install & Verify Extension (~30 sec)
 

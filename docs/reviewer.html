@@ -642,11 +642,14 @@
                     <div class="step">
                         <div class="step-number">2</div>
                         <div class="step-content">
-                            <div class="step-title">Import Test Wallet</div>
+                            <div class="step-title">Set Up Test Wallet</div>
                             <div class="step-description">
-                                <p>In MetaMask, during initial setup choose "Import wallet" (or if MetaMask is already set up, you can use the existing account). Copy and use this test seed phrase:</p>
-                                <div class="code-block" style="cursor: pointer; position: relative;" onclick="navigator.clipboard.writeText('abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about').then(() => { this.querySelector('.copy-msg').style.opacity = 1; setTimeout(() => this.querySelector('.copy-msg').style.opacity = 0, 1500); })" title="Click to copy seed phrase">abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about<span class="copy-msg" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: var(--cj-success); opacity: 0; transition: opacity 0.3s;">Copied!</span></div>
-                                <p><em>This is a standard BIP-39 test mnemonic with no real funds. Easiest: use a fresh MetaMask installation.</em></p>
+                                <p>In MetaMask, choose <strong>"Create a new wallet"</strong> during initial setup (or use your existing account). No funds or imports needed — any fresh Ethereum address works for testing.</p>
+                                <div class="code-block" style="position: relative; font-size: 0.9rem; line-height: 1.6;">
+                                    <strong>Recommended:</strong> Create a new wallet &rarr; set any password &rarr; done.<br>
+                                    <strong>Important:</strong> Unlock MetaMask <em>before</em> clicking "Connect Wallet" on the site.
+                                </div>
+                                <p><em>No balance required. SIWE authentication only needs a wallet address — no tokens or ETH.</em></p>
                             </div>
                         </div>
                         <span class="step-time">~30 sec</span>
