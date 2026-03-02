@@ -809,11 +809,11 @@
             No passwords, no seed phrases shared — just cryptographic signatures. This extension bridges your wallet for authentication only.
         </p>
         <div class="hero-cta">
-            <a href="#download" class="btn btn-primary">
+            <a href="https://chromewebstore.google.com/detail/ctj-web3-auth-bridge/cphjlogninjhlkeldohmihhpaaafnheb" class="btn btn-primary" target="_blank">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
                 </svg>
-                Download Extension
+                Install from Chrome Web Store
             </a>
             <a href="https://cryptotradingjournal.xyz" class="btn btn-secondary" target="_blank">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -826,18 +826,17 @@
 
     <div class="container">
         <!-- Alert -->
-        <div class="alert alert-warning">
+        <div class="alert" style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.3);">
             <div class="alert-content">
                 <span class="alert-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                        <line x1="12" y1="9" x2="12" y2="13"/>
-                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
                     </svg>
                 </span>
                 <div>
-                    <h3>Manual Installation Required (Chrome Web Store Review In Progress)</h3>
-                    <p><strong>REQUIRES MetaMask or similar wallet extension already installed.</strong> This extension is currently under Chrome Web Store review. Follow the step-by-step guide below to install it manually in Developer Mode — it only takes 5 minutes.</p>
+                    <h3 style="color: var(--cj-success);">Available on Chrome Web Store</h3>
+                    <p><strong>REQUIRES MetaMask or similar wallet extension already installed.</strong> Install the extension directly from the <a href="https://chromewebstore.google.com/detail/ctj-web3-auth-bridge/cphjlogninjhlkeldohmihhpaaafnheb" target="_blank" style="color: var(--cj-teal-glow);">Chrome Web Store</a> for automatic updates. Manual installation instructions are available below as an alternative.</p>
                 </div>
             </div>
         </div>
@@ -901,25 +900,25 @@
 
         <!-- Download Section -->
         <section id="download" class="download-section">
-            <h2>Step 1: Download the Extension</h2>
-            <p class="subtitle">Get the latest release package to begin installation</p>
+            <h2>Install the Extension</h2>
+            <p class="subtitle">Get it from the Chrome Web Store for automatic updates</p>
             <div class="download-buttons">
-                <a href="https://stanfordp.github.io/crypto-web3-extension/crypto-web3-extension.zip" 
+                <a href="https://chromewebstore.google.com/detail/ctj-web3-auth-bridge/cphjlogninjhlkeldohmihhpaaafnheb"
                    class="btn btn-primary"
+                   target="_blank">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                    </svg>
+                    Chrome Web Store
+                </a>
+                <a href="https://stanfordp.github.io/crypto-web3-extension/crypto-web3-extension.zip"
+                   class="btn btn-secondary"
                    id="downloadBtn"
                    download="crypto-web3-extension.zip">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
                     </svg>
-                    Download ZIP Package
-                </a>
-                <a href="https://github.com/stanfordP/crypto-web3-extension/releases" 
-                   class="btn btn-secondary"
-                   target="_blank">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                    View All Releases
+                    Download ZIP (Manual)
                 </a>
             </div>
             <div class="version-badge">
@@ -934,8 +933,8 @@
         <!-- Installation Steps -->
         <section>
             <div class="section-header">
-                <h2>Installation Guide</h2>
-                <p>Follow these steps after downloading the ZIP file</p>
+                <h2>Manual Installation Guide</h2>
+                <p>Alternative: follow these steps if you prefer to install from the ZIP file</p>
             </div>
 
             <!-- Browser Selector -->
@@ -1044,11 +1043,9 @@
 
             <div class="faq-grid">
                 <details class="faq-item">
-                    <summary>When will this be available on Chrome Web Store?</summary>
+                    <summary>Where can I install the extension?</summary>
                     <div class="faq-answer">
-                        <p>The extension is currently under Chrome Web Store review. Once approved, it will be available for one-click installation directly from the Chrome Web Store, eliminating the need for manual Developer Mode installation.</p>
-                        <p style="margin-top: 0.5rem;"><strong>Current Status:</strong> Under review after positioning clarification as an "authentication bridge" (not a standalone wallet). Expected approval timeline: 1-5 business days after resubmission.</p>
-                        <p style="margin-top: 0.5rem;">Check back on this page for updates, or watch the <a href="https://github.com/stanfordP/crypto-web3-extension" target="_blank">GitHub repository</a> for announcements.</p>
+                        <p>The extension is available on the <a href="https://chromewebstore.google.com/detail/ctj-web3-auth-bridge/cphjlogninjhlkeldohmihhpaaafnheb" target="_blank">Chrome Web Store</a>. Installing from CWS gives you automatic updates. Manual installation via ZIP is available as an alternative above.</p>
                     </div>
                 </details>
 
