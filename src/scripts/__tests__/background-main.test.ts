@@ -121,7 +121,7 @@ function validateSenderOrigin(sender: { tab?: { url?: string }; id?: string; url
     try {
       const senderOrigin = new URL(sender.tab.url).origin;
       return ALLOWED_ORIGINS.some((allowed) =>
-        senderOrigin.startsWith(allowed.replace('/*', '').replace('*', ''))
+        senderOrigin.startsWith(allowed.replace('/*', '').replace(/\*/g, ''))
       );
     } catch {
       return false;
