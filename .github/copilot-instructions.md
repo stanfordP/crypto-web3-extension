@@ -1,5 +1,11 @@
 # CTJ Web3 Extension - Copilot Instructions
 
+> **STATUS: PAUSED / ARCHIVED (February 28, 2026)**
+>
+> This repository is **paused** under the CTJ architecture pivot to a personal autonomous trading system. The extension served as an authentication bridge for a multi-user SaaS product. Under the single-user pivot, it is no longer needed. No active development.
+>
+> See `crypto-futures-jn/CLAUDE.md` v5.0 for the autonomous trading architecture.
+
 A Manifest V3 Chrome browser extension providing secure Web3 authentication bridging for Crypto Trading Journal (CTJ). This is an **authentication bridge**, NOT a standalone wallet - it connects existing wallets (MetaMask, Brave Wallet, etc.) to CTJ for passwordless SIWE (Sign-In With Ethereum) authentication.
 
 > **Full Documentation:** See `claude.md` for comprehensive architecture and implementation status.
