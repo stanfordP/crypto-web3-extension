@@ -7,13 +7,19 @@
     "start": "node mock-api-server.js",
     "dev": "nodemon mock-api-server.js"
   },
-  "keywords": ["web3", "testing", "siwe", "ethereum"],
+  "keywords": [
+    "web3",
+    "testing",
+    "siwe",
+    "ethereum"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "siwe": "^2.1.4"
+    "siwe": "^2.1.4",
+    "express-rate-limit": "^8.3.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

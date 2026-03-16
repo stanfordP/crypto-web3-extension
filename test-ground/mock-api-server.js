@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { SiweMessage } = require('siwe');
 const crypto = require('crypto');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = 3001;
@@ -16,6 +17,14 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+
+// Rate limiting for auth routes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs for auth routes
+  standardHeaders: true,
+  legacyHeaders: false
+});
 
 // Logging middleware
 app.use((req, res, next) => {
@@ -125,7 +134,7 @@ app.post('/api/auth/siwe/challenge', (req, res) => {
 
 // POST /api/auth/siwe/verify
 // Verify SIWE signature and create session
-app.post('/api/auth/siwe/verify', async (req, res) => {
+app.post('/api/auth/siwe/verify', authLimiter, async (req, res) => {
   try {
     const { message, signature, accountMode = 'live' } = req.body;
 
