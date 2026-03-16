@@ -364,7 +364,7 @@ async function handleWalletConnect(requestId?: string): Promise<void> {
         requestId,
         success: false,
         error: 'No wallet detected',
-      }, '*');
+      }, window.location.origin);
       return;
     }
 
@@ -386,7 +386,7 @@ async function handleWalletConnect(requestId?: string): Promise<void> {
         requestId,
         success: false,
         error: 'No accounts returned',
-      }, '*');
+      }, window.location.origin);
       return;
     }
     
@@ -404,7 +404,7 @@ async function handleWalletConnect(requestId?: string): Promise<void> {
       success: true,
       address: accounts[0],
       chainId,
-    }, '*');
+    }, window.location.origin);
     
   } catch (err) {
     const error = err as { code?: number; message?: string; name?: string };
@@ -422,7 +422,7 @@ async function handleWalletConnect(requestId?: string): Promise<void> {
       error: errorMessage,
       code: error.code,
       isTimeout,
-    }, '*');
+    }, window.location.origin);
   }
 }
 
