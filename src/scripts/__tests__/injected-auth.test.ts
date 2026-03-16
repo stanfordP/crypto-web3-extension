@@ -230,7 +230,7 @@ describe('Injected Auth Script', () => {
         requestId,
         available,
         walletName,
-      }, '*');
+      }, 'https://example.com');
 
       expect(postedMessages[0].data).toEqual({
         type: 'CJ_WALLET_CHECK_RESULT',
@@ -251,7 +251,7 @@ describe('Injected Auth Script', () => {
         requestId,
         available,
         walletName: null,
-      }, '*');
+      }, 'https://example.com');
 
       expect(postedMessages[0].data).toEqual({
         type: 'CJ_WALLET_CHECK_RESULT',
@@ -290,7 +290,7 @@ describe('Injected Auth Script', () => {
         success: true,
         address: (accounts as string[])[0],
         chainId,
-      }, '*');
+      }, 'https://example.com');
 
       expect(postedMessages[0].data).toEqual({
         type: 'CJ_WALLET_CONNECT_RESULT',
