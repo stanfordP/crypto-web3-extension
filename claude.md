@@ -1,5 +1,13 @@
 # Claude Code Context: CTJ Web3 Extension
 
+> **STATUS: ACTIVE (March 1, 2026)**
+>
+> This extension is **published on the Chrome Web Store** and serves as the authentication bridge for CTJ (Crypto Trading Journal). Users install it from CWS to authenticate via SIWE with their existing Web3 wallet.
+>
+> **CWS Listing:** https://chromewebstore.google.com/detail/ctj-web3-auth-bridge/cphjlogninjhlkeldohmihhpaaafnheb
+>
+> See `crypto-futures-jn/CLAUDE.md` for the main app architecture.
+
 ## Project Overview
 
 This is a Manifest V3 Chrome browser extension that provides custom Web3 authentication for **CTJ (Crypto Trading Journal)**. The extension uses an **Extension-First Auth Flow** with **Injected Script Architecture** for wallet interactions.
@@ -18,24 +26,22 @@ This is a Manifest V3 Chrome browser extension that provides custom Web3 authent
 **Supported Browsers:** Chrome, Brave, Edge, Opera (all Chromium-based)
 
 **Version:** 2.2.6 (manifest & package.json synced)
-**Last Updated:** February 21, 2026
-**Status:** Rejected by Chrome Web Store (Violation ID: Red Potassium) — Resubmission in progress
+**Last Updated:** March 1, 2026
+**Status:** Published on Chrome Web Store
 
 ---
 
-## 📊 Current Project Status (February 21, 2026)
+## Current Project Status (March 1, 2026)
 
-### 🔴 Chrome Web Store Rejection Analysis
+### Chrome Web Store — Published
 
-**Violation ID:** Red Potassium  
-**Rejection Date:** January 6, 2026  
-**Root Cause:** Reviewers couldn't reproduce "Wallet" functionality — they expected a standalone wallet like MetaMask.
+**CWS ID:** cphjlogninjhlkeldohmihhpaaafnheb
+**Listing:** https://chromewebstore.google.com/detail/ctj-web3-auth-bridge/cphjlogninjhlkeldohmihhpaaafnheb
 
-**Key Learnings:**
-1. Reviewers test on fresh Chrome profiles with NO other extensions
-2. The word "Wallet" in description implies balance/send features
-3. 500-character test instruction limit prevents full explanation
-4. Without MetaMask installed, extension appears "broken"
+**History:**
+- Initially rejected January 6, 2026 (Violation ID: Red Potassium — reviewers expected standalone wallet)
+- Resubmitted with positioning clarification as "authentication bridge"
+- Approved and published on CWS
 
 ### ✅ What's Working
 | Component | Status | Notes |
@@ -937,8 +943,9 @@ Account mode (Live/Demo) is **NOT stored or managed by the extension**.
 
 ## Cross-Project Dependencies (Main App — crypto-futures-jn)
 
-> **Context:** The main CTJ application's AI governance assessment (February 2026) identified two schema-level changes that affect the extension's session and identity contracts.
-> **PRD Reference:** See `crypto-futures-jn/docs/CTJ_PRD.md` for CI/CD pipeline design with monorepo path-based filtering.
+> **Context (February 28, 2026):** The main CTJ application has pivoted to a personal autonomous trading system. Public SaaS deferred indefinitely. The extension is paused and these cross-project dependencies are no longer actively tracked. Retained for reference.
+>
+> **Pivot Reference:** See `crypto-futures-jn/CLAUDE.md` v5.0 and `CTJ_Autonomous_Trading_Gap_Resolution_Report.md`.
 
 ### CI/CD Integration (from PRD)
 
