@@ -1,0 +1,14 @@
+REQUIRES MetaMask extension.
+
+Create new wallet in MetaMask (no import needed).
+No funds required — wallet-only auth.
+Unlock MetaMask BEFORE step 3.
+
+1. Install MetaMask, create wallet, set any password
+2. Install this extension — click icon for status checks
+3. Visit https://cryptotradingjournal.xyz/login
+4. Click "Connect Wallet"
+5. Approve connection + sign in MetaMask
+6. Success = address shown in extension popup
+
+Guide: https://stanfordp.github.io/crypto-web3-extension/install.html
