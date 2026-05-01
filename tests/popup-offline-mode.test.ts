@@ -36,6 +36,8 @@ describe('PopupController - Offline Mode', () => {
       syncGet: jest.fn().mockResolvedValue({}),
       onChanged: jest.fn(),
       offChanged: jest.fn(),
+      localRemove: jest.fn().mockResolvedValue(undefined),
+      sessionRemove: jest.fn().mockResolvedValue(undefined),
       removeLocal: jest.fn().mockResolvedValue(undefined),
       removeSession: jest.fn().mockResolvedValue(undefined),
     } as unknown as jest.Mocked<IStorageAdapter>;
