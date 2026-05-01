@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * Icon Generation Script for Crypto Trading Journal Extension
  * 

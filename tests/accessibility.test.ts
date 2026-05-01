@@ -9,7 +9,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import * as path from 'path';
-import * as fs from 'fs';
 
 // ============================================================================
 // Test Configuration

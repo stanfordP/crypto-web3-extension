@@ -8,7 +8,7 @@
  */
 
 import type { IStorageAdapter, IRuntimeAdapter, ITabsAdapter } from '../src/scripts/adapters/types';
-import type { PopupView, PopupViewEventHandlers, SessionDisplayData, PopupViewState } from '../src/scripts/ui/popup/PopupView';
+import type { PopupView, PopupViewEventHandlers } from '../src/scripts/ui/popup/PopupView';
 import { PopupController } from '../src/scripts/ui/popup/PopupController';
 
 // Mock fetch globally

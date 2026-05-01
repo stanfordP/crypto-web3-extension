@@ -28,8 +28,8 @@ const MOCK_WALLET_ADDRESS = '0x1234567890123456789012345678901234567890';
 const MOCK_CHAIN_ID = '0x1'; // Mainnet
 
 // Test timeouts
-const WALLET_TIMEOUT = 10000;
-const MESSAGE_TIMEOUT = 5000;
+const _WALLET_TIMEOUT = 10000;
+const _MESSAGE_TIMEOUT = 5000;
 
 // ============================================================================
 // Test Fixtures

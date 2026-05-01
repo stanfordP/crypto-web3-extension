@@ -4,7 +4,7 @@
  * Tests that entry points correctly wire up adapters and controllers.
  */
 
-import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { jest, describe, it, expect, beforeEach } from '@jest/globals';
 
 // ============================================================================
 // Mock Chrome APIs
@@ -81,7 +81,7 @@ const mockFetch = jest.fn().mockResolvedValue({
 (global as unknown as { fetch: typeof mockFetch }).fetch = mockFetch;
 
 // Mock document
-const mockDocument = {
+const _mockDocument = {
   getElementById: jest.fn().mockReturnValue(null),
   querySelector: jest.fn().mockReturnValue(null),
   querySelectorAll: jest.fn().mockReturnValue([]),
@@ -207,7 +207,7 @@ describe('ChromeRuntimeAdapter - Production', () => {
 
   describe('getURL', () => {
     it('should get extension URL', () => {
-      const url = adapter.getURL('popup.html');
+      const _url = adapter.getURL('popup.html');
 
       expect(mockChrome.runtime.getURL).toHaveBeenCalledWith('popup.html');
     });
@@ -252,7 +252,7 @@ describe('ChromeTabsAdapter - Production', () => {
         }
       });
 
-      const result = await adapter.sendMessage(1, { type: 'TEST' });
+      const _result = await adapter.sendMessage(1, { type: 'TEST' });
 
       expect(mockChrome.tabs.sendMessage).toHaveBeenCalled();
     });

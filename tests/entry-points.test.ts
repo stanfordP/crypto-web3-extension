@@ -1341,7 +1341,7 @@ describe('Controller Resolution', () => {
       
       // If PopupController is created and initialized successfully,
       // it should log success message
-      const successCall = consoleLogSpy.mock.calls.find(
+      const _successCall = consoleLogSpy.mock.calls.find(
         call => call[0]?.includes?.('[PopupEntry]') && call[0]?.includes?.('successfully')
       );
       
@@ -1390,7 +1390,7 @@ describe('Controller Resolution', () => {
       
       // If AuthController is created and initialized successfully,
       // it should log success message
-      const successCall = consoleLogSpy.mock.calls.find(
+      const _successCall = consoleLogSpy.mock.calls.find(
         call => call[0]?.includes?.('[AuthEntry]') && call[0]?.includes?.('successfully')
       );
       

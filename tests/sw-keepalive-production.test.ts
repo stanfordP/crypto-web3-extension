@@ -4,7 +4,7 @@
  * Tests the actual production module with mocked Chrome APIs.
  */
 
-import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { jest, describe, it, expect, beforeEach } from '@jest/globals';
 
 // ============================================================================
 // Chrome API Mocks - Must be defined before importing the module

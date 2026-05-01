@@ -24,7 +24,7 @@ import {
   InMemoryMessageLogger,
 } from '../src/scripts/core/messaging/MessageRouter';
 
-import { ErrorCode, PageMessageType } from '../src/scripts/types';
+import { ErrorCode } from '../src/scripts/types';
 
 describe('Protocol Version Constants', () => {
   it('should export PROTOCOL_VERSION', () => {

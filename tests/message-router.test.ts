@@ -14,7 +14,6 @@ import {
   MessageRouter,
   type RateLimiterConfig,
   type RateLimiterState,
-  type DeduplicationState,
 } from '../src/scripts/core/messaging/MessageRouter';
 
 const DEFAULT_CONFIG: RateLimiterConfig = {

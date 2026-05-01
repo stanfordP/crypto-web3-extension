@@ -18,7 +18,6 @@ import {
   getChainName,
   SessionManager,
   constantTimeEqual,
-  type SessionChangeEvent,
 } from '../src/scripts/core/session/SessionManager';
 import type { StoredSession } from '../src/scripts/core/storage/StorageService';
 
@@ -226,7 +225,7 @@ describe('SessionManager - Pure Functions', () => {
     });
 
     it('should normalize addresses when comparing', () => {
-      const sessionB = { ...sessionA, address: '0x1234567890123456789012345678901234567890'.toUpperCase() };
+      const _sessionB = { ...sessionA, address: '0x1234567890123456789012345678901234567890'.toUpperCase() };
       // Note: The uppercase version starts with 0X which is invalid, so let's use proper case
       const sessionC = { ...sessionA, address: '0xAa34567890123456789012345678901234567890' };
       const sessionD = { ...sessionA, address: '0xaa34567890123456789012345678901234567890' };

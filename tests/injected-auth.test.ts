@@ -108,7 +108,7 @@ describe('Injected Auth Module', () => {
 
   describe('Timeout Promise', () => {
     it('should create a promise that rejects after timeout', async () => {
-      const WALLET_REQUEST_TIMEOUT_MS = 45000;
+      const _WALLET_REQUEST_TIMEOUT_MS = 45000;
       
       class WalletTimeoutError extends Error {
         code: number;

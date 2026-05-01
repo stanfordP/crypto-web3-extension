@@ -6,14 +6,12 @@
 
 import {
   createInitialState,
-  createInitialContext,
   transition,
   isValidTransition,
   getStateDescription,
   isTerminalState,
   isConnected,
   isPendingState,
-  type AuthEvent,
   type AuthState,
 } from '../src/scripts/core/auth/AuthStateMachine';
 

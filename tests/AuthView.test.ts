@@ -493,7 +493,7 @@ describe('AuthView', () => {
       (mockDom.querySelector as jest.Mock).mockReturnValue(mockRadio);
       
       authView = new AuthView(mockDom);
-      const mode = authView.getSelectedAccountMode();
+      const _mode = authView.getSelectedAccountMode();
       
       expect(mockDom.querySelector).toHaveBeenCalledWith('input[name="accountMode"]:checked');
     });
