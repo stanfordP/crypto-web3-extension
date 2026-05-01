@@ -382,9 +382,19 @@ export class ContentController {
         await this.handleOpenAuth();
         break;
 
-      case PageMessageType.CJ_GET_SESSION:
-        await this.handleGetSession();
+      case PageMessageType.CJ_GET_SESSION: {
+        // Deduplicate concurrent CJ_GET_SESSION calls (React StrictMode, multiple hooks)
+        const existingSessionPromise = this.getInFlightPromise('CJ_GET_SESSION');
+        if (existingSessionPromise) {
+          this.logger.debug('Get session already in progress, waiting for existing request');
+          await existingSessionPromise;
+          return;
+        }
+        const sessionPromise = this.handleGetSession();
+        this.markRequestInFlight('CJ_GET_SESSION', sessionPromise);
+        await sessionPromise;
         break;
+      }
 
       case PageMessageType.CJ_DISCONNECT:
         await this.handleDisconnect();
@@ -425,7 +435,13 @@ export class ContentController {
 
       case PageMessageType.CJ_STORE_SESSION:
         await this.handleStoreSession(
-          data.session as { sessionToken: string; address: string; chainId: string },
+          data.session as {
+            sessionToken: string;
+            address: string;
+            chainId: string;
+            userId?: string;
+            user_id?: string;
+          },
           requestId
         );
         break;
@@ -493,6 +509,7 @@ export class ContentController {
       const localSessionChanged = areaName === 'local' && (
         changes[StorageKeys.CONNECTED_ADDRESS] ||
         changes[StorageKeys.CHAIN_ID] ||
+        changes[StorageKeys.USER_ID] ||
         changes[StorageKeys.ACCOUNT_MODE] ||
         changes[StorageKeys.SESSION_TOKEN]
       );
@@ -655,7 +672,11 @@ export class ContentController {
         throw new Error('Signature verification failed');
       }
 
-      const { sessionToken } = await verifyResponse.json();
+      const verifyPayload = await verifyResponse.json() as Record<string, unknown>;
+      const sessionToken = typeof verifyPayload.sessionToken === 'string'
+        ? verifyPayload.sessionToken
+        : undefined;
+      const userId = await this.resolveUserIdForSessionWrite(address, this.extractUserId(verifyPayload));
       this.logger.info('SIWE authentication successful');
 
       // Store session
@@ -664,6 +685,7 @@ export class ContentController {
         [StorageKeys.CONNECTED_ADDRESS]: address,
         [StorageKeys.CHAIN_ID]: chainId,
         [StorageKeys.ACCOUNT_MODE]: 'live',
+        ...(userId ? { [StorageKeys.USER_ID]: userId } : {}),
       });
 
       this.sendAuthResult(true);
@@ -678,7 +700,10 @@ export class ContentController {
    */
   async handleGetSession(): Promise<void> {
     try {
-      const session = await this.buildSessionFromStorage();
+      const sessionToken = await this.getStoredSessionToken();
+      const session = sessionToken
+        ? (await this.rehydrateAppSessionFromToken(sessionToken)) ?? await this.buildSessionFromStorage()
+        : await this.buildSessionFromStorage();
 
       this.domAdapter.postMessage(
         {
@@ -866,11 +891,21 @@ export class ContentController {
    * v2.0: Handle CJ_STORE_SESSION - Store session from app
    */
   async handleStoreSession(
-    session: { sessionToken: string; address: string; chainId: string },
+    session: {
+      sessionToken: string;
+      address: string;
+      chainId: string;
+      userId?: string;
+      user_id?: string;
+    },
     requestId?: string
   ): Promise<void> {
     try {
       this.logger.info('v2.0: Storing session');
+      const userId = await this.resolveUserIdForSessionWrite(
+        session.address,
+        session.userId ?? session.user_id
+      );
 
       // Store in local storage (persistent)
       await this.storageAdapter.setLocal({
@@ -878,6 +913,7 @@ export class ContentController {
         [StorageKeys.CONNECTED_ADDRESS]: session.address,
         [StorageKeys.CHAIN_ID]: session.chainId,
         [StorageKeys.LAST_CONNECTED]: Date.now(),
+        ...(userId ? { [StorageKeys.USER_ID]: userId } : {}),
       });
 
       // Store in session storage (cleared on browser close)
@@ -921,6 +957,7 @@ export class ContentController {
         StorageKeys.SESSION_TOKEN,
         StorageKeys.CONNECTED_ADDRESS,
         StorageKeys.CHAIN_ID,
+        StorageKeys.USER_ID,
         StorageKeys.ACCOUNT_MODE,
         StorageKeys.LAST_CONNECTED,
       ]);
@@ -1013,13 +1050,14 @@ export class ContentController {
    */
   async handlePopupGetSession(): Promise<{
     success: boolean;
-    session?: { address: string; chainId: string; sessionToken?: string };
+    session?: { address: string; chainId: string; sessionToken?: string; userId?: string };
   }> {
     try {
       // Get from storage
       const localResult = await this.storageAdapter.getLocal([
         StorageKeys.CONNECTED_ADDRESS,
         StorageKeys.CHAIN_ID,
+        StorageKeys.USER_ID,
         StorageKeys.SESSION_TOKEN,
       ]);
 
@@ -1029,6 +1067,7 @@ export class ContentController {
 
       const address = localResult[StorageKeys.CONNECTED_ADDRESS] as string | undefined;
       const chainId = localResult[StorageKeys.CHAIN_ID] as string | undefined;
+      const userId = localResult[StorageKeys.USER_ID] as string | undefined;
       const sessionToken = (sessionResult[StorageKeys.SESSION_TOKEN] as string | undefined) ||
         (localResult[StorageKeys.SESSION_TOKEN] as string | undefined);
 
@@ -1036,11 +1075,7 @@ export class ContentController {
       if (address && sessionToken) {
         return {
           success: true,
-          session: {
-            address,
-            chainId: chainId || '0x1',
-            sessionToken,
-          },
+          session: this.buildPopupSession(address, chainId, sessionToken, userId),
         };
       }
 
@@ -1054,24 +1089,38 @@ export class ContentController {
         });
 
         if (apiResponse.ok) {
-          const apiData = await apiResponse.json();
-          if (apiData.authenticated && apiData.address) {
+          const apiPayload = await apiResponse.json();
+          const apiData = this.unwrapSessionPayload(apiPayload);
+          const recoveredAddress = typeof apiData.address === 'string' ? apiData.address : undefined;
+          const recoveredChainId = this.normalizeChainId(
+            apiData.chainId as string | number | null | undefined
+          );
+
+          if (apiData.authenticated === true && recoveredAddress) {
+            const recoveredUserId = await this.resolveUserIdForSessionWrite(
+              recoveredAddress,
+              this.extractUserId(apiPayload) ?? this.extractUserId(apiData)
+            );
+
             this.logger.info('Session recovered from app API', {
-              address: apiData.address.slice(0, 10) + '...',
+              address: recoveredAddress.slice(0, 10) + '...',
             });
 
             // Store recovered session
             await this.storageAdapter.setLocal({
-              [StorageKeys.CONNECTED_ADDRESS]: apiData.address,
-              [StorageKeys.CHAIN_ID]: apiData.chainId || '0x1',
+              [StorageKeys.CONNECTED_ADDRESS]: recoveredAddress,
+              [StorageKeys.CHAIN_ID]: recoveredChainId,
+              ...(recoveredUserId ? { [StorageKeys.USER_ID]: recoveredUserId } : {}),
             });
 
             return {
               success: true,
-              session: {
-                address: apiData.address,
-                chainId: apiData.chainId || '0x1',
-              },
+              session: this.buildPopupSession(
+                recoveredAddress,
+                recoveredChainId,
+                undefined,
+                recoveredUserId
+              ),
             };
           }
         }
@@ -1084,11 +1133,7 @@ export class ContentController {
         this.logger.debug('Partial session found (no token)', { address });
         return {
           success: true,
-          session: {
-            address,
-            chainId: chainId || '0x1',
-            sessionToken,
-          },
+          session: this.buildPopupSession(address, chainId, sessionToken, userId),
         };
       }
 
@@ -1147,12 +1192,76 @@ export class ContentController {
   // ============================================================================
 
   /**
+   * Get the stored session token without exposing it to the page.
+   */
+  private async getStoredSessionToken(): Promise<string | undefined> {
+    const [localResult, sessionResult] = await Promise.all([
+      this.storageAdapter.getLocal([StorageKeys.SESSION_TOKEN]),
+      this.storageAdapter.getSession([StorageKeys.SESSION_TOKEN]),
+    ]);
+
+    return (sessionResult[StorageKeys.SESSION_TOKEN] as string | undefined) ||
+      (localResult[StorageKeys.SESSION_TOKEN] as string | undefined);
+  }
+
+  /**
+   * Rehydrate the app's httpOnly session cookie using a bearer token stored
+   * inside the extension, then return a page-safe session object.
+   */
+  private async rehydrateAppSessionFromToken(sessionToken: string): Promise<PageSession | null> {
+    try {
+      const apiResponse = await this.fetchFn(`${API_BASE_URL}${API_ENDPOINTS.SESSION_VALIDATE}`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${sessionToken}`,
+        },
+      });
+
+      if (!apiResponse.ok) {
+        return null;
+      }
+
+      const apiJson = await apiResponse.json();
+      const apiData = this.unwrapSessionPayload(apiJson);
+      const address = typeof apiData.address === 'string' ? apiData.address : undefined;
+
+      if (apiData.authenticated !== true || !address) {
+        return null;
+      }
+
+      const chainId = this.normalizeChainId(
+        apiData.chainId as string | number | null | undefined
+      );
+      const userId = await this.resolveUserIdForSessionWrite(
+        address,
+        this.extractUserId(apiJson) ?? this.extractUserId(apiData)
+      );
+      const accountModeResult = await this.storageAdapter.getLocal([StorageKeys.ACCOUNT_MODE]);
+      const accountMode = (accountModeResult[StorageKeys.ACCOUNT_MODE] as 'demo' | 'live' | undefined) || 'live';
+
+      await this.storageAdapter.setLocal({
+        [StorageKeys.CONNECTED_ADDRESS]: address,
+        [StorageKeys.CHAIN_ID]: chainId,
+        ...(userId ? { [StorageKeys.USER_ID]: userId } : {}),
+      });
+
+      return this.buildPageSession(address, chainId, accountMode, userId);
+    } catch (error) {
+      this.logger.warn('Token-based session rehydration failed', { error: String(error) });
+      return null;
+    }
+  }
+
+  /**
    * Build session object from storage
    */
   private async buildSessionFromStorage(): Promise<PageSession | null> {
     const localResult = await this.storageAdapter.getLocal([
       StorageKeys.CONNECTED_ADDRESS,
       StorageKeys.CHAIN_ID,
+      StorageKeys.USER_ID,
       StorageKeys.ACCOUNT_MODE,
       StorageKeys.SESSION_TOKEN,
     ]);
@@ -1167,12 +1276,123 @@ export class ContentController {
 
     if (!hasSession) return null;
 
+    return this.buildPageSession(
+      localResult[StorageKeys.CONNECTED_ADDRESS] as string,
+      localResult[StorageKeys.CHAIN_ID] as string | number | undefined,
+      (localResult[StorageKeys.ACCOUNT_MODE] as 'demo' | 'live') || 'live',
+      localResult[StorageKeys.USER_ID] as string | undefined
+    );
+  }
+
+  private buildPageSession(
+    address: string,
+    chainId: string | number | null | undefined,
+    accountMode: 'demo' | 'live',
+    userId?: string
+  ): PageSession {
     return {
-      address: localResult[StorageKeys.CONNECTED_ADDRESS] as string,
-      chainId: (localResult[StorageKeys.CHAIN_ID] as string) || '0x1',
-      accountMode: (localResult[StorageKeys.ACCOUNT_MODE] as 'demo' | 'live') || 'live',
+      address,
+      chainId: this.normalizeChainId(chainId),
+      accountMode,
       isConnected: true,
+      ...(userId ? { userId } : {}),
     };
+  }
+
+  private buildPopupSession(
+    address: string,
+    chainId: string | number | null | undefined,
+    sessionToken?: string,
+    userId?: string
+  ): { address: string; chainId: string; sessionToken?: string; userId?: string } {
+    return {
+      address,
+      chainId: this.normalizeChainId(chainId),
+      ...(sessionToken ? { sessionToken } : {}),
+      ...(userId ? { userId } : {}),
+    };
+  }
+
+  private async resolveUserIdForSessionWrite(
+    address: string,
+    userId?: string
+  ): Promise<string | undefined> {
+    if (userId) {
+      return userId;
+    }
+
+    const existing = await this.storageAdapter.getLocal([
+      StorageKeys.CONNECTED_ADDRESS,
+      StorageKeys.USER_ID,
+    ]);
+    const existingAddress = existing[StorageKeys.CONNECTED_ADDRESS] as string | undefined;
+    const existingUserId = existing[StorageKeys.USER_ID] as string | undefined;
+
+    if (existingAddress && existingUserId && this.sameAddress(existingAddress, address)) {
+      return existingUserId;
+    }
+
+    await this.storageAdapter.removeLocal(StorageKeys.USER_ID);
+    return undefined;
+  }
+
+  private sameAddress(a: string, b: string): boolean {
+    return a.trim().toLowerCase() === b.trim().toLowerCase();
+  }
+
+  private unwrapSessionPayload(payload: unknown): Record<string, unknown> {
+    if (this.isRecord(payload) && this.isRecord(payload.data)) {
+      return payload.data;
+    }
+
+    return this.isRecord(payload) ? payload : {};
+  }
+
+  private extractUserId(payload: unknown): string | undefined {
+    if (!this.isRecord(payload)) {
+      return undefined;
+    }
+
+    if (typeof payload.userId === 'string' && payload.userId.trim()) {
+      return payload.userId;
+    }
+
+    if (typeof payload.user_id === 'string' && payload.user_id.trim()) {
+      return payload.user_id;
+    }
+
+    if (this.isRecord(payload.user)) {
+      if (typeof payload.user.id === 'string' && payload.user.id.trim()) {
+        return payload.user.id;
+      }
+
+      const nestedUserId = this.extractUserId(payload.user);
+      if (nestedUserId) {
+        return nestedUserId;
+      }
+    }
+
+    if (this.isRecord(payload.data)) {
+      return this.extractUserId(payload.data);
+    }
+
+    return undefined;
+  }
+
+  private normalizeChainId(chainId: string | number | null | undefined): string {
+    if (typeof chainId === 'string' && chainId.trim()) {
+      return chainId;
+    }
+
+    if (typeof chainId === 'number' && Number.isFinite(chainId)) {
+      return `0x${chainId.toString(16)}`;
+    }
+
+    return '0x1';
+  }
+
+  private isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null;
   }
 
   /**

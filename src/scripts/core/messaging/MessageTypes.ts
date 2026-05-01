@@ -167,6 +167,8 @@ export interface StoreSessionMessage extends BaseMessage {
     sessionToken: string;
     address: string;
     chainId: string;
+    userId?: string;
+    user_id?: string;
   };
 }
 
@@ -226,6 +228,7 @@ export interface SessionResponseMessage extends ResponseMessage {
     address: string;
     chainId: string;
     sessionToken?: string;
+    userId?: string;
   } | null;
 }
 
@@ -238,6 +241,7 @@ export interface SessionChangedMessage extends BaseMessage {
     address: string;
     chainId: string;
     sessionToken?: string;
+    userId?: string;
   } | null;
 }
 

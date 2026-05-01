@@ -73,6 +73,10 @@ describe('StorageKeys enum', () => {
     expect(StorageKeys.CHAIN_ID).toBe('chainId');
   });
 
+  it('should have USER_ID key', () => {
+    expect(StorageKeys.USER_ID).toBe('userId');
+  });
+
   it('should have ACCOUNT_MODE key', () => {
     expect(StorageKeys.ACCOUNT_MODE).toBe('accountMode');
   });

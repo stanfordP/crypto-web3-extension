@@ -420,7 +420,8 @@ export class AuthController {
       });
 
       // Store session
-      await this.storeSession(verifyResponse.sessionToken, address, chainId);
+      const userId = verifyResponse.user?.id ?? verifyResponse.userId;
+      await this.storeSession(verifyResponse.sessionToken, address, chainId, userId);
 
       // Notify background script of successful auth
       await this.notifyAuthSuccess(address, chainId);
@@ -450,11 +451,19 @@ export class AuthController {
   /**
    * Store session in chrome storage
    */
-  private async storeSession(sessionToken: string, address: string, chainId: string): Promise<void> {
+  private async storeSession(
+    sessionToken: string,
+    address: string,
+    chainId: string,
+    userId?: string
+  ): Promise<void> {
+    const storageUserId = await this.resolveUserIdForSessionWrite(address, userId);
+
     await this.storage.localSet({
       [StorageKeys.SESSION_TOKEN]: sessionToken,
       [StorageKeys.CONNECTED_ADDRESS]: address,
       [StorageKeys.CHAIN_ID]: chainId,
+      ...(storageUserId ? { [StorageKeys.USER_ID]: storageUserId } : {}),
       [StorageKeys.ACCOUNT_MODE]: this.state.accountMode,
       [StorageKeys.LAST_CONNECTED]: Date.now(),
     });
@@ -463,6 +472,34 @@ export class AuthController {
     await this.storage.sessionSet({
       sessionToken,
     });
+  }
+
+  private async resolveUserIdForSessionWrite(
+    address: string,
+    userId?: string
+  ): Promise<string | undefined> {
+    if (userId) {
+      return userId;
+    }
+
+    const existing = await this.storage.localGet<{
+      connectedAddress?: string;
+      userId?: string;
+    }>([
+      StorageKeys.CONNECTED_ADDRESS,
+      StorageKeys.USER_ID,
+    ]);
+
+    if (existing.connectedAddress && existing.userId && this.sameAddress(existing.connectedAddress, address)) {
+      return existing.userId;
+    }
+
+    await this.storage.localRemove(StorageKeys.USER_ID);
+    return undefined;
+  }
+
+  private sameAddress(a: string, b: string): boolean {
+    return a.trim().toLowerCase() === b.trim().toLowerCase();
   }
 
   /**

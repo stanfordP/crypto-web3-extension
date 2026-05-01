@@ -130,6 +130,12 @@ export enum PageMessageType {
 export interface PageSession {
   address: string;
   chainId: string;
+  /**
+   * Optional forward-compatible user identifier.
+   * For wallet-backed sessions this may remain the normalized wallet address
+   * until the main app starts returning a distinct user ID.
+   */
+  userId?: string;
   accountMode?: 'demo' | 'live';
   isConnected?: boolean;
 }
@@ -196,6 +202,10 @@ export interface StoreSessionMessage {
     sessionToken: string;
     address: string;
     chainId: string;
+    /** Preferred camelCase alias for forward-compatible user identity */
+    userId?: string;
+    /** Backward/interop alias when upstream uses snake_case */
+    user_id?: string;
   };
   /** Optional request ID for tracking */
   requestId?: string;
@@ -349,19 +359,22 @@ export interface SIWEVerifyRequest {
 
 export interface SIWEVerifyResponse {
   sessionToken: string;
-  user: {
-    id: string;
-    address: string;
-    accountMode: 'demo' | 'live';
+  user?: {
+    id?: string;
+    address?: string;
+    accountMode?: 'demo' | 'live';
   };
+  userId?: string;
+  address?: string;
 }
 
 export interface SessionValidationResponse {
   valid: boolean;
+  userId?: string;
   user?: {
-    id: string;
-    address: string;
-    accountMode: 'demo' | 'live';
+    id?: string;
+    address?: string;
+    accountMode?: 'demo' | 'live';
   };
 }
 
@@ -373,6 +386,7 @@ export interface StorageData {
   sessionToken?: string;
   connectedAddress?: string;
   chainId?: string;
+  userId?: string;
   accountMode?: 'demo' | 'live';
   lastConnected?: number;
 }
@@ -381,6 +395,7 @@ export enum StorageKeys {
   SESSION_TOKEN = 'sessionToken',
   CONNECTED_ADDRESS = 'connectedAddress',
   CHAIN_ID = 'chainId',
+  USER_ID = 'userId',
   ACCOUNT_MODE = 'accountMode',
   LAST_CONNECTED = 'lastConnected',
 }

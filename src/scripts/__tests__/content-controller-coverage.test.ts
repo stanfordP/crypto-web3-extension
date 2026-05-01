@@ -204,10 +204,18 @@ describe('ContentController - Coverage Improvements', () => {
         origin: 'http://localhost:3000',
         data: {
           type: 'CJ_STORE_SESSION',
-          session: { sessionToken: 'token123', address: '0x456', chainId: '0x1' },
+          session: {
+            sessionToken: 'token123',
+            address: '0x456',
+            chainId: '0x1',
+            user_id: 'user-456',
+          },
           requestId: 'req-store-123',
         },
       });
+
+      const stored = await storage.getLocal([StorageKeys.USER_ID]);
+      expect(stored[StorageKeys.USER_ID]).toBe('user-456');
 
       expect(postMessageSpy).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -819,6 +827,24 @@ describe('ContentController - Coverage Improvements', () => {
       if (storageChangeCallback) {
         await storageChangeCallback(
           { [StorageKeys.ACCOUNT_MODE]: { oldValue: 'live', newValue: 'demo' } },
+          'local'
+        );
+      }
+
+      expect(postMessageSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: PageMessageType.CJ_SESSION_CHANGED,
+        }),
+        expect.any(String)
+      );
+    });
+
+    it('should handle storage change for USER_ID', async () => {
+      postMessageSpy.mockClear();
+
+      if (storageChangeCallback) {
+        await storageChangeCallback(
+          { [StorageKeys.USER_ID]: { oldValue: 'user-old', newValue: 'user-new' } },
           'local'
         );
       }

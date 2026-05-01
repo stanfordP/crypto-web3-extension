@@ -464,8 +464,8 @@ describe('Auth Script', () => {
       };
 
       expect(response.sessionToken).toBeDefined();
-      expect(response.user.id).toBeDefined();
-      expect(response.user.address).toBeDefined();
+      expect(response.user?.id).toBeDefined();
+      expect(response.user?.address).toBeDefined();
     });
   });
 

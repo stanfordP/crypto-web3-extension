@@ -47,6 +47,7 @@ export interface SessionData {
   sessionToken: string;
   connectedAddress: string;
   chainId: string;
+  userId?: string;
   accountMode: string;
 }
 
@@ -222,10 +223,11 @@ export class BackgroundController {
    * Get current session info
    */
   async getSession(): Promise<SessionData | null> {
-    const [token, address, chainId, accountMode] = await Promise.all([
+    const [token, address, chainId, userId, accountMode] = await Promise.all([
       this.getStorageValue(StorageKeys.SESSION_TOKEN),
       this.getStorageValue(StorageKeys.CONNECTED_ADDRESS),
       this.getStorageValue(StorageKeys.CHAIN_ID),
+      this.getStorageValue(StorageKeys.USER_ID),
       this.getStorageValue(StorageKeys.ACCOUNT_MODE),
     ]);
 
@@ -235,6 +237,7 @@ export class BackgroundController {
       sessionToken: token,
       connectedAddress: address,
       chainId: chainId || '0x1',
+      ...(userId ? { userId } : {}),
       accountMode: accountMode || 'live',
     };
   }

@@ -47,6 +47,11 @@ function createMockApiClient(): jest.Mocked<AuthApiClient> {
     }),
     verifySIWE: jest.fn().mockResolvedValue({
       sessionToken: 'test-session-token',
+      user: {
+        id: 'user-123',
+        address: '0x1234567890abcdef1234567890abcdef12345678',
+        accountMode: 'live',
+      },
       address: '0x1234567890abcdef1234567890abcdef12345678',
     }),
   };
@@ -340,8 +345,31 @@ describe('AuthController', () => {
         [StorageKeys.SESSION_TOKEN]: 'test-session-token',
         [StorageKeys.CONNECTED_ADDRESS]: '0x1234567890abcdef1234567890abcdef12345678',
         [StorageKeys.CHAIN_ID]: '0x1',
+        [StorageKeys.USER_ID]: 'user-123',
         [StorageKeys.ACCOUNT_MODE]: 'live',
       }));
+    });
+
+    it('should clear stale userId when authenticated address changes and verify response omits userId', async () => {
+      await storage.localSet({
+        [StorageKeys.CONNECTED_ADDRESS]: '0x1111111111111111111111111111111111111111',
+        [StorageKeys.USER_ID]: 'stale-user',
+      });
+      apiClient.verifySIWE.mockResolvedValueOnce({
+        sessionToken: 'test-session-token',
+        address: '0x1234567890abcdef1234567890abcdef12345678',
+      });
+
+      controller.initialize();
+
+      await controller.authenticate();
+
+      const local = await storage.localGet<Record<string, unknown>>([
+        StorageKeys.CONNECTED_ADDRESS,
+        StorageKeys.USER_ID,
+      ]);
+      expect(local[StorageKeys.CONNECTED_ADDRESS]).toBe('0x1234567890abcdef1234567890abcdef12345678');
+      expect(local[StorageKeys.USER_ID]).toBeUndefined();
     });
 
     it('should store session token in session storage', async () => {

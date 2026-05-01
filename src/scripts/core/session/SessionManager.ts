@@ -75,8 +75,86 @@ export interface SessionSyncResult {
 export interface ApiSessionResponse {
   authenticated: boolean;
   address?: string;
-  chainId?: string;
-  expiresAt?: number;
+  chainId?: string | number;
+  expiresAt?: number | string;
+  userId?: string;
+  user_id?: string;
+  user?: {
+    id?: string;
+    address?: string;
+  };
+  data?: {
+    authenticated?: boolean;
+    address?: string;
+    chainId?: string | number;
+    expiresAt?: number | string;
+    userId?: string;
+    user_id?: string;
+    user?: {
+      id?: string;
+      address?: string;
+    };
+  };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function normalizeChainId(chainId: string | number | null | undefined): string {
+  if (typeof chainId === 'string' && chainId.trim()) {
+    return chainId;
+  }
+
+  if (typeof chainId === 'number' && Number.isFinite(chainId)) {
+    return `0x${chainId.toString(16)}`;
+  }
+
+  return '0x1';
+}
+
+function normalizeExpiresAt(expiresAt: number | string | undefined): number | undefined {
+  if (typeof expiresAt === 'number' && Number.isFinite(expiresAt)) {
+    return expiresAt;
+  }
+
+  if (typeof expiresAt === 'string') {
+    const parsed = Date.parse(expiresAt);
+    return Number.isNaN(parsed) ? undefined : parsed;
+  }
+
+  return undefined;
+}
+
+function extractUserId(value: unknown): string | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+
+  if (typeof value.userId === 'string' && value.userId.trim()) {
+    return value.userId;
+  }
+
+  if (typeof value.user_id === 'string' && value.user_id.trim()) {
+    return value.user_id;
+  }
+
+  if (isRecord(value.user)) {
+    if (typeof value.user.id === 'string' && value.user.id.trim()) {
+      return value.user.id;
+    }
+
+    const nestedUserId = extractUserId(value.user);
+    if (nestedUserId) {
+      return nestedUserId;
+    }
+  }
+
+  if (isRecord(value.data)) {
+    return extractUserId(value.data);
+  }
+
+  return undefined;
 }
 
 /**
@@ -135,14 +213,23 @@ export function normalizeAddress(address: string): string {
 export function parseApiSessionResponse(
   response: ApiSessionResponse
 ): StoredSession | null {
-  if (!response.authenticated || !response.address) {
+  const responseData = isRecord(response.data) ? response.data : null;
+  const authenticated = Boolean(responseData?.authenticated ?? response.authenticated);
+  const address = typeof responseData?.address === 'string'
+    ? responseData.address
+    : response.user?.address ?? response.address;
+
+  if (!authenticated || !address) {
     return null;
   }
 
+  const userId = extractUserId(responseData) ?? extractUserId(response);
+
   return {
-    address: normalizeAddress(response.address),
-    chainId: response.chainId || '0x1',
-    expiresAt: response.expiresAt,
+    address: normalizeAddress(address),
+    chainId: normalizeChainId(responseData?.chainId ?? response.chainId),
+    expiresAt: normalizeExpiresAt(responseData?.expiresAt ?? response.expiresAt),
+    ...(userId ? { userId } : {}),
   };
 }
 
@@ -165,6 +252,7 @@ export function sessionsEqual(
   return (
     normalizeAddress(a.address) === normalizeAddress(b.address) &&
     a.chainId === b.chainId &&
+    (a.userId ?? null) === (b.userId ?? null) &&
     constantTimeEqual(a.sessionToken, b.sessionToken)
   );
 }
@@ -180,9 +268,18 @@ export function mergeSession(
   if (!existing) return incoming;
   if (!incoming) return existing;
 
+  const mergedAddress = incoming.address || existing.address;
+  const shouldPreserveExistingUserId =
+    !incoming.userId &&
+    normalizeAddress(mergedAddress) === normalizeAddress(existing.address);
+  const mergedUserId = incoming.userId || (shouldPreserveExistingUserId ? existing.userId : undefined);
+
   return {
-    address: incoming.address || existing.address,
+    address: mergedAddress,
     chainId: incoming.chainId || existing.chainId,
+    ...(mergedUserId
+      ? { userId: mergedUserId }
+      : {}),
     sessionToken: incoming.sessionToken || existing.sessionToken,
     connectedAt: existing.connectedAt || incoming.connectedAt,
     expiresAt: incoming.expiresAt || existing.expiresAt,

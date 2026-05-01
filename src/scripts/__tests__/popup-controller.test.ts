@@ -142,6 +142,71 @@ describe('PopupController', () => {
 
       expect(view.showView).toHaveBeenCalledWith('notConnected');
     });
+
+    it('should normalize nested API session payloads and persist optional userId', async () => {
+      const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: {
+            authenticated: true,
+            address: '0x1234567890abcdef1234567890abcdef12345678',
+            chainId: 1,
+            user_id: 'user-123',
+          },
+        }),
+      } as Response);
+
+      await controller.checkSession();
+
+      expect(view.showConnectedState).toHaveBeenCalledWith({
+        address: '0x1234567890abcdef1234567890abcdef12345678',
+        shortAddress: '0x1234...5678',
+        networkName: 'Ethereum',
+        accountMode: 'Live Trading',
+      });
+
+      const localData = await storage.localGet<Record<string, unknown>>([
+        PopupStorageKeys.USER_ID,
+        PopupStorageKeys.CHAIN_ID,
+      ]);
+      expect(localData[PopupStorageKeys.USER_ID]).toBe('user-123');
+      expect(localData[PopupStorageKeys.CHAIN_ID]).toBe('0x1');
+
+      fetchSpy.mockRestore();
+    });
+
+    it('should clear stale userId when API confirms a different address without userId', async () => {
+      await storage.localSet({
+        [PopupStorageKeys.CONNECTED_ADDRESS]: '0x1111111111111111111111111111111111111111',
+        [PopupStorageKeys.USER_ID]: 'stale-user',
+      });
+
+      const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: {
+            authenticated: true,
+            address: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
+            chainId: 1,
+          },
+        }),
+      } as Response);
+
+      await controller.checkSession();
+
+      const localData = await storage.localGet<Record<string, unknown>>([
+        PopupStorageKeys.CONNECTED_ADDRESS,
+        PopupStorageKeys.USER_ID,
+      ]);
+      expect(localData[PopupStorageKeys.CONNECTED_ADDRESS]).toBe(
+        '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
+      );
+      expect(localData[PopupStorageKeys.USER_ID]).toBeUndefined();
+
+      fetchSpy.mockRestore();
+    });
   });
 
   describe('disconnect', () => {

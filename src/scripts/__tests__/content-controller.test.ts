@@ -177,6 +177,7 @@ describe('ContentController', () => {
       await storage.setLocal({
         [StorageKeys.CONNECTED_ADDRESS]: '0x1234',
         [StorageKeys.CHAIN_ID]: '0x1',
+        [StorageKeys.USER_ID]: 'user-123',
         [StorageKeys.SESSION_TOKEN]: 'token123',
         [StorageKeys.ACCOUNT_MODE]: 'live',
       });
@@ -190,12 +191,152 @@ describe('ContentController', () => {
           session: expect.objectContaining({
             address: '0x1234',
             chainId: '0x1',
+            userId: 'user-123',
             accountMode: 'live',
             isConnected: true,
           }),
         }),
         expect.any(String)
       );
+
+      const postedSessionResponse = (dom.postMessage as jest.Mock).mock.calls.find(
+        ([message]) => message.type === PageMessageType.CJ_SESSION_RESPONSE
+      )?.[0] as { session?: Record<string, unknown> };
+      expect(postedSessionResponse.session).not.toHaveProperty('sessionToken');
+    });
+
+    it('should rehydrate the app session with a bearer token before responding', async () => {
+      await storage.setLocal({
+        [StorageKeys.CONNECTED_ADDRESS]: '0x1234',
+        [StorageKeys.CHAIN_ID]: '0x1',
+        [StorageKeys.SESSION_TOKEN]: 'token123',
+        [StorageKeys.ACCOUNT_MODE]: 'live',
+      });
+
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({
+          success: true,
+          valid: true,
+          authenticated: true,
+          user: { id: 'user-123' },
+          data: {
+            authenticated: true,
+            address: '0x1234',
+            chainId: '0x1',
+          },
+        }),
+      });
+
+      await controller.handleGetSession();
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://localhost:3000/api/auth/session',
+        expect.objectContaining({
+          method: 'GET',
+          credentials: 'include',
+          headers: expect.objectContaining({
+            Accept: 'application/json',
+            Authorization: 'Bearer token123',
+          }),
+        })
+      );
+
+      expect(dom.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: PageMessageType.CJ_SESSION_RESPONSE,
+          hasValidToken: true,
+          session: expect.objectContaining({
+            address: '0x1234',
+            chainId: '0x1',
+            userId: 'user-123',
+            accountMode: 'live',
+            isConnected: true,
+          }),
+        }),
+        expect.any(String)
+      );
+
+      const postedSessionResponse = (dom.postMessage as jest.Mock).mock.calls.find(
+        ([message]) => message.type === PageMessageType.CJ_SESSION_RESPONSE
+      )?.[0] as { session?: Record<string, unknown> };
+      expect(postedSessionResponse.session).not.toHaveProperty('sessionToken');
+    });
+
+    it('should still return stored session when rehydration API returns 401', async () => {
+      await storage.setLocal({
+        [StorageKeys.CONNECTED_ADDRESS]: '0xdead',
+        [StorageKeys.CHAIN_ID]: '0x1',
+        [StorageKeys.SESSION_TOKEN]: 'stale-token',
+        [StorageKeys.ACCOUNT_MODE]: 'live',
+      });
+
+      mockFetch.mockResolvedValue({ ok: false, status: 401 });
+
+      await controller.handleGetSession();
+
+      // Should still respond with local session (rehydration is best-effort)
+      expect(dom.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: PageMessageType.CJ_SESSION_RESPONSE,
+          session: expect.objectContaining({ address: '0xdead' }),
+        }),
+        expect.any(String)
+      );
+    });
+
+    it('should still return stored session when rehydration fetch throws (network error)', async () => {
+      await storage.setLocal({
+        [StorageKeys.CONNECTED_ADDRESS]: '0xbeef',
+        [StorageKeys.CHAIN_ID]: '0x1',
+        [StorageKeys.SESSION_TOKEN]: 'net-err-token',
+        [StorageKeys.ACCOUNT_MODE]: 'live',
+      });
+
+      mockFetch.mockRejectedValue(new TypeError('Failed to fetch'));
+
+      await controller.handleGetSession();
+
+      // Rehydration failure must not prevent the session response
+      expect(dom.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: PageMessageType.CJ_SESSION_RESPONSE,
+          session: expect.objectContaining({ address: '0xbeef' }),
+        }),
+        expect.any(String)
+      );
+      // Should have logged a warning (GAP-6 fix)
+      expect(mockLogger.warn).toHaveBeenCalled();
+    });
+
+    it('should deduplicate concurrent CJ_GET_SESSION calls', async () => {
+      await storage.setLocal({
+        [StorageKeys.CONNECTED_ADDRESS]: '0x1234',
+        [StorageKeys.CHAIN_ID]: '0x1',
+        [StorageKeys.SESSION_TOKEN]: 'dedup-token',
+        [StorageKeys.ACCOUNT_MODE]: 'live',
+      });
+
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({
+          success: true, authenticated: true,
+          data: { authenticated: true, address: '0x1234', chainId: '0x1' },
+        }),
+      });
+
+      // Fire two concurrent handleGetSession calls via the private message handler
+      const handlePageMessage = (
+        controller as unknown as {
+          handlePageMessage(data: Record<string, unknown>): Promise<void>;
+        }
+      ).handlePageMessage.bind(controller);
+      const p1 = handlePageMessage({ type: PageMessageType.CJ_GET_SESSION });
+      const p2 = handlePageMessage({ type: PageMessageType.CJ_GET_SESSION });
+      await Promise.all([p1, p2]);
+
+      // Rehydration fetch should only fire once (dedup prevents second call)
+      expect(mockFetch).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -313,6 +454,7 @@ describe('ContentController', () => {
         sessionToken: 'token123',
         address: '0x1234',
         chainId: '0x1',
+        userId: 'user-123',
       };
       
       await controller.handleStoreSession(session, 'req-789');
@@ -322,9 +464,11 @@ describe('ContentController', () => {
         StorageKeys.SESSION_TOKEN,
         StorageKeys.CONNECTED_ADDRESS,
         StorageKeys.CHAIN_ID,
+        StorageKeys.USER_ID,
       ]);
       expect(local[StorageKeys.CONNECTED_ADDRESS]).toBe('0x1234');
       expect(local[StorageKeys.CHAIN_ID]).toBe('0x1');
+      expect(local[StorageKeys.USER_ID]).toBe('user-123');
       
       expect(dom.postMessage).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -335,6 +479,42 @@ describe('ContentController', () => {
         expect.any(String)
       );
     });
+
+    it('should clear stale userId when storing a different address without userId', async () => {
+      await storage.setLocal({
+        [StorageKeys.CONNECTED_ADDRESS]: '0xold',
+        [StorageKeys.USER_ID]: 'old-user',
+      });
+
+      await controller.handleStoreSession({
+        sessionToken: 'token456',
+        address: '0xnew',
+        chainId: '0x1',
+      });
+
+      const local = await storage.getLocal([
+        StorageKeys.CONNECTED_ADDRESS,
+        StorageKeys.USER_ID,
+      ]);
+      expect(local[StorageKeys.CONNECTED_ADDRESS]).toBe('0xnew');
+      expect(local[StorageKeys.USER_ID]).toBeUndefined();
+    });
+
+    it('should preserve existing userId when refreshing the same address without userId', async () => {
+      await storage.setLocal({
+        [StorageKeys.CONNECTED_ADDRESS]: '0xSame',
+        [StorageKeys.USER_ID]: 'existing-user',
+      });
+
+      await controller.handleStoreSession({
+        sessionToken: 'token789',
+        address: '0xsame',
+        chainId: '0x1',
+      });
+
+      const local = await storage.getLocal([StorageKeys.USER_ID]);
+      expect(local[StorageKeys.USER_ID]).toBe('existing-user');
+    });
   });
 
   describe('handleClearSession', () => {
@@ -342,13 +522,15 @@ describe('ContentController', () => {
       // First store a session
       await storage.setLocal({
         [StorageKeys.CONNECTED_ADDRESS]: '0x1234',
+        [StorageKeys.USER_ID]: 'user-123',
         [StorageKeys.SESSION_TOKEN]: 'token',
       });
       
       await controller.handleClearSession('req-999');
       
-      const local = await storage.getLocal([StorageKeys.CONNECTED_ADDRESS]);
+      const local = await storage.getLocal([StorageKeys.CONNECTED_ADDRESS, StorageKeys.USER_ID]);
       expect(local[StorageKeys.CONNECTED_ADDRESS]).toBeUndefined();
+      expect(local[StorageKeys.USER_ID]).toBeUndefined();
       
       expect(dom.postMessage).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -377,6 +559,7 @@ describe('ContentController', () => {
       await storage.setLocal({
         [StorageKeys.CONNECTED_ADDRESS]: '0x1234',
         [StorageKeys.CHAIN_ID]: '0x1',
+        [StorageKeys.USER_ID]: 'user-123',
         [StorageKeys.SESSION_TOKEN]: 'token123',
       });
       
@@ -388,6 +571,7 @@ describe('ContentController', () => {
           address: '0x1234',
           chainId: '0x1',
           sessionToken: 'token123',
+          userId: 'user-123',
         },
       });
     });
@@ -401,9 +585,13 @@ describe('ContentController', () => {
       mockFetch.mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({
-          authenticated: true,
-          address: '0xapi-addr',
-          chainId: '0x1',
+          success: true,
+          user: { id: 'user-456' },
+          data: {
+            authenticated: true,
+            address: '0xapi-addr',
+            chainId: 1,
+          },
         }),
       });
       
@@ -412,6 +600,8 @@ describe('ContentController', () => {
       expect(mockFetch).toHaveBeenCalled();
       expect(result.success).toBe(true);
       expect(result.session?.address).toBe('0xapi-addr');
+      expect(result.session?.chainId).toBe('0x1');
+      expect(result.session?.userId).toBe('user-456');
     });
   });
 

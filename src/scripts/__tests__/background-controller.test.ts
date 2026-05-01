@@ -179,6 +179,24 @@ describe('BackgroundController', () => {
         accountMode: 'live',
       });
     });
+
+    it('should include optional userId when stored', async () => {
+      await storage.sessionSet({ [StorageKeys.SESSION_TOKEN]: 'test-token' });
+      await storage.localSet({
+        [StorageKeys.CONNECTED_ADDRESS]: '0x1234',
+        [StorageKeys.USER_ID]: 'user-123',
+      });
+
+      const result = await controller.getSession();
+
+      expect(result).toEqual({
+        sessionToken: 'test-token',
+        connectedAddress: '0x1234',
+        chainId: '0x1',
+        userId: 'user-123',
+        accountMode: 'live',
+      });
+    });
   });
 
   describe('disconnect', () => {

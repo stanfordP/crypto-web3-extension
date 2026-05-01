@@ -207,7 +207,7 @@ describe('Auth Flow - Signature Verification', () => {
     });
 
     expect(result.sessionToken).toBe('jwt-token-here');
-    expect(result.user.address).toBe('0x1234567890123456789012345678901234567890');
+    expect(result.user?.address).toBe('0x1234567890123456789012345678901234567890');
   });
 
   it('should handle verification failure', async () => {

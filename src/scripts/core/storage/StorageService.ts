@@ -23,6 +23,7 @@ export const StorageKeys = {
 export interface StoredSession {
   address: string;
   chainId: string;
+  userId?: string;
   sessionToken?: string;
   connectedAt?: number;
   expiresAt?: number;

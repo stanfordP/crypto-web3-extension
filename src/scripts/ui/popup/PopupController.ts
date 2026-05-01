@@ -21,6 +21,7 @@ import { truncateAddress, getNetworkName, formatAccountMode } from './PopupView'
 export const PopupStorageKeys = {
   CONNECTED_ADDRESS: 'connectedAddress',
   CHAIN_ID: 'chainId',
+  USER_ID: 'userId',
   ACCOUNT_MODE: 'accountMode',
   SESSION_TOKEN: 'sessionToken',
   APP_URL: 'appUrl',
@@ -32,6 +33,7 @@ export const PopupStorageKeys = {
 export interface StoredSessionData {
   connectedAddress?: string;
   chainId?: string;
+  userId?: string;
   accountMode?: 'demo' | 'live';
   sessionToken?: string;
 }
@@ -42,7 +44,22 @@ export interface StoredSessionData {
 export interface ApiSessionResponse {
   authenticated: boolean;
   address?: string;
-  chainId?: string;
+  chainId?: string | number;
+  userId?: string;
+  user_id?: string;
+  user?: {
+    id?: string;
+  };
+  data?: {
+    authenticated?: boolean;
+    address?: string;
+    chainId?: string | number;
+    userId?: string;
+    user_id?: string;
+    user?: {
+      id?: string;
+    };
+  };
 }
 
 /**
@@ -54,6 +71,7 @@ export interface TabSessionResponse {
     address: string;
     chainId: string;
     sessionToken?: string;
+    userId?: string;
   };
 }
 
@@ -268,6 +286,7 @@ export class PopupController {
       const localData = await this.storage.localGet<StoredSessionData>([
         PopupStorageKeys.CONNECTED_ADDRESS,
         PopupStorageKeys.CHAIN_ID,
+        PopupStorageKeys.USER_ID,
         PopupStorageKeys.ACCOUNT_MODE,
         PopupStorageKeys.SESSION_TOKEN,
       ]);
@@ -290,6 +309,7 @@ export class PopupController {
           const newLocalData = await this.storage.localGet<StoredSessionData>([
             PopupStorageKeys.CONNECTED_ADDRESS,
             PopupStorageKeys.CHAIN_ID,
+            PopupStorageKeys.USER_ID,
             PopupStorageKeys.ACCOUNT_MODE,
             PopupStorageKeys.SESSION_TOKEN,
           ]);
@@ -303,6 +323,7 @@ export class PopupController {
             this.displayConnectedState({
               connectedAddress: newLocalData.connectedAddress,
               chainId: newLocalData.chainId,
+              userId: newLocalData.userId,
               accountMode: newLocalData.accountMode,
               sessionToken: newSessionData.sessionToken || newLocalData.sessionToken,
             });
@@ -327,6 +348,7 @@ export class PopupController {
         this.displayConnectedState({
           connectedAddress: localData.connectedAddress,
           chainId: localData.chainId,
+          userId: localData.userId,
           accountMode: localData.accountMode,
           sessionToken: token,
         });
@@ -400,11 +422,16 @@ export class PopupController {
 
       if (response?.success && response?.session) {
         console.log('[PopupController] Got session from tab:', response.session.address);
+        const userId = await this.resolveUserIdForSessionWrite(
+          response.session.address,
+          response.session.userId,
+        );
 
         // Store the synced session
         await this.storage.localSet({
           [PopupStorageKeys.CONNECTED_ADDRESS]: response.session.address,
           [PopupStorageKeys.CHAIN_ID]: response.session.chainId,
+          ...(userId ? { [PopupStorageKeys.USER_ID]: userId } : {}),
         });
 
         if (response.session.sessionToken) {
@@ -429,7 +456,7 @@ export class PopupController {
   /**
    * Try to verify session from API
    */
-  private async tryVerifySessionFromAPI(): Promise<{ address: string; chainId: string } | null> {
+  private async tryVerifySessionFromAPI(): Promise<{ address: string; chainId: string; userId?: string } | null> {
     try {
       const appUrl = await this.getAppUrl();
       console.log('[PopupController] Checking session via API...');
@@ -468,22 +495,30 @@ export class PopupController {
       }
 
       const data: ApiSessionResponse = await response.json();
+      const sessionData = this.unwrapApiSessionResponse(data);
       
       // Success - reset retry counter
       this.resetRetry();
 
-      if (data.authenticated && data.address) {
-        console.log('[PopupController] API confirmed session for:', data.address.slice(0, 10) + '...');
+      if (sessionData.authenticated && sessionData.address) {
+        const userId = await this.resolveUserIdForSessionWrite(
+          sessionData.address,
+          this.extractUserId(data) ?? this.extractUserId(sessionData),
+        );
+
+        console.log('[PopupController] API confirmed session for:', sessionData.address.slice(0, 10) + '...');
 
         // Store in local storage for consistency
         await this.storage.localSet({
-          [PopupStorageKeys.CONNECTED_ADDRESS]: data.address,
-          [PopupStorageKeys.CHAIN_ID]: data.chainId || '0x1',
+          [PopupStorageKeys.CONNECTED_ADDRESS]: sessionData.address,
+          [PopupStorageKeys.CHAIN_ID]: this.normalizeChainId(sessionData.chainId),
+          ...(userId ? { [PopupStorageKeys.USER_ID]: userId } : {}),
         });
 
         return {
-          address: data.address,
-          chainId: data.chainId || '0x1',
+          address: sessionData.address,
+          chainId: this.normalizeChainId(sessionData.chainId),
+          ...(userId ? { userId } : {}),
         };
       }
 
@@ -635,6 +670,7 @@ export class PopupController {
       const localSessionChanged = areaName === 'local' && (
         changes[PopupStorageKeys.CONNECTED_ADDRESS] ||
         changes[PopupStorageKeys.CHAIN_ID] ||
+        changes[PopupStorageKeys.USER_ID] ||
         changes[PopupStorageKeys.SESSION_TOKEN]
       );
 
@@ -655,6 +691,77 @@ export class PopupController {
     };
 
     this.storage.onChanged(this.storageListener);
+  }
+
+  private unwrapApiSessionResponse(payload: ApiSessionResponse): ApiSessionResponse {
+    return payload.data ? { ...payload, ...payload.data } : payload;
+  }
+
+  private extractUserId(value: unknown): string | undefined {
+    if (typeof value !== 'object' || value === null) {
+      return undefined;
+    }
+
+    const record = value as Record<string, unknown>;
+
+    if (typeof record.userId === 'string' && record.userId.trim()) {
+      return record.userId;
+    }
+
+    if (typeof record.user_id === 'string' && record.user_id.trim()) {
+      return record.user_id;
+    }
+
+    if (typeof record.user === 'object' && record.user !== null) {
+      const directUserId = typeof (record.user as { id?: unknown }).id === 'string'
+        ? (record.user as { id: string }).id
+        : undefined;
+
+      return directUserId || this.extractUserId(record.user);
+    }
+
+    if (typeof record.data === 'object' && record.data !== null) {
+      return this.extractUserId(record.data);
+    }
+
+    return undefined;
+  }
+
+  private normalizeChainId(chainId: string | number | undefined): string {
+    if (typeof chainId === 'string' && chainId.trim()) {
+      return chainId;
+    }
+
+    if (typeof chainId === 'number' && Number.isFinite(chainId)) {
+      return `0x${chainId.toString(16)}`;
+    }
+
+    return '0x1';
+  }
+
+  private async resolveUserIdForSessionWrite(
+    address: string,
+    userId?: string,
+  ): Promise<string | undefined> {
+    if (userId) {
+      return userId;
+    }
+
+    const existing = await this.storage.localGet<StoredSessionData>([
+      PopupStorageKeys.CONNECTED_ADDRESS,
+      PopupStorageKeys.USER_ID,
+    ]);
+
+    if (existing.connectedAddress && existing.userId && this.sameAddress(existing.connectedAddress, address)) {
+      return existing.userId;
+    }
+
+    await this.storage.localRemove(PopupStorageKeys.USER_ID);
+    return undefined;
+  }
+
+  private sameAddress(a: string, b: string): boolean {
+    return a.trim().toLowerCase() === b.trim().toLowerCase();
   }
 
   /**
