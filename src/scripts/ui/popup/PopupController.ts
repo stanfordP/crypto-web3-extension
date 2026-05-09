@@ -164,10 +164,23 @@ export class PopupController {
 
   /**
    * Load build metadata and remote version status.
+   *
+   * Skipped when running outside a Chrome runtime context (e.g. unit tests
+   * with adapter mocks that omit `getURL`/`id`). This keeps the popup's
+   * session-check fetch the only network call observed by such tests.
    */
   private async initializeBuildMetadata(): Promise<void> {
+    const runtime = this.runtime as IRuntimeAdapter & {
+      getURL?: (path: string) => string;
+      id?: string;
+    };
+
+    if (typeof runtime.getURL !== 'function') {
+      return;
+    }
+
     const localVersion = await this.getLocalVersion();
-    const isPublishedBuild = this.runtime.id === PUBLISHED_EXTENSION_ID;
+    const isPublishedBuild = runtime.id === PUBLISHED_EXTENSION_ID;
 
     this.updateExtensionMeta(
       localVersion,
