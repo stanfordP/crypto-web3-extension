@@ -194,6 +194,49 @@ body::before {
   letter-spacing: 0.3px;
 }
 
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.version-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.4px;
+}
+
+.build-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.build-badge.hidden {
+  display: none;
+}
+
+.build-badge--success {
+  color: var(--success);
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.build-badge--warning {
+  color: var(--cj-gold-light);
+  background: rgba(212, 168, 84, 0.14);
+  border-color: rgba(212, 168, 84, 0.3);
+}
+
 /* Help icon in header */
 .help-icon {
   display: flex;
@@ -803,6 +846,21 @@ h2 {
   padding-top: 16px;
   border-top: 1px solid var(--border);
   text-align: center;
+}
+
+.update-notice {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background: rgba(20, 184, 166, 0.08);
+  border: 1px solid rgba(20, 184, 166, 0.24);
+  color: var(--cj-teal-light);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.update-notice.hidden {
+  display: none;
 }
 
 .footer-text {

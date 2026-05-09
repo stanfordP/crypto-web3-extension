@@ -970,8 +970,8 @@ The PRD requires a GitHub Actions CI pipeline with path-based filtering for the 
 
 ### Recommended Extension Preparation
 
-- [ ] Add optional `user_id` field to session storage schema (forward-compatible with G6)
-- [ ] Update `CJ_STORE_SESSION` message type to accept optional `user_id` field
+- [x] Add optional `user_id` field to session storage schema (implemented — `SessionManager.ts` `extractUserId()` handles `userId`, `user_id`, `user.id`, and nested `data` keys)
+- [x] Update `CJ_STORE_SESSION` message type to accept optional `user_id` field (implemented — `MessageTypes.ts` `StoreSessionMessage`)
 - [ ] No changes to wallet connection or signing flows
 
 ---
@@ -1394,7 +1394,7 @@ This section tracks all identified gaps from comprehensive codebase analysis. Up
 
 | Priority | Task | Impact | Effort | Status |
 |----------|------|--------|--------|--------|
-| 🔴 P0 | Increase `ContentController` branch coverage (30% → 60%) | +3% branch coverage | 6h | 🔲 Not Started |
+| ✅ Done | `ContentController` coverage | 94.77% lines / 94.32% stmt / 79.65% branch | — | ✅ Complete (May 2026) |
 | 🟡 P1 | Manual screen reader verification (NVDA/VoiceOver) | Accessibility QA | 2h | 🔲 Not Started |
 | 🟡 P1 | Offline mode UX | Graceful degradation | 3h | 🔲 Not Started |
 | ✅ Done | Add tests for entry points (0% → 70%) | +2.9% overall coverage | 3h | ✅ Complete |
@@ -1415,16 +1415,17 @@ This section tracks all identified gaps from comprehensive codebase analysis. Up
 | `sw-state.ts` | 36-199 | Background | Service worker state management |
 | `ui/auth/AuthView.ts` (low) | 12-333 | View | DOM manipulation for auth page |
 
-### Significantly Improved Coverage (Jan 31, 2026)
+### Significantly Improved Coverage (Updated May 2026)
 
 | File | Before | After | Tests Added |
 |------|--------|-------|-------------|
 | `sw-keepalive.ts` | 0% | **81.48%** | 20 |
 | `PopupController.ts` | 59% | **81.86%** | 24 |
-| `ChromeStorageAdapter.ts` | - | **82.5%** | 7 |
-| `ChromeRuntimeAdapter.ts` | - | **93.75%** | 4 |
-| `ChromeTabsAdapter.ts` | - | **100%** | 3 |
-| `DOMAdapter.ts` | - | **95.65%** | 4 |
+| `ContentController.ts` | 30% | **94.77% lines / 94.32% stmt / 79.65% branch** | multiple |
+| `ChromeStorageAdapter.ts` | — | **82.5%** | 7 |
+| `ChromeRuntimeAdapter.ts` | — | **93.75%** | 4 |
+| `ChromeTabsAdapter.ts` | — | **100%** | 3 |
+| `DOMAdapter.ts` | — | **95.65%** | 4 |
 
 ### Deprecated Files (DELETED — Cleanup Complete)
 

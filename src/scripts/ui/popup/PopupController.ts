@@ -88,6 +88,9 @@ const DEFAULT_CONFIG: PopupControllerConfig = {
   apiSessionEndpoint: '/api/auth/session',
 };
 
+const PUBLISHED_EXTENSION_ID = 'cphjlogninjhlkeldohmihhpaaafnheb';
+const REMOTE_VERSION_URL = 'https://stanfordp.github.io/crypto-web3-extension/version.json';
+
 // ============================================================================
 // Retry Configuration
 // ============================================================================
@@ -153,8 +156,120 @@ export class PopupController {
       return;
     }
 
+    await this.initializeBuildMetadata();
+
     // Check session state
     await this.checkSession();
+  }
+
+  /**
+   * Load build metadata and remote version status.
+   */
+  private async initializeBuildMetadata(): Promise<void> {
+    const localVersion = await this.getLocalVersion();
+    const isPublishedBuild = this.runtime.id === PUBLISHED_EXTENSION_ID;
+
+    this.updateExtensionMeta(
+      localVersion,
+      isPublishedBuild ? 'CWS' : 'BETA',
+      isPublishedBuild ? 'success' : 'warning',
+    );
+
+    const remoteVersion = await this.getRemoteVersion();
+    if (remoteVersion && this.isRemoteVersionNewer(remoteVersion, localVersion)) {
+      this.updateVersionNotice(`Update available: v${remoteVersion}`);
+      return;
+    }
+
+    this.updateVersionNotice(
+      isPublishedBuild ? undefined : 'Sideloaded build — updates are manual.'
+    );
+  }
+
+  private updateExtensionMeta(
+    version: string,
+    badgeLabel?: string,
+    badgeTone: 'success' | 'warning' = 'warning',
+  ): void {
+    const maybeView = this.view as PopupView & {
+      updateExtensionMeta?: (version: string, badgeLabel?: string, badgeTone?: 'success' | 'warning') => void;
+    };
+
+    if (typeof maybeView.updateExtensionMeta === 'function') {
+      maybeView.updateExtensionMeta(version, badgeLabel, badgeTone);
+    }
+  }
+
+  private updateVersionNotice(message?: string): void {
+    const maybeView = this.view as PopupView & {
+      updateVersionNotice?: (message?: string) => void;
+    };
+
+    if (typeof maybeView.updateVersionNotice === 'function') {
+      maybeView.updateVersionNotice(message);
+    }
+  }
+
+  /**
+   * Read the local manifest version.
+   */
+  private async getLocalVersion(): Promise<string> {
+    try {
+      const response = await fetch(this.runtime.getURL('manifest.json'));
+      if (!response.ok) {
+        return 'unknown';
+      }
+
+      const manifest = (await response.json()) as { version?: string };
+      return manifest.version ?? 'unknown';
+    } catch {
+      return 'unknown';
+    }
+  }
+
+  /**
+   * Fetch the latest published/sideload build version from the hosted manifest.
+   */
+  private async getRemoteVersion(): Promise<string | null> {
+    try {
+      const response = await fetch(REMOTE_VERSION_URL, { cache: 'no-store' });
+      if (!response.ok) {
+        return null;
+      }
+
+      const payload = (await response.json()) as { version?: string };
+      return typeof payload.version === 'string' ? payload.version : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Compare semantic versions to detect newer remote builds.
+   */
+  private isRemoteVersionNewer(remoteVersion: string, localVersion: string): boolean {
+    const remoteParts = remoteVersion.split('.').map((part) => Number.parseInt(part, 10));
+    const localParts = localVersion.split('.').map((part) => Number.parseInt(part, 10));
+    const maxLength = Math.max(remoteParts.length, localParts.length);
+
+    for (let index = 0; index < maxLength; index += 1) {
+      const remote = remoteParts[index] ?? 0;
+      const local = localParts[index] ?? 0;
+
+      if (Number.isNaN(remote) || Number.isNaN(local)) {
+        return false;
+      }
+
+      if (remote > local) {
+        return true;
+      }
+
+      if (remote < local) {
+        return false;
+      }
+    }
+
+    return false;
   }
 
   /**

@@ -1,0 +1,6 @@
+{
+  "version": "2.2.6",
+  "channel": "beta",
+  "notes": "Sideloaded builds update manually. Chrome Web Store installs update automatically.",
+  "releaseUrl": "https://github.com/StanfordP/crypto-web3-extension/releases/latest"
+}

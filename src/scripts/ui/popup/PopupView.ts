@@ -46,6 +46,9 @@ export interface PopupElements {
   errorMessage: HTMLElement;
   offlineIndicator?: HTMLElement;
   copyAddressButton?: HTMLElement;
+  buildChannelBadge?: HTMLElement;
+  versionLabel?: HTMLElement;
+  updateNotice?: HTMLElement;
 }
 
 /**
@@ -92,6 +95,9 @@ export class PopupView {
       errorMessage: customElements?.errorMessage ?? this.getElement('errorMessage'),
       offlineIndicator: customElements?.offlineIndicator ?? dom.getElementById('offlineIndicator') ?? undefined,
       copyAddressButton: customElements?.copyAddressButton ?? dom.getElementById('copyAddressButton') ?? undefined,
+      buildChannelBadge: customElements?.buildChannelBadge ?? dom.getElementById('buildChannelBadge') ?? undefined,
+      versionLabel: customElements?.versionLabel ?? dom.getElementById('versionLabel') ?? undefined,
+      updateNotice: customElements?.updateNotice ?? dom.getElementById('updateNotice') ?? undefined,
     };
   }
 
@@ -232,6 +238,49 @@ export class PopupView {
     this.elements.network.textContent = data.networkName;
     this.elements.accountMode.textContent = data.accountMode;
     this.showView('connected');
+  }
+
+  /**
+   * Update version label and build badge
+   */
+  updateExtensionMeta(version: string, badgeLabel?: string, badgeTone: 'success' | 'warning' = 'warning'): void {
+    if (this.elements.versionLabel) {
+      this.elements.versionLabel.textContent = `v${version}`;
+    }
+
+    if (!this.elements.buildChannelBadge) {
+      return;
+    }
+
+    if (!badgeLabel) {
+      this.elements.buildChannelBadge.textContent = '';
+      this.elements.buildChannelBadge.classList.add('hidden');
+      this.elements.buildChannelBadge.classList.remove('build-badge--success', 'build-badge--warning');
+      return;
+    }
+
+    this.elements.buildChannelBadge.textContent = badgeLabel;
+    this.elements.buildChannelBadge.classList.remove('hidden');
+    this.elements.buildChannelBadge.classList.toggle('build-badge--success', badgeTone === 'success');
+    this.elements.buildChannelBadge.classList.toggle('build-badge--warning', badgeTone === 'warning');
+  }
+
+  /**
+   * Show or hide the update notice area
+   */
+  updateVersionNotice(message?: string): void {
+    if (!this.elements.updateNotice) {
+      return;
+    }
+
+    if (!message) {
+      this.elements.updateNotice.textContent = '';
+      this.elements.updateNotice.classList.add('hidden');
+      return;
+    }
+
+    this.elements.updateNotice.textContent = message;
+    this.elements.updateNotice.classList.remove('hidden');
   }
 
   /**
