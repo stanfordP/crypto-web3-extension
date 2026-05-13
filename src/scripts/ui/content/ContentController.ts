@@ -602,6 +602,7 @@ export class ContentController {
   private async performOpenAuth(): Promise<void> {
     try {
       this.logger.info('Starting wallet connection flow');
+      const apiBaseUrl = this.getApiBaseUrl();
 
       // Check if wallet is available
       const checkResult = await this.injectionService.checkWallet();
@@ -629,7 +630,7 @@ export class ContentController {
       this.logger.info('Wallet connected', { address: address.slice(0, 10) + '...' });
 
       // Get SIWE challenge
-      const challengeResponse = await this.fetchFn(`${API_BASE_URL}${API_ENDPOINTS.SIWE_CHALLENGE}`, {
+      const challengeResponse = await this.fetchFn(`${apiBaseUrl}${API_ENDPOINTS.SIWE_CHALLENGE}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -658,7 +659,7 @@ export class ContentController {
       this.logger.debug('Message signed');
 
       // Verify signature
-      const verifyResponse = await this.fetchFn(`${API_BASE_URL}${API_ENDPOINTS.SIWE_VERIFY}`, {
+      const verifyResponse = await this.fetchFn(`${apiBaseUrl}${API_ENDPOINTS.SIWE_VERIFY}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1082,7 +1083,7 @@ export class ContentController {
       // Fallback: Check app API
       try {
         this.logger.debug('No session in storage, checking app API...');
-        const apiResponse = await this.fetchFn(`${API_BASE_URL}${API_ENDPOINTS.SESSION_VALIDATE}`, {
+        const apiResponse = await this.fetchFn(`${this.getApiBaseUrl()}${API_ENDPOINTS.SESSION_VALIDATE}`, {
           method: 'GET',
           credentials: 'include',
           headers: { Accept: 'application/json' },
@@ -1210,7 +1211,7 @@ export class ContentController {
    */
   private async rehydrateAppSessionFromToken(sessionToken: string): Promise<PageSession | null> {
     try {
-      const apiResponse = await this.fetchFn(`${API_BASE_URL}${API_ENDPOINTS.SESSION_VALIDATE}`, {
+      const apiResponse = await this.fetchFn(`${this.getApiBaseUrl()}${API_ENDPOINTS.SESSION_VALIDATE}`, {
         method: 'GET',
         credentials: 'include',
         headers: {
@@ -1311,6 +1312,16 @@ export class ContentController {
       ...(sessionToken ? { sessionToken } : {}),
       ...(userId ? { userId } : {}),
     };
+  }
+
+  /**
+   * When the content script is executing on an allowed CTJ origin, prefer that
+   * origin for auth/session API calls so challenge, verify, and cookie
+   * rehydration all stay on the same host the user is actively visiting.
+   */
+  private getApiBaseUrl(): string {
+    const origin = this.domAdapter.getOrigin();
+    return origin && isAllowedOrigin(origin) ? origin : API_BASE_URL;
   }
 
   private async resolveUserIdForSessionWrite(

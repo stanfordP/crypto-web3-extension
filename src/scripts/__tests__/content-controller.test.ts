@@ -148,6 +148,54 @@ describe('ContentController', () => {
     });
   });
 
+  describe('handleOpenAuth', () => {
+    it('should run the legacy SIWE flow against the current CTJ subdomain origin', async () => {
+      (dom.getOrigin as jest.Mock).mockReturnValue('https://app.cryptotradingjournal.xyz');
+
+      mockFetch
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ message: 'app-subdomain-siwe-message' }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve({ sessionToken: 'legacy-token' }),
+        });
+
+      await controller.handleOpenAuth();
+
+      expect(mockFetch).toHaveBeenNthCalledWith(
+        1,
+        'https://app.cryptotradingjournal.xyz/api/auth/siwe/challenge',
+        expect.objectContaining({
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        })
+      );
+      expect(mockFetch).toHaveBeenNthCalledWith(
+        2,
+        'https://app.cryptotradingjournal.xyz/api/auth/siwe/verify',
+        expect.objectContaining({
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        })
+      );
+      expect(injectionService.signMessage).toHaveBeenCalledWith(
+        'app-subdomain-siwe-message',
+        '0x1234'
+      );
+
+      const stored = await storage.getLocal([
+        StorageKeys.SESSION_TOKEN,
+        StorageKeys.CONNECTED_ADDRESS,
+        StorageKeys.CHAIN_ID,
+      ]);
+      expect(stored[StorageKeys.SESSION_TOKEN]).toBe('legacy-token');
+      expect(stored[StorageKeys.CONNECTED_ADDRESS]).toBe('0x1234');
+      expect(stored[StorageKeys.CHAIN_ID]).toBe('0x1');
+    });
+  });
+
   describe('handleCheckExtension', () => {
     it('should post CJ_EXTENSION_PRESENT message', () => {
       controller.handleCheckExtension();
@@ -261,6 +309,45 @@ describe('ContentController', () => {
         ([message]) => message.type === PageMessageType.CJ_SESSION_RESPONSE
       )?.[0] as { session?: Record<string, unknown> };
       expect(postedSessionResponse.session).not.toHaveProperty('sessionToken');
+    });
+
+    it('should rehydrate against the current CTJ subdomain origin', async () => {
+      (dom.getOrigin as jest.Mock).mockReturnValue('https://app.cryptotradingjournal.xyz');
+
+      await storage.setLocal({
+        [StorageKeys.CONNECTED_ADDRESS]: '0x1234',
+        [StorageKeys.CHAIN_ID]: '0x1',
+        [StorageKeys.SESSION_TOKEN]: 'token123',
+        [StorageKeys.ACCOUNT_MODE]: 'live',
+      });
+
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({
+          success: true,
+          valid: true,
+          authenticated: true,
+          data: {
+            authenticated: true,
+            address: '0x1234',
+            chainId: '0x1',
+          },
+        }),
+      });
+
+      await controller.handleGetSession();
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        'https://app.cryptotradingjournal.xyz/api/auth/session',
+        expect.objectContaining({
+          method: 'GET',
+          credentials: 'include',
+          headers: expect.objectContaining({
+            Accept: 'application/json',
+            Authorization: 'Bearer token123',
+          }),
+        })
+      );
     });
 
     it('should still return stored session when rehydration API returns 401', async () => {
@@ -602,6 +689,36 @@ describe('ContentController', () => {
       expect(result.session?.address).toBe('0xapi-addr');
       expect(result.session?.chainId).toBe('0x1');
       expect(result.session?.userId).toBe('user-456');
+    });
+
+    it('should recover popup session state from the current CTJ subdomain origin', async () => {
+      (dom.getOrigin as jest.Mock).mockReturnValue('https://app.cryptotradingjournal.xyz');
+
+      mockFetch.mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({
+          success: true,
+          data: {
+            authenticated: true,
+            address: '0xapi-addr',
+            chainId: 1,
+          },
+        }),
+      });
+
+      const result = await controller.handlePopupGetSession();
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        'https://app.cryptotradingjournal.xyz/api/auth/session',
+        expect.objectContaining({
+          method: 'GET',
+          credentials: 'include',
+          headers: { Accept: 'application/json' },
+        })
+      );
+      expect(result.success).toBe(true);
+      expect(result.session?.address).toBe('0xapi-addr');
+      expect(result.session?.chainId).toBe('0x1');
     });
   });
 
