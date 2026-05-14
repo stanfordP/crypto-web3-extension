@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="styles/popup.css">
 </head>
 <body>
-  <div class="container" role="main">
+  <div class="container">
     <!-- Header -->
     <header class="header">
       <div class="header-row">
@@ -40,25 +40,30 @@
       </div>
     </header>
 
-    <!-- Loading State -->
-    <div id="loading" class="section loading" role="status" aria-live="polite">
-      <div class="spinner" aria-hidden="true"></div>
-      <p>Loading...</p>
-      <span class="sr-only">Loading wallet status, please wait</span>
-    </div>
-
-    <!-- Not Connected State -->
-    <div id="notConnected" class="section hidden" role="region" aria-labelledby="notConnectedTitle">
-      <div class="status-icon disconnected" aria-hidden="true">
-        <svg class="icon-svg-large" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-        </svg>
+    <main class="popup-main" role="main">
+      <!-- Loading State -->
+      <div id="loading" class="section loading" role="status" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <p>Loading...</p>
+        <span class="sr-only">Loading wallet status, please wait</span>
       </div>
-      <h2 id="notConnectedTitle">Not Connected</h2>
-      <p class="description">
-        Connect your wallet through the Crypto Trading Journal app.
-      </p>
+
+      <!-- Not Connected State -->
+      <div id="notConnected" class="section hidden" role="region" aria-labelledby="notConnectedTitle">
+      <div class="state-hero">
+        <div class="status-icon disconnected" aria-hidden="true">
+          <svg class="icon-svg-large" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+        </div>
+        <div class="state-copy">
+          <h2 id="notConnectedTitle">Not Connected</h2>
+          <p class="description">
+            Connect through the CTJ app.
+          </p>
+        </div>
+      </div>
 
       <!-- Status Indicators for Reviewers -->
       <div class="status-checks" role="group" aria-label="Extension status checks">
@@ -78,23 +83,19 @@
 
       <!-- Getting Started Guide (shows when off-site) -->
       <div id="gettingStarted" class="getting-started hidden" role="region" aria-labelledby="gettingStartedTitle">
-        <h3 id="gettingStartedTitle">📋 Getting Started</h3>
+        <h3 id="gettingStartedTitle">Quick start</h3>
         <ol class="steps-list" role="list">
           <li role="listitem">
             <span class="step-number">1</span>
-            <span class="step-text">Install <a href="https://metamask.io/download/" target="_blank" rel="noopener">MetaMask</a> if not installed</span>
+            <span class="step-text"><a href="https://metamask.io/download/" target="_blank" rel="noopener">MetaMask</a></span>
           </li>
           <li role="listitem">
             <span class="step-number">2</span>
-            <span class="step-text">Visit <a href="https://cryptotradingjournal.xyz" target="_blank" rel="noopener">cryptotradingjournal.xyz</a></span>
+            <span class="step-text"><a href="https://cryptotradingjournal.xyz" target="_blank" rel="noopener">Open CTJ</a></span>
           </li>
           <li role="listitem">
             <span class="step-number">3</span>
-            <span class="step-text">Click "Connect Wallet" on the site</span>
-          </li>
-          <li role="listitem">
-            <span class="step-number">4</span>
-            <span class="step-text">Approve connection in MetaMask popup</span>
+            <span class="step-text">Connect + sign</span>
           </li>
         </ol>
       </div>
@@ -105,23 +106,24 @@
 
       <div class="info-box" role="note">
         <p>
-          <strong>🔐 Authentication Bridge</strong> — This extension connects your existing 
-          MetaMask wallet to Crypto Trading Journal for secure, passwordless login (SIWE).
-        </p>
-        <p style="margin-top: 8px; font-size: 11px; color: var(--text-muted);">
-          <strong>⚠️ This is NOT a wallet.</strong> Requires: MetaMask extension + cryptotradingjournal.xyz
+          <strong>Authentication Bridge</strong> — SIWE login for CTJ. <span class="wallet-warning"><strong>Not a wallet.</strong> Requires MetaMask + cryptotradingjournal.xyz.</span>
         </p>
       </div>
-    </div>
+      </div>
 
-    <!-- Connected State -->
-    <div id="connected" class="section hidden" role="region" aria-labelledby="connectedTitle">
-      <div class="status-icon connected" aria-hidden="true">
-        <svg class="icon-svg-large" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
+      <!-- Connected State -->
+      <div id="connected" class="section hidden" role="region" aria-labelledby="connectedTitle">
+      <div class="state-hero state-hero-connected">
+        <div class="status-icon connected" aria-hidden="true">
+          <svg class="icon-svg-large" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="state-copy">
+          <h2 id="connectedTitle">Connected</h2>
+          <p class="description">Session active for CTJ.</p>
+        </div>
       </div>
-      <h2 id="connectedTitle">Connected</h2>
 
       <div class="info-grid" role="list" aria-label="Wallet connection details">
         <div class="info-item address-item" role="listitem">
@@ -164,17 +166,18 @@
           Disconnect
         </button>
       </div>
-    </div>
+      </div>
 
-    <!-- Error State -->
-    <div id="error" class="section hidden" role="alert" aria-labelledby="errorTitle">
-      <div class="icon-large error" aria-hidden="true">⚠️</div>
-      <h2 id="errorTitle">Connection Error</h2>
-      <p id="errorMessage" class="error-message" role="status"></p>
-      <button id="retryButton" class="button button-primary" aria-label="Retry wallet connection">
-        Try Again
-      </button>
-    </div>
+      <!-- Error State -->
+      <div id="error" class="section hidden" role="alert" aria-labelledby="errorTitle">
+        <div class="icon-large error" aria-hidden="true">⚠️</div>
+        <h2 id="errorTitle">Connection Error</h2>
+        <p id="errorMessage" class="error-message" role="status"></p>
+        <button id="retryButton" class="button button-primary" aria-label="Retry wallet connection">
+          Try Again
+        </button>
+      </div>
+    </main>
 
     <!-- Footer -->
     <footer class="footer" role="contentinfo">

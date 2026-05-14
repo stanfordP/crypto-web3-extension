@@ -72,6 +72,10 @@
   border: 0;
 }
 
+.hidden {
+  display: none !important;
+}
+
 /* ============================================================================
    Focus Styles - Accessibility
    ============================================================================ */
@@ -107,13 +111,15 @@
 }
 
 body {
-  width: 360px;
-  min-height: 500px;
+  width: 340px;
+  min-height: 0;
+  max-height: 560px;
+  overflow-y: auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.42;
   color: var(--text-primary);
   background: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
@@ -134,23 +140,20 @@ body::before {
     radial-gradient(ellipse 60% 40% at 80% 20%, rgba(59, 130, 246, 0.04) 0%, transparent 50%),
     radial-gradient(ellipse 50% 30% at 50% 80%, rgba(34, 211, 238, 0.03) 0%, transparent 50%);
   z-index: -1;
-  animation: popupWave 20s ease-in-out infinite;
-}
-
-@keyframes popupWave {
-  0%, 100% {
-    background-position: 0% 50%, 100% 50%, 50% 100%;
-  }
-  50% {
-    background-position: 50% 50%, 50% 50%, 40% 100%;
-  }
 }
 
 .container {
   display: flex;
   flex-direction: column;
-  min-height: 500px;
-  padding: 20px;
+  min-height: 0;
+  padding: 14px;
+}
+
+.popup-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
 }
 
 /* ============================================================================
@@ -158,8 +161,8 @@ body::before {
    ============================================================================ */
 
 .header {
-  margin-bottom: 24px;
-  padding-bottom: 16px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -167,7 +170,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 }
 
 .header-logo {
@@ -180,7 +183,7 @@ body::before {
 }
 
 .title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 2px;
@@ -197,8 +200,8 @@ body::before {
 .header-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 6px;
+  gap: 6px;
+  margin-top: 4px;
 }
 
 .version-label {
@@ -242,8 +245,8 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
@@ -288,9 +291,9 @@ body::before {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 8px;
 }
 
 .section.hidden {
@@ -302,12 +305,15 @@ body::before {
    ============================================================================ */
 
 .loading {
+  min-height: 220px;
+  align-items: center;
+  justify-content: center;
   gap: 12px;
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border: 3px solid var(--border);
   border-top-color: var(--primary);
   border-radius: 50%;
@@ -342,17 +348,44 @@ body::before {
    ============================================================================ */
 
 h2 {
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 8px;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.state-hero {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  background: rgba(13, 31, 53, 0.74);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.state-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.state-copy h2,
+.state-copy .description {
+  text-align: left;
+}
+
+.state-copy .description {
+  margin-top: 2px;
 }
 
 .description {
   text-align: center;
   color: var(--text-secondary);
-  max-width: 280px;
-  margin-bottom: 8px;
+  max-width: 100%;
+  margin-bottom: 0;
+  font-size: 12px;
 }
 
 .mono {
@@ -367,7 +400,7 @@ h2 {
 
 .button {
   width: 100%;
-  padding: 12px 20px;
+  padding: 10px 16px;
   font-size: 14px;
   font-weight: 600;
   border: none;
@@ -429,10 +462,14 @@ h2 {
 
 .button-group {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 8px;
   width: 100%;
-  margin-top: 8px;
+  margin-top: 2px;
+}
+
+.button-group .button {
+  padding: 9px 10px;
 }
 
 /* ============================================================================
@@ -480,22 +517,22 @@ h2 {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin: 16px 0;
+  gap: 8px;
+  margin: 6px 0;
 }
 
 .info-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 12px;
+  gap: 3px;
+  padding: 9px;
   background: var(--bg-secondary);
   border-radius: var(--radius);
   border: 1px solid var(--border);
 }
 
 .info-label {
-  font-size: 11px;
+  font-size: 10px;
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -503,7 +540,7 @@ h2 {
 }
 
 .info-value {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
   word-break: break-all;
@@ -524,8 +561,8 @@ h2 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   padding: 0;
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -557,7 +594,7 @@ h2 {
 }
 
 .copy-btn.copied .check-icon {
-  display: block;
+  display: block !important;
 }
 
 /* ============================================================================
@@ -595,22 +632,27 @@ h2 {
 
 .info-box {
   width: 100%;
-  padding: 12px;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  padding: 9px 10px;
+  background: rgba(20, 184, 166, 0.08);
+  border: 1px solid rgba(20, 184, 166, 0.24);
   border-radius: var(--radius);
-  margin-top: 8px;
+  margin-top: 2px;
 }
 
 .info-box p {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.45;
 }
 
 .info-box strong {
   color: var(--text-primary);
   font-weight: 600;
+}
+
+.wallet-warning {
+  margin-left: 2px;
+  color: var(--text-muted) !important;
 }
 
 /* ============================================================================
@@ -619,21 +661,26 @@ h2 {
 
 .getting-started {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   background: rgba(20, 184, 166, 0.08);
   border: 1px solid rgba(20, 184, 166, 0.25);
   border-radius: var(--radius);
-  margin: 12px 0;
+  margin: 4px 0;
 }
 
 .getting-started h3 {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--cj-teal-light);
-  margin-bottom: 10px;
+  margin-bottom: 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 
 .steps-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -641,10 +688,10 @@ h2 {
 
 .steps-list li {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 6px 0;
-  font-size: 12px;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  font-size: 11.5px;
   color: var(--text-secondary);
 }
 
@@ -652,8 +699,8 @@ h2 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   background: var(--cj-ocean-mid);
   border: 1px solid rgba(20, 184, 166, 0.4);
   border-radius: 50%;
@@ -687,8 +734,8 @@ h2 {
    ============================================================================ */
 
 .logo-img {
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border-radius: 19%;
   border: 2px solid var(--border-light);
   box-shadow: 0 0 12px rgba(20, 184, 166, 0.3);
@@ -703,9 +750,9 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 64px;
-  height: 64px;
-  margin-bottom: 8px;
+  width: 40px;
+  height: 40px;
+  margin: 0;
   background: var(--bg-secondary);
   border-radius: 50%;
   border: 2px solid var(--border);
@@ -720,10 +767,10 @@ h2 {
 .status-icon.disconnected::before {
   content: '';
   position: absolute;
-  inset: -6px;
+  inset: -4px;
   background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
   border-radius: 50%;
-  animation: statusPulse 2s ease-in-out infinite;
+  opacity: 0.75;
 }
 
 .status-icon.connected {
@@ -735,10 +782,15 @@ h2 {
 .status-icon.connected::before {
   content: '';
   position: absolute;
-  inset: -6px;
+  inset: -4px;
   background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, transparent 70%);
   border-radius: 50%;
-  animation: successGlow 2s ease-in-out infinite;
+  opacity: 0.85;
+}
+
+.status-icon .icon-svg-large {
+  width: 20px;
+  height: 20px;
 }
 
 @keyframes successGlow {
@@ -829,7 +881,7 @@ h2 {
 .error-message {
   color: var(--error);
   text-align: center;
-  padding: 12px;
+  padding: 10px;
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: var(--radius);
@@ -842,10 +894,14 @@ h2 {
    ============================================================================ */
 
 .footer {
-  margin-top: auto;
-  padding-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
   border-top: 1px solid var(--border);
-  text-align: center;
+  text-align: left;
 }
 
 .update-notice {
@@ -871,8 +927,9 @@ h2 {
 
 .footer-links {
   font-size: 10px;
-  margin-top: 8px;
+  margin-top: 0;
   color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .footer-link {
@@ -962,18 +1019,18 @@ h2 {
 
 .status-checks {
   width: 100%;
-  padding: 16px;
+  padding: 10px;
   background: rgba(59, 130, 246, 0.08);
   border: 1px solid rgba(59, 130, 246, 0.2);
   border-radius: var(--radius);
-  margin: 16px 0;
+  margin: 4px 0;
 }
 
 .status-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 0;
+  gap: 8px;
+  padding: 5px 0;
 }
 
 .status-item:not(:last-child) {
@@ -981,14 +1038,14 @@ h2 {
 }
 
 .status-indicator {
-  font-size: 18px;
+  font-size: 14px;
   line-height: 1;
   min-width: 20px;
   text-align: center;
 }
 
 .status-label {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-secondary);
   flex: 1;
 }
