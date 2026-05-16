@@ -350,6 +350,76 @@ describe('ContentController', () => {
       );
     });
 
+    it('uses a bound default fetch wrapper for token rehydration', async () => {
+      const originalFetch = globalThis.fetch;
+      const boundFetch = jest.fn(function (this: typeof globalThis, _input: RequestInfo | URL, _init?: RequestInit) {
+        if (this !== globalThis) {
+          throw new TypeError("Failed to execute 'fetch' on 'Window': Illegal invocation");
+        }
+
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({
+            success: true,
+            valid: true,
+            authenticated: true,
+            data: {
+              authenticated: true,
+              address: '0x1234',
+              chainId: '0x1',
+              userId: 'user-bound-fetch',
+            },
+          }),
+        } as Response);
+      });
+
+      globalThis.fetch = boundFetch as unknown as typeof fetch;
+
+      const defaultFetchController = new ContentController({
+        storageAdapter: storage,
+        runtimeAdapter: runtime,
+        domAdapter: dom,
+        injectionService,
+        logger: mockLogger as unknown as typeof import('../logger').contentLogger,
+      });
+
+      try {
+        await storage.setLocal({
+          [StorageKeys.CONNECTED_ADDRESS]: '0x1234',
+          [StorageKeys.CHAIN_ID]: '0x1',
+          [StorageKeys.SESSION_TOKEN]: 'token123',
+          [StorageKeys.ACCOUNT_MODE]: 'live',
+        });
+
+        await defaultFetchController.handleGetSession();
+
+        expect(boundFetch).toHaveBeenCalledWith(
+          'http://localhost:3000/api/auth/session',
+          expect.objectContaining({
+            method: 'GET',
+            credentials: 'include',
+            headers: expect.objectContaining({
+              Authorization: 'Bearer token123',
+            }),
+          })
+        );
+        expect(mockLogger.warn).not.toHaveBeenCalledWith(
+          'Token-based session rehydration failed',
+          expect.anything()
+        );
+        expect(dom.postMessage).toHaveBeenCalledWith(
+          expect.objectContaining({
+            type: PageMessageType.CJ_SESSION_RESPONSE,
+            session: expect.objectContaining({ userId: 'user-bound-fetch' }),
+          }),
+          expect.any(String)
+        );
+      } finally {
+        defaultFetchController.cleanup();
+        globalThis.fetch = originalFetch;
+      }
+    });
+
     it('should still return stored session when rehydration API returns 401', async () => {
       await storage.setLocal({
         [StorageKeys.CONNECTED_ADDRESS]: '0xdead',

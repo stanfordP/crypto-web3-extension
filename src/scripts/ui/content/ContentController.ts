@@ -87,7 +87,7 @@ export class ContentController {
     this.domAdapter = deps.domAdapter;
     this.injectionService = deps.injectionService;
     this.logger = deps.logger || logger;
-    this.fetchFn = deps.fetchFn || fetch;
+    this.fetchFn = deps.fetchFn || ((input, init) => globalThis.fetch(input, init));
   }
 
   // ============================================================================
