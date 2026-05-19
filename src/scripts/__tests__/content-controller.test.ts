@@ -637,6 +637,44 @@ describe('ContentController', () => {
       );
     });
 
+    it('should suppress duplicate session changed notifications for the same stored session', async () => {
+      await storage.setLocal({
+        [StorageKeys.CONNECTED_ADDRESS]: '0x1234',
+        [StorageKeys.CHAIN_ID]: '0x1',
+        [StorageKeys.ACCOUNT_MODE]: 'live',
+        [StorageKeys.SESSION_TOKEN]: 'token123',
+      });
+      await storage.setSession({
+        [StorageKeys.SESSION_TOKEN]: 'token123',
+      });
+
+      const notifySessionChangeFromStorage = (
+        controller as unknown as {
+          notifySessionChangeFromStorage(): Promise<void>;
+        }
+      ).notifySessionChangeFromStorage.bind(controller);
+
+      await notifySessionChangeFromStorage();
+      await notifySessionChangeFromStorage();
+
+      const sessionChangedCalls = (dom.postMessage as jest.Mock).mock.calls.filter(
+        ([message]) => message.type === PageMessageType.CJ_SESSION_CHANGED
+      );
+
+      expect(sessionChangedCalls).toHaveLength(1);
+      expect(sessionChangedCalls[0]?.[0]).toEqual(
+        expect.objectContaining({
+          type: PageMessageType.CJ_SESSION_CHANGED,
+          session: expect.objectContaining({
+            address: '0x1234',
+            chainId: '0x1',
+            accountMode: 'live',
+            isConnected: true,
+          }),
+        })
+      );
+    });
+
     it('should clear stale userId when storing a different address without userId', async () => {
       await storage.setLocal({
         [StorageKeys.CONNECTED_ADDRESS]: '0xold',

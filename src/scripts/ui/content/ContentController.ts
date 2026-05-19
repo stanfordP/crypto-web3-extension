@@ -80,6 +80,7 @@ export class ContentController {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private visibilityChangeListener: any = null;
   private healthCheckInterval: ReturnType<typeof setInterval> | null = null;
+  private lastNotifiedSessionSignature: string | null = null;
 
   constructor(deps: ContentControllerDeps) {
     this.storageAdapter = deps.storageAdapter;
@@ -165,6 +166,7 @@ export class ContentController {
 
     // Clear in-flight requests
     this.inFlightRequests.clear();
+    this.lastNotifiedSessionSignature = null;
 
     this.isInitialized = false;
     this.logger.debug('ContentController cleaned up');
@@ -1410,6 +1412,15 @@ export class ContentController {
    * Notify session change
    */
   private notifySessionChange(session: PageSession | null): void {
+    const sessionSignature = this.getSessionSignature(session);
+
+    if (sessionSignature === this.lastNotifiedSessionSignature) {
+      this.logger.debug('Skipping duplicate session change notification');
+      return;
+    }
+
+    this.lastNotifiedSessionSignature = sessionSignature;
+
     this.domAdapter.postMessage(
       {
         type: PageMessageType.CJ_SESSION_CHANGED,
@@ -1418,6 +1429,20 @@ export class ContentController {
       this.domAdapter.getOrigin()
     );
     this.logger.debug('Session change notified', { hasSession: !!session });
+  }
+
+  private getSessionSignature(session: PageSession | null): string {
+    if (!session) {
+      return 'null';
+    }
+
+    return JSON.stringify({
+      address: session.address.trim().toLowerCase(),
+      chainId: this.normalizeChainId(session.chainId),
+      accountMode: session.accountMode,
+      userId: session.userId ?? null,
+      isConnected: session.isConnected,
+    });
   }
 
   /**
