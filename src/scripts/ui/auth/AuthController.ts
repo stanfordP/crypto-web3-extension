@@ -11,6 +11,7 @@ import type { IStorageAdapter, IRuntimeAdapter, ITabsAdapter, IDOMAdapter } from
 import type { AuthView, AuthSuccessData } from './AuthView';
 import type { EthereumProvider, SIWEChallengeRequest, SIWEChallengeResponse, SIWEVerifyRequest, SIWEVerifyResponse } from '../../types';
 import { StorageKeys } from '../../types';
+import { getUserErrorMessage, NetworkOfflineError } from '../../errors';
 
 // ============================================================================
 // Types
@@ -67,6 +68,9 @@ const DEFAULT_CONFIG: AuthControllerConfig = {
   autoRedirectDelay: 2000,
 };
 
+const AUTH_OFFLINE_MESSAGE =
+  'You appear to be offline. CTJ sign-in needs the backend to issue a SIWE challenge. Reconnect and try again.';
+
 // ============================================================================
 // AuthController Class
 // ============================================================================
@@ -81,6 +85,10 @@ export class AuthController {
   private isConnecting: boolean = false;
   private currentStepIndex: number = 0;
   private detectedProviders: EthereumProvider[] = [];
+  private networkEventHandlers: {
+    online?: (event: Event) => void;
+    offline?: (event: Event) => void;
+  } = {};
   private walletEventHandlers: {
     accountsChanged?: (accounts: unknown) => void;
     chainChanged?: (chainId: unknown) => void;
@@ -121,6 +129,9 @@ export class AuthController {
       onAccountModeChange: (mode) => this.handleAccountModeChange(mode),
     });
 
+    // Keep auth-page backend availability visible.
+    this.setupNetworkStatusListeners();
+
     // Setup EIP-6963 provider detection
     this.setupEIP6963Detection();
 
@@ -141,6 +152,14 @@ export class AuthController {
       provider.removeListener('chainChanged', this.walletEventHandlers.chainChanged);
     }
     this.walletEventHandlers = {};
+
+    if (this.networkEventHandlers.online) {
+      this.dom.removeEventListener('online', this.networkEventHandlers.online);
+    }
+    if (this.networkEventHandlers.offline) {
+      this.dom.removeEventListener('offline', this.networkEventHandlers.offline);
+    }
+    this.networkEventHandlers = {};
   }
 
   // ============================================================================
@@ -167,6 +186,13 @@ export class AuthController {
    * Handle retry button click (from error state)
    */
   private handleRetry(): void {
+    if (!this.dom.isOnline) {
+      this.view.updateOnlineStatus(false);
+      this.showError(AUTH_OFFLINE_MESSAGE);
+      return;
+    }
+
+    this.view.updateOnlineStatus(true);
     this.view.showSection('connect');
   }
 
@@ -196,6 +222,46 @@ export class AuthController {
    */
   private handleAccountModeChange(mode: 'demo' | 'live'): void {
     this.state.accountMode = mode;
+  }
+
+  // ============================================================================
+  // Network Status
+  // ============================================================================
+
+  /**
+   * Keep the auth page explicit about backend availability.
+   */
+  private setupNetworkStatusListeners(): void {
+    const syncNetworkStatus = (): void => {
+      const isOnline = this.dom.isOnline;
+      this.view.updateOnlineStatus(isOnline);
+
+      if (!isOnline && this.state.step === 'connecting') {
+        this.isConnecting = false;
+        this.showError(AUTH_OFFLINE_MESSAGE);
+      }
+    };
+
+    this.networkEventHandlers = {
+      online: syncNetworkStatus,
+      offline: syncNetworkStatus,
+    };
+
+    this.dom.addEventListener('online', syncNetworkStatus);
+    this.dom.addEventListener('offline', syncNetworkStatus);
+    syncNetworkStatus();
+  }
+
+  /**
+   * Fail fast before backend-dependent SIWE steps when the browser is offline.
+   */
+  private ensureOnline(): void {
+    const isOnline = this.dom.isOnline;
+    this.view.updateOnlineStatus(isOnline);
+
+    if (!isOnline) {
+      throw new NetworkOfflineError();
+    }
   }
 
   // ============================================================================
@@ -356,6 +422,8 @@ export class AuthController {
     this.isConnecting = true;
 
     try {
+      this.ensureOnline();
+
       const provider = this.getEthereumProvider();
       if (!provider) {
         throw new Error('No wallet detected');
@@ -389,6 +457,7 @@ export class AuthController {
       this.currentStepIndex = 1;
       this.view.updateStepProgress(this.currentStepIndex);
       this.view.updateConnectingStatus('Getting Challenge...', 'Requesting authentication challenge from server.');
+      this.ensureOnline();
 
       const chainIdNumber = parseInt(chainId, 16);
       const challengeResponse = await this.apiClient.getSIWEChallenge({
@@ -412,6 +481,7 @@ export class AuthController {
       this.currentStepIndex = 3;
       this.view.updateStepProgress(this.currentStepIndex);
       this.view.updateConnectingStatus('Verifying...', 'Verifying your signature with the server.');
+      this.ensureOnline();
 
       const verifyResponse = await this.apiClient.verifySIWE({
         message: challengeResponse.message,
@@ -543,6 +613,15 @@ export class AuthController {
    * Format API error message
    */
   private formatApiError(error: unknown): string {
+    if (error instanceof NetworkOfflineError) {
+      return AUTH_OFFLINE_MESSAGE;
+    }
+
+    const userMessage = getUserErrorMessage(error);
+    if (userMessage !== 'An unexpected error occurred. Please try again.') {
+      return userMessage;
+    }
+
     if (error instanceof Error) {
       return error.message;
     }

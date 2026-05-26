@@ -63,6 +63,9 @@ function createMockDOMAdapter(elements: Record<string, MockElement | null> = {})
 
 function createMockElements(): Record<string, MockElement> {
   const elements: Record<string, MockElement> = {
+    // Status banners
+    offlineBanner: createMockElement('offlineBanner'),
+
     // Sections
     loading: createMockElement('loading'),
     noWallet: createMockElement('noWallet'),
@@ -451,6 +454,35 @@ describe('AuthView', () => {
     });
   });
 
+  describe('network status', () => {
+    beforeEach(() => {
+      authView = new AuthView(mockDom);
+    });
+
+    it('should hide the offline banner when online', () => {
+      authView.updateOnlineStatus(true);
+
+      expect(mockElements.offlineBanner.classList.add).toHaveBeenCalledWith('hidden');
+    });
+
+    it('should show the offline banner when offline', () => {
+      authView.updateOnlineStatus(false);
+
+      expect(mockElements.offlineBanner.classList.remove).toHaveBeenCalledWith('hidden');
+    });
+
+    it('should read online status from the DOM adapter', () => {
+      expect(authView.getOnlineStatus()).toBe(true);
+
+      Object.defineProperty(mockDom, 'isOnline', {
+        value: false,
+        configurable: true,
+      });
+
+      expect(authView.getOnlineStatus()).toBe(false);
+    });
+  });
+
   describe('formatAddress', () => {
     beforeEach(() => {
       authView = new AuthView(mockDom);
@@ -539,6 +571,7 @@ describe('AuthView', () => {
 
       it('should handle all custom elements being provided', () => {
         const allCustomElements = {
+          offlineBanner: createMockElement('offlineBanner') as unknown as HTMLElement,
           loading: createMockElement('loading') as unknown as HTMLElement,
           noWallet: createMockElement('noWallet') as unknown as HTMLElement,
           connect: createMockElement('connect') as unknown as HTMLElement,
@@ -828,6 +861,12 @@ describe('AuthView', () => {
       sectionIds.forEach(id => {
         expect(mockDom.getElementById).toHaveBeenCalledWith(id);
       });
+    });
+
+    it('should get the offline banner element by ID', () => {
+      authView = new AuthView(mockDom);
+
+      expect(mockDom.getElementById).toHaveBeenCalledWith('offlineBanner');
     });
 
     it('should get all button elements by ID', () => {

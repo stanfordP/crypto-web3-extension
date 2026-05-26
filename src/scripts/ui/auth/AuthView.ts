@@ -32,6 +32,9 @@ export interface AuthStep {
  * Auth view elements
  */
 export interface AuthElements {
+  // Status banners
+  offlineBanner: HTMLElement;
+
   // Sections
   loading: HTMLElement;
   noWallet: HTMLElement;
@@ -117,6 +120,9 @@ export class AuthView {
   ) {
     // Get DOM elements (can be overridden for testing)
     this.elements = {
+      // Status banners
+      offlineBanner: customElements?.offlineBanner ?? this.getElement('offlineBanner'),
+
       // Sections
       loading: customElements?.loading ?? this.getElement('loading'),
       noWallet: customElements?.noWallet ?? this.getElement('noWallet'),
@@ -292,6 +298,29 @@ export class AuthView {
   showError(message: string): void {
     this.elements.errorMessage.textContent = message;
     this.showSection('error');
+  }
+
+  // ============================================================================
+  // Network Status
+  // ============================================================================
+
+  /**
+   * Show or hide the offline/backend-unreachable banner.
+   */
+  updateOnlineStatus(isOnline: boolean): void {
+    if (isOnline) {
+      this.elements.offlineBanner.classList.add('hidden');
+      return;
+    }
+
+    this.elements.offlineBanner.classList.remove('hidden');
+  }
+
+  /**
+   * Get browser online status via the DOM adapter.
+   */
+  getOnlineStatus(): boolean {
+    return this.dom.isOnline;
   }
 
   // ============================================================================
