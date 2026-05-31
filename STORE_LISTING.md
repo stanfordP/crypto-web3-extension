@@ -2,9 +2,9 @@
 
 Use this content when submitting to the Chrome Web Store.
 
-**Current Version:** 2.2.6
-**Last Updated:** February 18, 2026
-**Status:** Resubmission after rejection (Violation ID: Red Potassium)
+**Current Version:** 2.2.9
+**Last Updated:** May 28, 2026
+**Status:** Published on Chrome Web Store
 
 ---
 
@@ -16,6 +16,19 @@ Use this content when submitting to the Chrome Web Store.
 ## Short Description (132 characters max)
 ```
 Web3 authentication bridge for Crypto Trading Journal. Connects your existing MetaMask/Brave wallet for passwordless sign-in (SIWE).
+```
+
+---
+
+## What's New in v2.2.9
+
+```
+🔧 RELIABILITY & DOCUMENTATION UPDATE
+
+• Package and manifest remain version-synced
+• Unit test baseline verified: 1,651 passing tests across 59 suites
+• Offline auth-page fallback and popup offline UX retained
+• Documentation refreshed for the published CWS package
 ```
 
 ---

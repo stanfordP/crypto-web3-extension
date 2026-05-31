@@ -1,15 +1,16 @@
 # Chrome Web Store Approval Strategy
 
 **Extension:** Crypto Trading Journal - Web3 Auth
-**Version:** 2.2.6
-**Date:** February 18, 2026
+**Version:** 2.2.9
+**Date:** May 28, 2026
+**Status:** Published on Chrome Web Store
 **Previous Rejection:** Violation ID: Red Potassium (January 6, 2026)
 
 ---
 
 ## Executive Summary
 
-This document consolidates all findings from the rejection analysis and provides a prioritized action plan for successful Chrome Web Store approval.
+This document preserves the rejection analysis and current maintenance checklist for the published CTJ Web3 Auth Bridge.
 
 ---
 
@@ -43,11 +44,11 @@ This document consolidates all findings from the rejection analysis and provides
 | "NOT a wallet" disclaimers | Explicit disclaimers in popup | popup.html |
 | Reviewer documentation | Quick start guide, improvements doc | REVIEWER_*.md files |
 | Main app requirements doc | Dependencies documented | MAIN_APP_REQUIREMENTS.md |
-| Version sync | manifest = package.json = 2.2.6 | Both files |
+| Version sync | manifest = package.json = 2.2.9 | Both files (`npm run check-version`) |
 
 ---
 
-## 3. What Still Needs Attention
+## 3. Current Maintenance Checklist
 
 ### 🔴 P0 — Approval Blockers
 
@@ -74,10 +75,10 @@ This document consolidates all findings from the rejection analysis and provides
 
 | # | Item | Owner | Verification Method |
 |---|------|-------|---------------------|
-| 12 | ARIA labels on status indicators | Extension | Accessibility audit |
-| 13 | Promotional tiles (440x280, 1400x560) | Assets | Create images |
-| 14 | Uninstall feedback URL | Extension | Add setUninstallURL() |
-| 15 | Remove deprecated files | Extension | Delete legacy code |
+| 12 | ARIA labels on status indicators | Extension | ✅ Automated axe coverage exists; manual screen-reader QA remains optional |
+| 13 | Promotional tiles (440x280, 1400x560) | Assets | Optional polish |
+| 14 | Uninstall feedback URL | Extension | ✅ Implemented |
+| 15 | Remove deprecated files | Extension | ✅ Legacy root scripts removed |
 
 ---
 

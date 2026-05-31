@@ -20,13 +20,13 @@ This is a Manifest V3 Chrome browser extension that provides custom Web3 authent
 - TypeScript (strict mode)
 - Webpack 5 for bundling
 - Chrome Extension APIs (Manifest V3)
-- Jest for unit testing (1,542 tests across 55 suites)
+- Jest for unit testing (1,651 tests across 59 suites)
 - Playwright for E2E testing
 
 **Supported Browsers:** Chrome, Brave, Edge, Opera (all Chromium-based)
 
-**Version:** 2.2.6 (manifest & package.json synced)
-**Last Updated:** March 1, 2026
+**Version:** 2.2.9 (manifest & package.json synced)
+**Last Updated:** May 28, 2026
 **Status:** Published on Chrome Web Store
 
 ---
@@ -48,7 +48,7 @@ This is a Manifest V3 Chrome browser extension that provides custom Web3 authent
 |-----------|--------|-------|
 | **Build System** | ✅ Working | Webpack 5 production build compiles successfully |
 | **TypeScript** | ✅ Clean | `tsc --noEmit` passes with no errors |
-| **Unit Tests** | ✅ 1,621 passing | All tests in 57 suites pass |
+| **Unit Tests** | ✅ 1,651 passing | All tests in 59 suites pass (`npm run test:unit -- --runInBand`, May 28, 2026) |
 | **DI Architecture** | ✅ Complete | Entry points, Controllers, Adapters all implemented |
 | **Core Logic** | ✅ Extracted | AuthStateMachine, SessionManager, SiweFlow, MessageRouter |
 | **Adapters** | ✅ Complete | Chrome Storage, Runtime, Tabs, Alarms, DOM adapters |
@@ -56,29 +56,29 @@ This is a Manifest V3 Chrome browser extension that provides custom Web3 authent
 | **Reviewer UX** | ✅ Added | Status indicators, MetaMask links, domain checks, Getting Started guide |
 | **Main App Auth** | ✅ Fixed | Race conditions, hydration, rate limiting, 401 noise all resolved |
 
-### 📈 Test Coverage Summary (v2.2.6) — Updated February 2026
+### 📈 Test Coverage Summary (v2.2.9) — Updated May 2026
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| Unit Tests | **1,621** | - | ✅ |
-| Test Suites | **57** | - | ✅ |
-| Statement Coverage | **75.16%** | 80%+ | 🔴 -4.84% |
-| Branch Coverage | **65.78%** | 70%+ | 🔴 -4.22% |
-| Function Coverage | **72.6%** | 80%+ | 🔴 -7.4% |
+| Unit Tests | **1,651** | - | ✅ |
+| Test Suites | **59** | - | ✅ |
+| Statement Coverage | **75.16%** | 80%+ | 🟡 Last coverage audit, still under target |
+| Branch Coverage | **65.78%** | 70%+ | 🟡 Last coverage audit, still under target |
+| Function Coverage | **72.6%** | 80%+ | 🟡 Last coverage audit, still under target |
 
 **Recent Additions (Jan 31):**
 - +20 tests for `sw-keepalive.ts` (0% → 81.48%)
 - +24 tests for `PopupController.ts` (59% → 81.86%)
 - +22 tests for entry point adapters/controllers
 
-### 🎯 Chrome Web Store Resubmission Checklist (PENDING)
+### 🎯 Chrome Web Store Maintenance Checklist (Published)
 
 #### P0 — Approval Blockers (MUST FIX)
 | Item | Status | Owner |
 |------|--------|-------|
 | Main site (cryptotradingjournal.xyz) accessible 24/7 | ⬜ Verify | Main App |
 | Exact test URL in instructions (not "visit site") | ✅ Done | Extension |
-| Version consistency (manifest/package/listing/ZIP) | ✅ Done (2.2.6) | Extension |
+| Version consistency (manifest/package/listing/ZIP) | ✅ Done (2.2.9) | Extension |
 | Permissions rationale in CWS fields (esp. `alarms`) | ⬜ Paste into CWS form | Submission |
 | MetaMask requirement in FIRST LINE of test instructions | ✅ Done | Submission |
 | SIWE nonces table exists in production Supabase | ⬜ Verify migration | Main App |
@@ -91,7 +91,7 @@ This is a Manifest V3 Chrome browser extension that provides custom Web3 authent
 | Domain scope narrowed or explicitly justified | ✅ Done (only cryptotradingjournal.xyz + localhost) | Extension |
 | Support URL + email in CWS form fields | ✅ Done (GitHub Issues link in popup + reviewer page) | Submission |
 | Privacy disclosure matches privacy policy | ⬜ Cross-check docs/index.html vs CWS form | Submission |
-| Reviewer guide (docs/reviewer.html) up to date | ✅ Done (v2.2.6 referenced) | Extension |
+| Reviewer guide (docs/reviewer.html) up to date | ✅ Done (published guide retained; update version references before the next CWS package) | Extension |
 | Popup "Getting Started" guide for off-site | ✅ Done | Extension |
 | Popup "NOT a wallet" disclaimer | ✅ Done | Extension |
 | Disconnect works without interruptions | ✅ Done (feedback modal disabled) | Main App |
@@ -130,7 +130,7 @@ When resubmitting, use these exact justifications for the requesting permissions
 
 ## 🚀 Beta Distribution Strategy (Interim)
 
-To support testers while CWS approval is pending, use the **GitHub Side-loading** method.
+The extension is published on CWS. Use **GitHub side-loading** only for private beta builds or reviewer/debug packages outside the store.
 
 ### 📦 Tester Deliverables
 1. **Production ZIP**: Generated via `npm run release:full`.
@@ -476,7 +476,7 @@ crypto-web3-extension/
 │   │   ├── errors.ts          # Error handling
 │   │   ├── logger.ts          # Logging utilities
 │   │   │
-│   │   └── __tests__/         # Unit tests (1,542 tests)
+│   │   └── __tests__/         # Unit tests (1,651 tests)
 │   │
 │   ├── styles/
 │   │   ├── auth.css           # Auth page styles
@@ -943,7 +943,7 @@ Account mode (Live/Demo) is **NOT stored or managed by the extension**.
 
 ## Cross-Project Dependencies (Main App — crypto-futures-jn)
 
-> **Context (February 28, 2026):** The main CTJ application has pivoted to a personal autonomous trading system. Public SaaS deferred indefinitely. The extension is paused and these cross-project dependencies are no longer actively tracked. Retained for reference.
+> **Context (May 28, 2026):** The main CTJ application is a personal trading workstation, and the extension remains active as the published SIWE authentication bridge. Cross-project changes should preserve the `{ sessionToken, address, chainId, user_id? }` session contract.
 >
 > **Pivot Reference:** See `crypto-futures-jn/CLAUDE.md` v5.0 and `CTJ_Autonomous_Trading_Gap_Resolution_Report.md`.
 
@@ -1179,7 +1179,7 @@ class MessageRouter {
 | Phase 1 | Foundation & adapters | ✅ Complete |
 | Phase 2 | Core logic extraction | ✅ Complete |
 | Phase 3 | Controller layer | ✅ Complete |
-| Phase 4 | UI separation | ⏳ Partial (AuthView at 0% coverage) |
+| Phase 4 | UI separation | ✅ Complete enough for current release (AuthView production-module tests exist; manual screen-reader QA remains optional) |
 
 ---
 
@@ -1340,7 +1340,7 @@ This section tracks all identified gaps from comprehensive codebase analysis. Up
 | 7 | Keyboard navigation tests | ✅ Complete | Jan 31, 2026 |
 | 8 | Screen reader verification | 🔲 Manual Testing Required | - |
 | 9 | Memory leak analysis | ✅ Complete | Jan 31, 2026 |
-| 10 | Offline mode UX | 🔲 Not Started | - |
+| 10 | Offline mode UX | ✅ Complete | May 26, 2026 |
 | 11 | Version sync guardrails | ✅ Complete | Jan 31, 2026 |
 | 12 | Security: validateSenderOrigin fix | ✅ Complete | Jan 31, 2026 |
 | 13 | Error recovery documentation | ✅ Complete | Jan 31, 2026 |
@@ -1396,7 +1396,7 @@ This section tracks all identified gaps from comprehensive codebase analysis. Up
 |----------|------|--------|--------|--------|
 | ✅ Done | `ContentController` coverage | 94.77% lines / 94.32% stmt / 79.65% branch | — | ✅ Complete (May 2026) |
 | 🟡 P1 | Manual screen reader verification (NVDA/VoiceOver) | Accessibility QA | 2h | 🔲 Not Started |
-| 🟡 P1 | Offline mode UX | Graceful degradation | 3h | 🔲 Not Started |
+| ✅ Done | Offline mode UX | Graceful degradation | — | ✅ Complete (May 2026) |
 | ✅ Done | Add tests for entry points (0% → 70%) | +2.9% overall coverage | 3h | ✅ Complete |
 | ✅ Done | Add sw-keepalive.ts tests (0% → 81%) | Service worker stability | 2h | ✅ Complete |
 | ✅ Done | Add PopupController.ts tests (59% → 82%) | UI code coverage | 3h | ✅ Complete |
@@ -1407,13 +1407,13 @@ This section tracks all identified gaps from comprehensive codebase analysis. Up
 | ✅ Done | Memory leak analysis docs | Production stability | 2h | ✅ Complete |
 | ✅ Done | Version sync guardrails | Version consistency | 1h | ✅ Complete |
 
-### Files at 0% Coverage (Require Attention)
+### Remaining Coverage Hotspots (Require Attention)
 
 | File | Lines | Type | Notes |
 |------|-------|------|-------|
 | `injected-auth.ts` | 51-494 | Injected script | Complex wallet interaction |
 | `sw-state.ts` | 36-199 | Background | Service worker state management |
-| `ui/auth/AuthView.ts` (low) | 12-333 | View | DOM manipulation for auth page |
+| `ui/auth/AuthView.ts` | covered by `tests/AuthView.test.ts` | View | DOM manipulation coverage exists; keep improving branches opportunistically |
 
 ### Significantly Improved Coverage (Updated May 2026)
 

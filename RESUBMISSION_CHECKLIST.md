@@ -1,9 +1,9 @@
 # Chrome Web Store Resubmission Checklist
 
 **Extension:** CTJ - Web3 Auth Bridge
-**Version:** 2.2.6
-**Date:** February 17, 2026
-**Status:** ✅ Branding Fixed — Ready for Resubmission
+**Version:** 2.2.9
+**Date:** May 28, 2026
+**Status:** ✅ Published on Chrome Web Store — maintenance checklist
 
 ---
 
@@ -57,7 +57,7 @@
 | 1 | **Main site availability** | ✅ Verified (Feb 24, 2026) | cryptotradingjournal.xyz loads, no CAPTCHA, SIWE auth page accessible |
 | 2 | **Exact test URL** | ✅ Done | Use "Visit https://cryptotradingjournal.xyz/login" |
 | 3 | **MetaMask in line 1** | ✅ Done | First line is "REQUIRES MetaMask extension installed." |
-| 4 | **Version consistency** | ✅ Done | manifest.json (2.2.6) = package.json (2.2.6) |
+| 4 | **Version consistency** | ✅ Done | manifest.json (2.2.9) = package.json (2.2.9), verified with `npm run check-version` |
 | 5 | **Permissions rationale** | ⬜ Add | Fill in CWS "Privacy practices" with justifications for `storage`, `activeTab`, `alarms` |
 | 6 | **Privacy disclosure match** | ⬜ Cross-check | Ensure CWS data handling fields match PRIVACY.md exactly |
 
@@ -78,10 +78,10 @@
 | 16 | **Remove connected state double logo** | ✅ Done | Replaced with SVG checkmark success icon |
 | 17 | **Re-add explicit wallet disclaimer** | ✅ Done | Added "⚠️ This is NOT a wallet" alongside positive framing |
 | 18 | **Replace emoji with SVG icons** | ✅ Done | All emojis (🔗/✅/ℹ️) replaced with inline SVG |
-| 11 | **A11y on status indicators** | ⬜ Add | ARIA labels on popup status icons for automated accessibility checks |
+| 11 | **A11y on status indicators** | ✅ Done | 27 axe tests cover WCAG checks; manual screen-reader guide remains for optional QA |
 | 12 | **Promotional tiles** | ⬜ Optional | Create 440x280 and 1400x560 images for potential featuring |
-| 13 | **Uninstall feedback URL** | ⬜ Add | `chrome.runtime.setUninstallURL()` for user feedback |
-| 14 | **Remove deprecated files** | ⬜ Clean | Delete legacy `src/scripts/*.ts` files not in `entry/` |
+| 13 | **Uninstall feedback URL** | ✅ Done | `chrome.runtime.setUninstallURL()` is implemented |
+| 14 | **Remove deprecated files** | ✅ Done | Legacy root scripts removed; `entry/` files are active |
 
 ### 📚 Theme & Design Documentation (NEW)
 
@@ -114,7 +114,7 @@ outside of active authentication flows.
 
 ---
 
-## Updated Test Instructions (v2.2.6)
+## Updated Test Instructions (current CWS package)
 
 **Character count:** 498/500 ✅
 
@@ -203,7 +203,7 @@ Production build compiled successfully after all changes.
 
 **Note:** v2.2.5 originally used the BIP-39 test mnemonic (abandon...about) but this was replaced because bots deposit spam tokens to its derived addresses, which could confuse reviewers. The fresh-wallet approach is simpler and avoids this issue.
 
-**See updated instructions in the "Updated Test Instructions (v2.2.6)" section above.**
+**See updated instructions in the "Updated Test Instructions (current CWS package)" section above.**
 
 ### 2. ✅ Self-Documenting Popup UI
 
@@ -261,7 +261,7 @@ npm run lint
 **Status:** ✅ Passed (0 errors, 4 warnings in test files only)
 
 ### Files Verified
-- ✅ `dist/manifest.json` - Version 2.2.6
+- ✅ `dist/manifest.json` - Version 2.2.9
 - ✅ `dist/popup.html` - Contains status-checks
 - ✅ `dist/styles/popup.css` - Contains indicator styles
 - ✅ `dist/popup.js` - Contains PopupController logic
@@ -273,7 +273,7 @@ npm run lint
 ### Step 1: Package Extension
 ```bash
 cd dist
-zip -r ../crypto-web3-extension-v2.2.6.zip .
+zip -r ../crypto-web3-extension-v2.2.9.zip .
 ```
 
 Or use the package script:
@@ -286,7 +286,7 @@ npm run package
 1. Go to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
 2. Find existing item: "Crypto Trading Journal - Web3 Auth"
 3. Click "Upload New Version"
-4. Upload `crypto-web3-extension-v2.2.6.zip`
+4. Upload `crypto-web3-extension-v2.2.9.zip`
 
 ### Step 3: Update Store Listing
 
@@ -437,7 +437,7 @@ cphjlogninjhikeldohmihhpaaafnheb
 
 ---
 
-**Status:** ✅ Ready for Resubmission
+**Status:** ✅ Published / ready for maintenance package if needed
 **Confidence Level:** High
-**Version:** 2.2.6
+**Version:** 2.2.9
 **Date:** February 17, 2026

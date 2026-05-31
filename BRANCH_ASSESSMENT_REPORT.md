@@ -4,6 +4,8 @@
 **Branch:** copilot/assess-and-analyze-issues  
 **Current Version:** 2.2.5
 
+> Historical report. The extension is now published on the Chrome Web Store and the current release is v2.2.9.
+
 ---
 
 ## Executive Summary
@@ -185,7 +187,7 @@ found 0 vulnerabilities
 
 ## Chrome Web Store Readiness
 
-✅ **Extension is ready for resubmission**
+✅ **Historical finding:** extension was ready for resubmission at the time of this report
 
 Based on [claude.md status] and this assessment:
 - All builds passing ✅

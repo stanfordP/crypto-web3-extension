@@ -1,7 +1,7 @@
 # Chrome Web Store Submission Guide
 
 > **Extension**: Crypto Trading Journal - Web3 Auth
-> **Version**: 2.2.6
+> **Version**: 2.2.9
 > **Production Domain**: https://cryptotradingjournal.xyz
 
 ---
@@ -235,13 +235,13 @@ The package will be created at `packages/crypto-trading-journal-web3-v{version}-
 
 **Or manually on Windows PowerShell:**
 ```powershell
-Compress-Archive -Path dist\* -DestinationPath crypto-web3-extension-v2.2.6.zip
+Compress-Archive -Path dist\* -DestinationPath crypto-web3-extension-v2.2.9.zip
 ```
 
 ### 3. Verify Package Contents
 The ZIP should contain:
 ```
-crypto-web3-extension-v2.2.6.zip
+crypto-web3-extension-v2.2.9.zip
 ├── manifest.json
 ├── background.js
 ├── content.js
@@ -378,10 +378,10 @@ npm run build:prod
 npm run test
 
 # Create package (PowerShell)
-Compress-Archive -Path dist\* -DestinationPath crypto-web3-extension-v2.2.6.zip
+Compress-Archive -Path dist\* -DestinationPath crypto-web3-extension-v2.2.9.zip
 
 # Create package (bash)
-cd dist && zip -r ../crypto-web3-extension-v2.2.6.zip . && cd ..
+cd dist && zip -r ../crypto-web3-extension-v2.2.9.zip . && cd ..
 ```
 
 ---

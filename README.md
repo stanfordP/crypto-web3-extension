@@ -5,10 +5,10 @@ A Manifest V3 Chrome browser extension providing secure Web3 wallet authenticati
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue.svg)](https://www.typescriptlang.org/)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-green.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Coverage](https://img.shields.io/badge/Coverage-44%25-yellow.svg)]()
-[![Version](https://img.shields.io/badge/Version-2.2.6-blue.svg)]()
-[![Tests](https://img.shields.io/badge/Tests-1621-brightgreen.svg)]()
-[![Status](https://img.shields.io/badge/Status-Ready%20for%20Resubmission-green.svg)]()
+[![Coverage](https://img.shields.io/badge/Coverage-75.16%25-yellow.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.2.9-blue.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-1651-brightgreen.svg)]()
+[![Status](https://img.shields.io/badge/Status-Published%20on%20CWS-green.svg)]()
 
 ## Overview
 
@@ -255,7 +255,7 @@ npm run test:e2e:security
 
 ### Test Coverage
 
-**Current Status:** 1621 tests passing (57 suites), 44% statement coverage
+**Current Status:** 1651 tests passing (59 suites), 75.16% statement coverage from the last coverage audit
 
 | Component | Coverage | Notes |
 |-----------|----------|-------|
@@ -272,9 +272,9 @@ npm run test:e2e:security
 | AuthStateMachine | 82% ✅ | State machine |
 | AuthController | 78% ✅ | Auth logic |
 | PopupView | 82% ✅ | UI layer |
-| ContentController | 55% ⚠️ | Branch coverage low (30%) |
-| AuthView | 0% ❌ | **Critical: Pending tests** |
-| Entry points | 0% ❌ | **Critical: DI wiring untested** |
+| ContentController | 94.77% lines ✅ | Branch coverage improved to 79.65% |
+| AuthView | Covered ✅ | `tests/AuthView.test.ts` exercises the DOM view layer |
+| Entry points | Covered ✅ | Production entry-point wiring tests exist |
 
 ### Test Areas
 
@@ -404,19 +404,19 @@ src/scripts/
 | Phase 1: Foundation | ✅ Complete | 30% |
 | Phase 2: Core logic | ✅ Complete | 44% |
 | Phase 3: Controllers | ✅ Complete | 44% |
-| Phase 4: UI separation | ⏳ Partial | 44% (Target: 70%+) |
+| Phase 4: UI separation | ✅ Complete enough for current release | 75.16% last coverage audit (Target: 80%+) |
 
-### Coverage Gaps (P0 Priority)
+### Remaining Coverage Follow-ups
 
 | Component | Coverage | Gap |
 |-----------|----------|-----|
-| AuthView.ts | 0% | 🔴 Critical - handles user interactions |
-| Entry points | 0% | 🔴 Critical - DI wiring untested |
-| ContentController branches | 30% | 🟡 High - message routing edge cases |
+| AuthView.ts | Covered | Keep improving branch coverage opportunistically |
+| Entry points | Covered | Keep in sync when adding new entry dependencies |
+| ContentController branches | 79.65% | Maintain edge-case coverage for message routing |
 
 ### Key Benefits
-- **1621 unit tests** (up from 532)
-- **44.31% statement coverage** (up from 23%)
+- **1651 unit tests** (up from 532)
+- **75.16% statement coverage** from last coverage audit (up from 23%)
 - **Fully mockable** Chrome APIs via adapters
 - **Testable controllers** with injected dependencies
 - **Rate limiting** implemented (token bucket algorithm)

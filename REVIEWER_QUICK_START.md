@@ -1,7 +1,7 @@
 # Chrome Web Store Reviewer Quick Start Guide
 
 **Extension:** Crypto Trading Journal - Web3 Auth
-**Version:** 2.2.6
+**Version:** 2.2.9
 **Estimated Testing Time:** 3-5 minutes
 
 ---

@@ -1,10 +1,10 @@
 # CTJ Web3 Extension - Copilot Instructions
 
-> **STATUS: PAUSED / ARCHIVED (February 28, 2026)**
+> **STATUS: ACTIVE / PUBLISHED (May 28, 2026)**
 >
-> This repository is **paused** under the CTJ architecture pivot to a personal autonomous trading system. The extension served as an authentication bridge for a multi-user SaaS product. Under the single-user pivot, it is no longer needed. No active development.
+> This repository is active as the CTJ authentication bridge and is published on the Chrome Web Store. It provides SIWE wallet signing for the main app; keep it positioned as an authentication bridge, not a standalone wallet.
 >
-> See `crypto-futures-jn/CLAUDE.md` v5.0 for the autonomous trading architecture.
+> See `claude.md` for extension-specific architecture and current release status.
 
 A Manifest V3 Chrome browser extension providing secure Web3 authentication bridging for Crypto Trading Journal (CTJ). This is an **authentication bridge**, NOT a standalone wallet - it connects existing wallets (MetaMask, Brave Wallet, etc.) to CTJ for passwordless SIWE (Sign-In With Ethereum) authentication.
 
@@ -21,13 +21,13 @@ A Manifest V3 Chrome browser extension providing secure Web3 authentication brid
   - `viem` - Ethereum interactions (preferred over ethers.js)
   - `zod` - Runtime type validation
 - **Testing:**
-  - **Jest** - Unit tests (1,542 tests across 55 suites)
+  - **Jest** - Unit tests (1,651 tests across 59 suites)
   - **Playwright** - E2E tests with accessibility checks (axe-core)
 - **Build Tools:** webpack, ts-loader, copy-webpack-plugin
 
 ## Critical Context
 
-**Chrome Web Store Status:** Rejected (Violation ID: Red Potassium)
+**Chrome Web Store Status:** Published (initial rejection Violation ID: Red Potassium resolved)
 **Root Cause:** Reviewers expected standalone wallet functionality
 **Solution:** Position as "Authentication Bridge" — NEVER use "Wallet" as primary descriptor
 **Terminology:** Use "Authentication Bridge", "Wallet Bridge", or "Web3 Auth" - NEVER imply balance/send/receive features
@@ -38,7 +38,7 @@ A Manifest V3 Chrome browser extension providing secure Web3 authentication brid
 |---------|---------|
 | `npm run build:dev` | Dev build -> `dist/` |
 | `npm run dev` | Watch mode (auto-rebuild) |
-| `npm run test:unit` | Jest unit tests (1,542 tests) |
+| `npm run test:unit` | Jest unit tests (1,651 tests) |
 | `npm run test:coverage` | Coverage report |
 | `npm run type-check` | TypeScript validation |
 | `npm run release:full` | Validate + test + build + package |
