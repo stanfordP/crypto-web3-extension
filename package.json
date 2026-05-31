@@ -46,7 +46,7 @@
   "license": "MIT",
   "dependencies": {
     "buffer": "^6.0.3",
-    "viem": "^2.43.3",
+    "viem": "^2.51.3",
     "zod": "^4.2.1"
   },
   "devDependencies": {
