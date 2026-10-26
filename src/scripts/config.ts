@@ -11,6 +11,7 @@
 
 export const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 export const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
+export const LOCAL_TEST_ORIGIN = 'https://ctj.localhost';
 
 // ============================================================================
 // API Configuration
@@ -52,6 +53,7 @@ export const API_ENDPOINTS = {
  * These should match manifest.json host_permissions
  */
 export const ALLOWED_ORIGINS: readonly string[] = [
+  LOCAL_TEST_ORIGIN,
   'http://localhost:3000',
   'http://localhost:3001', // Test ground mock server
   'https://cryptotradingjournal.xyz',
@@ -64,6 +66,7 @@ export const ALLOWED_ORIGINS: readonly string[] = [
  * Content script will only inject on these pages
  */
 export const INJECTION_ORIGINS: readonly string[] = [
+  LOCAL_TEST_ORIGIN,
   'http://localhost:3000',
   'https://cryptotradingjournal.xyz',
   'https://www.cryptotradingjournal.xyz',
@@ -185,9 +188,9 @@ export const FEATURES = {
   /** Enable EIP-6963 multi-wallet announcement */
   EIP6963_ANNOUNCEMENT: true,
   /** Enable error reporting to backend */
-  ERROR_REPORTING: IS_PRODUCTION,
+  ERROR_REPORTING: IS_PRODUCTION && API_BASE_URL !== LOCAL_TEST_ORIGIN,
   /** Error reporting endpoint - uses main app API */
-  ERROR_REPORTING_ENDPOINT: IS_PRODUCTION
+  ERROR_REPORTING_ENDPOINT: IS_PRODUCTION && API_BASE_URL !== LOCAL_TEST_ORIGIN
     ? `${API_URLS.production}/api/extension/errors`
     : undefined,
   /** Enable rate limiting */

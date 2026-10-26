@@ -11,6 +11,25 @@ import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals
 import { BackgroundController } from '../src/scripts/ui/background/BackgroundController';
 import type { IStorageAdapter, IRuntimeAdapter, ITabsAdapter, RuntimeMessageSender } from '../src/scripts/adapters/types';
 import { StorageKeys, MessageType } from '../src/scripts/types';
+import { ALLOWED_ORIGINS } from '../src/scripts/config';
+
+describe('BackgroundController - local HTTPS production allowlist', () => {
+  it.each([
+    ['https://ctj.localhost/login', true],
+    ['http://ctj.localhost/login', false],
+    ['https://ctj.localhost:444/login', false],
+    ['https://sub.ctj.localhost/login', false],
+    ['https://ctj.localhost.evil.com/login', false],
+  ])('validates the sender at %s', (url, expected) => {
+    const controller = new BackgroundController({
+      storageAdapter: createMockStorageAdapter(), runtimeAdapter: createMockRuntimeAdapter(),
+      tabsAdapter: createMockTabsAdapter(), alarmsAdapter: {},
+      allowedOrigins: ALLOWED_ORIGINS, logger: createMockLogger() as any,
+    });
+    expect(controller.validateSenderOrigin({ id: 'test-extension-id', tab: { id: 1, url: url as string } })).toBe(expected);
+    controller.cleanup();
+  });
+});
 
 // ============================================================================
 // Mock Factories

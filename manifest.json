@@ -9,6 +9,7 @@
     "alarms"
   ],
   "host_permissions": [
+    "https://ctj.localhost/*",
     "http://localhost:3000/*",
     "http://localhost:3001/*",
     "https://cryptotradingjournal.xyz/*",
@@ -21,6 +22,7 @@
   "content_scripts": [
     {
       "matches": [
+        "https://ctj.localhost/*",
         "http://localhost:3000/*",
         "http://localhost:3001/*",
         "https://cryptotradingjournal.xyz/*",
@@ -36,6 +38,7 @@
     {
       "resources": ["injected-wallet.js", "injected-auth.js", "auth.html"],
       "matches": [
+        "https://ctj.localhost/*",
         "http://localhost:3000/*",
         "http://localhost:3001/*",
         "https://cryptotradingjournal.xyz/*",

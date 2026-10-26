@@ -344,6 +344,30 @@ describe('PopupController - State-Adaptive CTA Button', () => {
   });
 
   describe('Localhost development', () => {
+    it('connects on the local HTTPS page and checks its own session endpoint', async () => {
+      mockTabs.query.mockResolvedValue([{ id: 1, url: 'https://ctj.localhost/login' }]);
+      mockTabs.sendMessage.mockResolvedValue({ success: true, walletAvailable: true });
+      await controller.initialize();
+      expect(connectButton.textContent).toBe('Connect on Page');
+      expect(global.fetch).toHaveBeenCalledWith('https://ctj.localhost/api/auth/session', expect.any(Object));
+      const handlers = mockView.initialize.mock.calls[0][0];
+      await handlers.onConnect();
+      expect(mockWindowOpen).not.toHaveBeenCalled();
+      expect(mockWindowClose).toHaveBeenCalled();
+      controller.destroy();
+    });
+
+    it.each(['http://ctj.localhost/login', 'https://ctj.localhost:444/login',
+      'https://sub.ctj.localhost/login', 'https://ctj.localhost.evil.com/login'])
+    ('does not connect or sync a session on %s', async url => {
+      mockTabs.query.mockResolvedValue([{ id: 1, url }]);
+      mockTabs.sendMessage.mockResolvedValue({ success: true, walletAvailable: true });
+      await controller.initialize();
+      expect(connectButton.textContent).toBe('Open CTJ App');
+      expect(mockTabs.sendMessage).not.toHaveBeenCalled();
+      controller.destroy();
+    });
+
     it('should handle localhost:3000 as allowed domain', async () => {
       mockTabs.query.mockResolvedValue([
         { id: 1, url: 'http://localhost:3000/login' }
