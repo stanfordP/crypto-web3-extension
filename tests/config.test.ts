@@ -13,6 +13,51 @@ import {
   TIMEOUTS,
   DEFAULTS,
 } from '../src/scripts/config';
+import fs from 'fs';
+import path from 'path';
+
+describe('Local HTTPS qualification origin', () => {
+  it('uses the configured local API and disables remote reporting in a private production build', () => {
+    const oldNodeEnv = process.env.NODE_ENV;
+    const oldApi = process.env.API_BASE_URL;
+    try {
+      process.env.NODE_ENV = 'production';
+      process.env.API_BASE_URL = 'https://ctj.localhost';
+      jest.isolateModules(() => {
+        const config = require('../src/scripts/config');
+        expect(config.API_BASE_URL).toBe('https://ctj.localhost');
+        expect(config.FEATURES.ERROR_REPORTING).toBe(false);
+        expect(config.FEATURES.ERROR_REPORTING_ENDPOINT).toBeUndefined();
+      });
+    } finally {
+      if (oldNodeEnv === undefined) delete process.env.NODE_ENV; else process.env.NODE_ENV = oldNodeEnv;
+      if (oldApi === undefined) delete process.env.API_BASE_URL; else process.env.API_BASE_URL = oldApi;
+    }
+  });
+
+  it('allows and injects only the exact HTTPS origin', () => {
+    expect(isAllowedOrigin('https://ctj.localhost')).toBe(true);
+    expect(shouldInjectProvider('https://ctj.localhost')).toBe(true);
+  });
+
+  it.each([
+    'http://ctj.localhost', 'https://ctj.localhost:444',
+    'https://sub.ctj.localhost', 'https://ctj.localhost.evil.com',
+    'https://ctj-localhost', 'https://evil.com/?redirect=https://ctj.localhost',
+  ])('rejects related origin %s', origin => {
+    expect(isAllowedOrigin(origin)).toBe(false);
+    expect(shouldInjectProvider(origin)).toBe(false);
+  });
+
+  it('declares the exact origin at every browser permission boundary', () => {
+    const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, '../manifest.json'), 'utf8'));
+    for (const patterns of [manifest.host_permissions, manifest.content_scripts[0].matches,
+      manifest.web_accessible_resources[0].matches]) {
+      expect(patterns).toContain('https://ctj.localhost/*');
+      expect(patterns).not.toContain('*://*.localhost/*');
+    }
+  });
+});
 
 describe('Config', () => {
   describe('Constants', () => {

@@ -10,6 +10,7 @@
 import type { IStorageAdapter, IRuntimeAdapter, ITabsAdapter } from '../../adapters/types';
 import type { PopupView, SessionDisplayData } from './PopupView';
 import { truncateAddress, getNetworkName, formatAccountMode } from './PopupView';
+import { LOCAL_TEST_ORIGIN } from '../../config';
 
 // ============================================================================
 // Types
@@ -534,8 +535,7 @@ export class PopupController {
       }
 
       // Check if it's the main app
-      const isMainApp = activeTab.url.includes('localhost:3000') ||
-                        activeTab.url.includes('cryptotradingjournal.xyz');
+      const isMainApp = this.isAllowedDomain(activeTab.url);
 
       if (!isMainApp) {
         return false;
@@ -758,7 +758,7 @@ export class PopupController {
    * Get configured app URL
    * Priority:
    * 1. User-configured appUrl from sync storage (for advanced users)
-   * 2. If active tab is on localhost:3000, use localhost (for developers)
+   * 2. Use the local HTTPS test origin or localhost:3000 when active
    * 3. Default to production URL (for regular users)
    */
   private async getAppUrl(): Promise<string> {
@@ -774,6 +774,9 @@ export class PopupController {
       if (activeTab?.url) {
         try {
           const url = new URL(activeTab.url);
+          if (url.origin === LOCAL_TEST_ORIGIN) {
+            return LOCAL_TEST_ORIGIN;
+          }
           if (url.hostname === 'localhost' && url.port === '3000') {
             return 'http://localhost:3000';
           }
@@ -902,6 +905,7 @@ export class PopupController {
     try {
       const urlObj = new URL(url);
       const hostname = urlObj.hostname.toLowerCase();
+      if (urlObj.origin === LOCAL_TEST_ORIGIN) return true;
       
       // Check for exact hostname matches or subdomains
       const allowedHosts = [
